@@ -3,7 +3,7 @@ import { ContentfulStatusCode } from "hono/utils/http-status"
 
 export const Response = (c: Context, data: any, message: string, status: ContentfulStatusCode) => {
   return c.json({
-    success: true,
+    success: status >= 200 && status < 300,
     data,
     message,
   }, status)

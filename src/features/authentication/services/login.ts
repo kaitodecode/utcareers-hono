@@ -29,7 +29,7 @@ export const LoginService = async (c: Context) => {
     }
     
     // Use jsonwebtoken instead of hono/jwt
-    const token = sign({ id: user.id }, process.env.JWT_SECRET as string, {
+    const token = sign(user, process.env.JWT_SECRET as string, {
         expiresIn: "1h",
     })
     return Response(c, { token, role: user.role }, "Login successful", 200)
