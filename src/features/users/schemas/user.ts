@@ -1,13 +1,14 @@
 import z from "zod";
 
 export const CreateUserScheme = z.object({
+  photo: z.instanceof(File).optional(),
   name: z.string().min(1, "Name is required"),
   phone: z.string().min(1, "Phone is required"),
   email: z.string().email("Invalid email format"),
   address: z.string().nullable().optional(),
   description: z.string().nullable().optional(),
   password: z.string().min(8, "Password must be at least 8 characters"),
-  role: z.enum(["pelamar", "admin"]).default("pelamar")
+  role: z.enum(["pelamar", "admin"]).default("pelamar"),
 });
 
 export const UpdateUserScheme = z.object({
@@ -17,7 +18,8 @@ export const UpdateUserScheme = z.object({
   address: z.string().nullable().optional(),
   description: z.string().nullable().optional(),
   password: z.string().min(8, "Password must be at least 8 characters").optional(),
-  role: z.enum(["pelamar", "admin"]).optional()
+  role: z.enum(["pelamar", "admin"]).optional(),
+  photo: z.instanceof(File).optional(),
 });
 
 export const GetUsersQueryScheme = z.object({

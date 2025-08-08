@@ -22,10 +22,10 @@ UserRouter.get("/", AuthMiddleware, Validate("query", GetUsersQueryScheme), GetU
 UserRouter.get("/:id", AuthMiddleware, GetUserService);
 
 // Create new user (protected)
-UserRouter.post("/", AuthMiddleware, Validate("json", CreateUserScheme), CreateUserService);
+UserRouter.post("/", AuthMiddleware, Validate("form", CreateUserScheme), CreateUserService);
 
 // Update user (protected)
-UserRouter.put("/:id", AuthMiddleware, Validate("json", UpdateUserScheme), UpdateUserService);
+UserRouter.put("/:id", AuthMiddleware, Validate("form", UpdateUserScheme), UpdateUserService);
 
 // Delete user (protected)
 UserRouter.delete("/:id", AuthMiddleware, DeleteUserService);

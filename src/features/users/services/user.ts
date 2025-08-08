@@ -2,7 +2,9 @@ import { Context } from "hono";
 import * as bcrypt from "bcrypt";
 import prisma from "../../../libs/prisma";
 import { Response } from "../../../libs/response";
+import { uploadFile, deleteFile } from "../../../libs/s3";
 import { v4 } from "uuid";
+import { users_role } from "../../../libs/prisma/dist";
 
 // Get all users with Laravel-style pagination
 export const GetUsersService = async (c: Context) => {
@@ -128,15 +130,16 @@ export const GetUserService = async (c: Context) => {
 // Create new user
 export const CreateUserService = async (c: Context) => {
   try {
-    const data = c.req.valid("json" as never);
-    const { name, phone, email, address, description, password, role } = data;
+    const body = c.req.valid("form" as never);
+    const { name, phone, email, address, description, password, role } = body;
+    const photoFile = (body as any).photo as File;
     
     // Check if email already exists
     const existingUser = await prisma.users.findFirst({
       where: {
         OR: [
-          { email },
-          { phone }
+          { email: email as string },
+          { phone: phone as string }
         ]
       }
     });
@@ -150,16 +153,30 @@ export const CreateUserService = async (c: Context) => {
       }
     }
     
+    // Handle photo upload
+    let photoUrl = null;
+    if (photoFile && photoFile.size > 0) {
+      try {
+        photoUrl = await uploadFile("users", photoFile, null, {
+          allowedExtensions: ["jpg", "jpeg", "png", "gif", "webp"],
+          maxSizeInMB: 5
+        });
+      } catch (error) {
+        return Response(c, null, error instanceof Error ? error.message : "Failed to upload photo", 400);
+      }
+    }
+    
     const user = await prisma.users.create({
       data: {
         id: v4(),
-        name,
-        phone,
-        email,
-        address,
-        description,
-        password: bcrypt.hashSync(password, 10),
-        role: role || "pelamar"
+        name: name as string,
+        phone: phone as string,
+        email: email as string,
+        address: address as string || null,
+        description: description as string || null,
+        password: bcrypt.hashSync(password as string, 10),
+        role: (role as users_role) || "pelamar",
+        photo: photoUrl
       },
       select: {
         id: true,
@@ -186,7 +203,9 @@ export const CreateUserService = async (c: Context) => {
 export const UpdateUserService = async (c: Context) => {
   try {
     const { id } = c.req.param();
-    const { name, phone, email, address, description, password, role } = c.req.valid("json" as never);
+    const body = c.req.valid("form" as never);
+    const { name, phone, email, address, description, password, role } = body;
+    const photoFile = (body as any).photo as File;
     
     // Check if user exists
     const existingUser = await prisma.users.findUnique({
@@ -205,8 +224,8 @@ export const UpdateUserService = async (c: Context) => {
             { id: { not: id } },
             {
               OR: [
-                email ? { email: email } : {},
-                phone ? { phone: phone } : {}
+                email ? { email: email as string } : {},
+                phone ? { phone: phone as string } : {}
               ].filter(obj => Object.keys(obj).length > 0)
             }
           ]
@@ -223,17 +242,31 @@ export const UpdateUserService = async (c: Context) => {
       }
     }
     
+    // Handle photo upload
+    let photoUrl = existingUser.photo; // Keep existing photo by default
+    if (photoFile && photoFile.size > 0) {
+      try {
+        photoUrl = await uploadFile("users", photoFile, existingUser.photo, {
+          allowedExtensions: ["jpg", "jpeg", "png", "gif", "webp"],
+          maxSizeInMB: 5
+        });
+      } catch (error) {
+        return Response(c, null, error instanceof Error ? error.message : "Failed to upload photo", 400);
+      }
+    }
+    
     // Prepare update data
     const updateData: any = {
-      name,
-      phone,
-      email,
-      address,
-      description,
-      role
+      name: name as string,
+      phone: phone as string,
+      email: email as string,
+      address: address as string || null,
+      description: description as string || null,
+      role: role as string,
+      photo: photoUrl
     };
     if (password) {
-      updateData.password = bcrypt.hashSync(password, 10);
+      updateData.password = bcrypt.hashSync(password as string, 10);
     }
     
     const user = await prisma.users.update({
