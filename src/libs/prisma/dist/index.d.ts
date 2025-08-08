@@ -2064,6 +2064,37 @@ export namespace Prisma {
 
 
   /**
+   * Count Type CompaniesCountOutputType
+   */
+
+  export type CompaniesCountOutputType = {
+    job_posts: number
+  }
+
+  export type CompaniesCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    job_posts?: boolean | CompaniesCountOutputTypeCountJob_postsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * CompaniesCountOutputType without action
+   */
+  export type CompaniesCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompaniesCountOutputType
+     */
+    select?: CompaniesCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * CompaniesCountOutputType without action
+   */
+  export type CompaniesCountOutputTypeCountJob_postsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: job_postsWhereInput
+  }
+
+
+  /**
    * Count Type Job_categoriesCountOutputType
    */
 
@@ -4989,7 +5020,6 @@ export namespace Prisma {
     email: string | null
     phone: string | null
     website: string | null
-    logo: string | null
     address: string | null
     created_at: Date | null
     updated_at: Date | null
@@ -5002,7 +5032,6 @@ export namespace Prisma {
     email: string | null
     phone: string | null
     website: string | null
-    logo: string | null
     address: string | null
     created_at: Date | null
     updated_at: Date | null
@@ -5015,7 +5044,6 @@ export namespace Prisma {
     email: number
     phone: number
     website: number
-    logo: number
     address: number
     created_at: number
     updated_at: number
@@ -5030,7 +5058,6 @@ export namespace Prisma {
     email?: true
     phone?: true
     website?: true
-    logo?: true
     address?: true
     created_at?: true
     updated_at?: true
@@ -5043,7 +5070,6 @@ export namespace Prisma {
     email?: true
     phone?: true
     website?: true
-    logo?: true
     address?: true
     created_at?: true
     updated_at?: true
@@ -5056,7 +5082,6 @@ export namespace Prisma {
     email?: true
     phone?: true
     website?: true
-    logo?: true
     address?: true
     created_at?: true
     updated_at?: true
@@ -5142,7 +5167,6 @@ export namespace Prisma {
     email: string
     phone: string
     website: string
-    logo: string
     address: string
     created_at: Date | null
     updated_at: Date | null
@@ -5172,11 +5196,12 @@ export namespace Prisma {
     email?: boolean
     phone?: boolean
     website?: boolean
-    logo?: boolean
     address?: boolean
     created_at?: boolean
     updated_at?: boolean
     deleted_at?: boolean
+    job_posts?: boolean | companies$job_postsArgs<ExtArgs>
+    _count?: boolean | CompaniesCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["companies"]>
 
 
@@ -5187,25 +5212,29 @@ export namespace Prisma {
     email?: boolean
     phone?: boolean
     website?: boolean
-    logo?: boolean
     address?: boolean
     created_at?: boolean
     updated_at?: boolean
     deleted_at?: boolean
   }
 
-  export type companiesOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "phone" | "website" | "logo" | "address" | "created_at" | "updated_at" | "deleted_at", ExtArgs["result"]["companies"]>
+  export type companiesOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "phone" | "website" | "address" | "created_at" | "updated_at" | "deleted_at", ExtArgs["result"]["companies"]>
+  export type companiesInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    job_posts?: boolean | companies$job_postsArgs<ExtArgs>
+    _count?: boolean | CompaniesCountOutputTypeDefaultArgs<ExtArgs>
+  }
 
   export type $companiesPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "companies"
-    objects: {}
+    objects: {
+      job_posts: Prisma.$job_postsPayload<ExtArgs>[]
+    }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       name: string
       email: string
       phone: string
       website: string
-      logo: string
       address: string
       created_at: Date | null
       updated_at: Date | null
@@ -5550,6 +5579,7 @@ export namespace Prisma {
    */
   export interface Prisma__companiesClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    job_posts<T extends companies$job_postsArgs<ExtArgs> = {}>(args?: Subset<T, companies$job_postsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$job_postsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -5584,7 +5614,6 @@ export namespace Prisma {
     readonly email: FieldRef<"companies", 'String'>
     readonly phone: FieldRef<"companies", 'String'>
     readonly website: FieldRef<"companies", 'String'>
-    readonly logo: FieldRef<"companies", 'String'>
     readonly address: FieldRef<"companies", 'String'>
     readonly created_at: FieldRef<"companies", 'DateTime'>
     readonly updated_at: FieldRef<"companies", 'DateTime'>
@@ -5606,6 +5635,10 @@ export namespace Prisma {
      */
     omit?: companiesOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: companiesInclude<ExtArgs> | null
+    /**
      * Filter, which companies to fetch.
      */
     where: companiesWhereUniqueInput
@@ -5624,6 +5657,10 @@ export namespace Prisma {
      */
     omit?: companiesOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: companiesInclude<ExtArgs> | null
+    /**
      * Filter, which companies to fetch.
      */
     where: companiesWhereUniqueInput
@@ -5641,6 +5678,10 @@ export namespace Prisma {
      * Omit specific fields from the companies
      */
     omit?: companiesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: companiesInclude<ExtArgs> | null
     /**
      * Filter, which companies to fetch.
      */
@@ -5690,6 +5731,10 @@ export namespace Prisma {
      */
     omit?: companiesOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: companiesInclude<ExtArgs> | null
+    /**
      * Filter, which companies to fetch.
      */
     where?: companiesWhereInput
@@ -5738,6 +5783,10 @@ export namespace Prisma {
      */
     omit?: companiesOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: companiesInclude<ExtArgs> | null
+    /**
      * Filter, which companies to fetch.
      */
     where?: companiesWhereInput
@@ -5781,6 +5830,10 @@ export namespace Prisma {
      */
     omit?: companiesOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: companiesInclude<ExtArgs> | null
+    /**
      * The data needed to create a companies.
      */
     data: XOR<companiesCreateInput, companiesUncheckedCreateInput>
@@ -5809,6 +5862,10 @@ export namespace Prisma {
      * Omit specific fields from the companies
      */
     omit?: companiesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: companiesInclude<ExtArgs> | null
     /**
      * The data needed to update a companies.
      */
@@ -5850,6 +5907,10 @@ export namespace Prisma {
      */
     omit?: companiesOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: companiesInclude<ExtArgs> | null
+    /**
      * The filter to search for the companies to update in case it exists.
      */
     where: companiesWhereUniqueInput
@@ -5876,6 +5937,10 @@ export namespace Prisma {
      */
     omit?: companiesOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: companiesInclude<ExtArgs> | null
+    /**
      * Filter which companies to delete.
      */
     where: companiesWhereUniqueInput
@@ -5896,6 +5961,30 @@ export namespace Prisma {
   }
 
   /**
+   * companies.job_posts
+   */
+  export type companies$job_postsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the job_posts
+     */
+    select?: job_postsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the job_posts
+     */
+    omit?: job_postsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: job_postsInclude<ExtArgs> | null
+    where?: job_postsWhereInput
+    orderBy?: job_postsOrderByWithRelationInput | job_postsOrderByWithRelationInput[]
+    cursor?: job_postsWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: Job_postsScalarFieldEnum | Job_postsScalarFieldEnum[]
+  }
+
+  /**
    * companies without action
    */
   export type companiesDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -5907,6 +5996,10 @@ export namespace Prisma {
      * Omit specific fields from the companies
      */
     omit?: companiesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: companiesInclude<ExtArgs> | null
   }
 
 
@@ -9706,6 +9799,7 @@ export namespace Prisma {
 
   export type Job_postsMinAggregateOutputType = {
     id: string | null
+    company_id: string | null
     title: string | null
     description: string | null
     requirements: string | null
@@ -9719,6 +9813,7 @@ export namespace Prisma {
 
   export type Job_postsMaxAggregateOutputType = {
     id: string | null
+    company_id: string | null
     title: string | null
     description: string | null
     requirements: string | null
@@ -9732,6 +9827,7 @@ export namespace Prisma {
 
   export type Job_postsCountAggregateOutputType = {
     id: number
+    company_id: number
     title: number
     description: number
     requirements: number
@@ -9747,6 +9843,7 @@ export namespace Prisma {
 
   export type Job_postsMinAggregateInputType = {
     id?: true
+    company_id?: true
     title?: true
     description?: true
     requirements?: true
@@ -9760,6 +9857,7 @@ export namespace Prisma {
 
   export type Job_postsMaxAggregateInputType = {
     id?: true
+    company_id?: true
     title?: true
     description?: true
     requirements?: true
@@ -9773,6 +9871,7 @@ export namespace Prisma {
 
   export type Job_postsCountAggregateInputType = {
     id?: true
+    company_id?: true
     title?: true
     description?: true
     requirements?: true
@@ -9859,6 +9958,7 @@ export namespace Prisma {
 
   export type Job_postsGroupByOutputType = {
     id: string
+    company_id: string
     title: string
     description: string
     requirements: string
@@ -9889,6 +9989,7 @@ export namespace Prisma {
 
   export type job_postsSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    company_id?: boolean
     title?: boolean
     description?: boolean
     requirements?: boolean
@@ -9900,6 +10001,7 @@ export namespace Prisma {
     deleted_at?: boolean
     applicants?: boolean | job_posts$applicantsArgs<ExtArgs>
     job_categories_job_posts?: boolean | job_posts$job_categories_job_postsArgs<ExtArgs>
+    companies?: boolean | companiesDefaultArgs<ExtArgs>
     selections?: boolean | job_posts$selectionsArgs<ExtArgs>
     _count?: boolean | Job_postsCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["job_posts"]>
@@ -9908,6 +10010,7 @@ export namespace Prisma {
 
   export type job_postsSelectScalar = {
     id?: boolean
+    company_id?: boolean
     title?: boolean
     description?: boolean
     requirements?: boolean
@@ -9919,10 +10022,11 @@ export namespace Prisma {
     deleted_at?: boolean
   }
 
-  export type job_postsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "description" | "requirements" | "benefits" | "type" | "status" | "created_at" | "updated_at" | "deleted_at", ExtArgs["result"]["job_posts"]>
+  export type job_postsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "company_id" | "title" | "description" | "requirements" | "benefits" | "type" | "status" | "created_at" | "updated_at" | "deleted_at", ExtArgs["result"]["job_posts"]>
   export type job_postsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     applicants?: boolean | job_posts$applicantsArgs<ExtArgs>
     job_categories_job_posts?: boolean | job_posts$job_categories_job_postsArgs<ExtArgs>
+    companies?: boolean | companiesDefaultArgs<ExtArgs>
     selections?: boolean | job_posts$selectionsArgs<ExtArgs>
     _count?: boolean | Job_postsCountOutputTypeDefaultArgs<ExtArgs>
   }
@@ -9932,10 +10036,12 @@ export namespace Prisma {
     objects: {
       applicants: Prisma.$applicantsPayload<ExtArgs>[]
       job_categories_job_posts: Prisma.$job_categories_job_postsPayload<ExtArgs>[]
+      companies: Prisma.$companiesPayload<ExtArgs>
       selections: Prisma.$selectionsPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
+      company_id: string
       title: string
       description: string
       requirements: string
@@ -10287,6 +10393,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     applicants<T extends job_posts$applicantsArgs<ExtArgs> = {}>(args?: Subset<T, job_posts$applicantsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$applicantsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     job_categories_job_posts<T extends job_posts$job_categories_job_postsArgs<ExtArgs> = {}>(args?: Subset<T, job_posts$job_categories_job_postsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$job_categories_job_postsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    companies<T extends companiesDefaultArgs<ExtArgs> = {}>(args?: Subset<T, companiesDefaultArgs<ExtArgs>>): Prisma__companiesClient<$Result.GetResult<Prisma.$companiesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     selections<T extends job_posts$selectionsArgs<ExtArgs> = {}>(args?: Subset<T, job_posts$selectionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$selectionsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -10318,6 +10425,7 @@ export namespace Prisma {
    */
   interface job_postsFieldRefs {
     readonly id: FieldRef<"job_posts", 'String'>
+    readonly company_id: FieldRef<"job_posts", 'String'>
     readonly title: FieldRef<"job_posts", 'String'>
     readonly description: FieldRef<"job_posts", 'String'>
     readonly requirements: FieldRef<"job_posts", 'String'>
@@ -15612,7 +15720,6 @@ export namespace Prisma {
     email: 'email',
     phone: 'phone',
     website: 'website',
-    logo: 'logo',
     address: 'address',
     created_at: 'created_at',
     updated_at: 'updated_at',
@@ -15672,6 +15779,7 @@ export namespace Prisma {
 
   export const Job_postsScalarFieldEnum: {
     id: 'id',
+    company_id: 'company_id',
     title: 'title',
     description: 'description',
     requirements: 'requirements',
@@ -15803,7 +15911,6 @@ export namespace Prisma {
     email: 'email',
     phone: 'phone',
     website: 'website',
-    logo: 'logo',
     address: 'address'
   };
 
@@ -15849,6 +15956,7 @@ export namespace Prisma {
 
   export const job_postsOrderByRelevanceFieldEnum: {
     id: 'id',
+    company_id: 'company_id',
     title: 'title',
     description: 'description',
     requirements: 'requirements',
@@ -16174,11 +16282,11 @@ export namespace Prisma {
     email?: StringFilter<"companies"> | string
     phone?: StringFilter<"companies"> | string
     website?: StringFilter<"companies"> | string
-    logo?: StringFilter<"companies"> | string
     address?: StringFilter<"companies"> | string
     created_at?: DateTimeNullableFilter<"companies"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"companies"> | Date | string | null
     deleted_at?: DateTimeNullableFilter<"companies"> | Date | string | null
+    job_posts?: Job_postsListRelationFilter
   }
 
   export type companiesOrderByWithRelationInput = {
@@ -16187,11 +16295,11 @@ export namespace Prisma {
     email?: SortOrder
     phone?: SortOrder
     website?: SortOrder
-    logo?: SortOrder
     address?: SortOrder
     created_at?: SortOrderInput | SortOrder
     updated_at?: SortOrderInput | SortOrder
     deleted_at?: SortOrderInput | SortOrder
+    job_posts?: job_postsOrderByRelationAggregateInput
     _relevance?: companiesOrderByRelevanceInput
   }
 
@@ -16204,11 +16312,11 @@ export namespace Prisma {
     email?: StringFilter<"companies"> | string
     phone?: StringFilter<"companies"> | string
     website?: StringFilter<"companies"> | string
-    logo?: StringFilter<"companies"> | string
     address?: StringFilter<"companies"> | string
     created_at?: DateTimeNullableFilter<"companies"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"companies"> | Date | string | null
     deleted_at?: DateTimeNullableFilter<"companies"> | Date | string | null
+    job_posts?: Job_postsListRelationFilter
   }, "id">
 
   export type companiesOrderByWithAggregationInput = {
@@ -16217,7 +16325,6 @@ export namespace Prisma {
     email?: SortOrder
     phone?: SortOrder
     website?: SortOrder
-    logo?: SortOrder
     address?: SortOrder
     created_at?: SortOrderInput | SortOrder
     updated_at?: SortOrderInput | SortOrder
@@ -16236,7 +16343,6 @@ export namespace Prisma {
     email?: StringWithAggregatesFilter<"companies"> | string
     phone?: StringWithAggregatesFilter<"companies"> | string
     website?: StringWithAggregatesFilter<"companies"> | string
-    logo?: StringWithAggregatesFilter<"companies"> | string
     address?: StringWithAggregatesFilter<"companies"> | string
     created_at?: DateTimeNullableWithAggregatesFilter<"companies"> | Date | string | null
     updated_at?: DateTimeNullableWithAggregatesFilter<"companies"> | Date | string | null
@@ -16494,6 +16600,7 @@ export namespace Prisma {
     OR?: job_postsWhereInput[]
     NOT?: job_postsWhereInput | job_postsWhereInput[]
     id?: StringFilter<"job_posts"> | string
+    company_id?: StringFilter<"job_posts"> | string
     title?: StringFilter<"job_posts"> | string
     description?: StringFilter<"job_posts"> | string
     requirements?: StringFilter<"job_posts"> | string
@@ -16505,11 +16612,13 @@ export namespace Prisma {
     deleted_at?: DateTimeNullableFilter<"job_posts"> | Date | string | null
     applicants?: ApplicantsListRelationFilter
     job_categories_job_posts?: Job_categories_job_postsListRelationFilter
+    companies?: XOR<CompaniesScalarRelationFilter, companiesWhereInput>
     selections?: SelectionsListRelationFilter
   }
 
   export type job_postsOrderByWithRelationInput = {
     id?: SortOrder
+    company_id?: SortOrder
     title?: SortOrder
     description?: SortOrder
     requirements?: SortOrder
@@ -16521,6 +16630,7 @@ export namespace Prisma {
     deleted_at?: SortOrderInput | SortOrder
     applicants?: applicantsOrderByRelationAggregateInput
     job_categories_job_posts?: job_categories_job_postsOrderByRelationAggregateInput
+    companies?: companiesOrderByWithRelationInput
     selections?: selectionsOrderByRelationAggregateInput
     _relevance?: job_postsOrderByRelevanceInput
   }
@@ -16530,6 +16640,7 @@ export namespace Prisma {
     AND?: job_postsWhereInput | job_postsWhereInput[]
     OR?: job_postsWhereInput[]
     NOT?: job_postsWhereInput | job_postsWhereInput[]
+    company_id?: StringFilter<"job_posts"> | string
     title?: StringFilter<"job_posts"> | string
     description?: StringFilter<"job_posts"> | string
     requirements?: StringFilter<"job_posts"> | string
@@ -16541,11 +16652,13 @@ export namespace Prisma {
     deleted_at?: DateTimeNullableFilter<"job_posts"> | Date | string | null
     applicants?: ApplicantsListRelationFilter
     job_categories_job_posts?: Job_categories_job_postsListRelationFilter
+    companies?: XOR<CompaniesScalarRelationFilter, companiesWhereInput>
     selections?: SelectionsListRelationFilter
   }, "id">
 
   export type job_postsOrderByWithAggregationInput = {
     id?: SortOrder
+    company_id?: SortOrder
     title?: SortOrder
     description?: SortOrder
     requirements?: SortOrder
@@ -16565,6 +16678,7 @@ export namespace Prisma {
     OR?: job_postsScalarWhereWithAggregatesInput[]
     NOT?: job_postsScalarWhereWithAggregatesInput | job_postsScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"job_posts"> | string
+    company_id?: StringWithAggregatesFilter<"job_posts"> | string
     title?: StringWithAggregatesFilter<"job_posts"> | string
     description?: StringWithAggregatesFilter<"job_posts"> | string
     requirements?: StringWithAggregatesFilter<"job_posts"> | string
@@ -17097,11 +17211,11 @@ export namespace Prisma {
     email: string
     phone: string
     website: string
-    logo: string
     address: string
     created_at?: Date | string | null
     updated_at?: Date | string | null
     deleted_at?: Date | string | null
+    job_posts?: job_postsCreateNestedManyWithoutCompaniesInput
   }
 
   export type companiesUncheckedCreateInput = {
@@ -17110,11 +17224,11 @@ export namespace Prisma {
     email: string
     phone: string
     website: string
-    logo: string
     address: string
     created_at?: Date | string | null
     updated_at?: Date | string | null
     deleted_at?: Date | string | null
+    job_posts?: job_postsUncheckedCreateNestedManyWithoutCompaniesInput
   }
 
   export type companiesUpdateInput = {
@@ -17123,11 +17237,11 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
     website?: StringFieldUpdateOperationsInput | string
-    logo?: StringFieldUpdateOperationsInput | string
     address?: StringFieldUpdateOperationsInput | string
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    job_posts?: job_postsUpdateManyWithoutCompaniesNestedInput
   }
 
   export type companiesUncheckedUpdateInput = {
@@ -17136,11 +17250,11 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
     website?: StringFieldUpdateOperationsInput | string
-    logo?: StringFieldUpdateOperationsInput | string
     address?: StringFieldUpdateOperationsInput | string
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    job_posts?: job_postsUncheckedUpdateManyWithoutCompaniesNestedInput
   }
 
   export type companiesCreateManyInput = {
@@ -17149,7 +17263,6 @@ export namespace Prisma {
     email: string
     phone: string
     website: string
-    logo: string
     address: string
     created_at?: Date | string | null
     updated_at?: Date | string | null
@@ -17162,7 +17275,6 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
     website?: StringFieldUpdateOperationsInput | string
-    logo?: StringFieldUpdateOperationsInput | string
     address?: StringFieldUpdateOperationsInput | string
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -17175,7 +17287,6 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
     website?: StringFieldUpdateOperationsInput | string
-    logo?: StringFieldUpdateOperationsInput | string
     address?: StringFieldUpdateOperationsInput | string
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -17450,11 +17561,13 @@ export namespace Prisma {
     deleted_at?: Date | string | null
     applicants?: applicantsCreateNestedManyWithoutJob_postsInput
     job_categories_job_posts?: job_categories_job_postsCreateNestedManyWithoutJob_postsInput
+    companies: companiesCreateNestedOneWithoutJob_postsInput
     selections?: selectionsCreateNestedManyWithoutJob_postsInput
   }
 
   export type job_postsUncheckedCreateInput = {
     id: string
+    company_id: string
     title: string
     description: string
     requirements: string
@@ -17482,11 +17595,13 @@ export namespace Prisma {
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     applicants?: applicantsUpdateManyWithoutJob_postsNestedInput
     job_categories_job_posts?: job_categories_job_postsUpdateManyWithoutJob_postsNestedInput
+    companies?: companiesUpdateOneRequiredWithoutJob_postsNestedInput
     selections?: selectionsUpdateManyWithoutJob_postsNestedInput
   }
 
   export type job_postsUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    company_id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     requirements?: StringFieldUpdateOperationsInput | string
@@ -17503,6 +17618,7 @@ export namespace Prisma {
 
   export type job_postsCreateManyInput = {
     id: string
+    company_id: string
     title: string
     description: string
     requirements: string
@@ -17529,6 +17645,7 @@ export namespace Prisma {
 
   export type job_postsUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
+    company_id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     requirements?: StringFieldUpdateOperationsInput | string
@@ -18143,6 +18260,16 @@ export namespace Prisma {
     expiration?: SortOrder
   }
 
+  export type Job_postsListRelationFilter = {
+    every?: job_postsWhereInput
+    some?: job_postsWhereInput
+    none?: job_postsWhereInput
+  }
+
+  export type job_postsOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type companiesOrderByRelevanceInput = {
     fields: companiesOrderByRelevanceFieldEnum | companiesOrderByRelevanceFieldEnum[]
     sort: SortOrder
@@ -18155,7 +18282,6 @@ export namespace Prisma {
     email?: SortOrder
     phone?: SortOrder
     website?: SortOrder
-    logo?: SortOrder
     address?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
@@ -18168,7 +18294,6 @@ export namespace Prisma {
     email?: SortOrder
     phone?: SortOrder
     website?: SortOrder
-    logo?: SortOrder
     address?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
@@ -18181,7 +18306,6 @@ export namespace Prisma {
     email?: SortOrder
     phone?: SortOrder
     website?: SortOrder
-    logo?: SortOrder
     address?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
@@ -18498,6 +18622,11 @@ export namespace Prisma {
     none?: applicantsWhereInput
   }
 
+  export type CompaniesScalarRelationFilter = {
+    is?: companiesWhereInput
+    isNot?: companiesWhereInput
+  }
+
   export type applicantsOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -18510,6 +18639,7 @@ export namespace Prisma {
 
   export type job_postsCountOrderByAggregateInput = {
     id?: SortOrder
+    company_id?: SortOrder
     title?: SortOrder
     description?: SortOrder
     requirements?: SortOrder
@@ -18523,6 +18653,7 @@ export namespace Prisma {
 
   export type job_postsMaxOrderByAggregateInput = {
     id?: SortOrder
+    company_id?: SortOrder
     title?: SortOrder
     description?: SortOrder
     requirements?: SortOrder
@@ -18536,6 +18667,7 @@ export namespace Prisma {
 
   export type job_postsMinOrderByAggregateInput = {
     id?: SortOrder
+    company_id?: SortOrder
     title?: SortOrder
     description?: SortOrder
     requirements?: SortOrder
@@ -18936,6 +19068,48 @@ export namespace Prisma {
     divide?: number
   }
 
+  export type job_postsCreateNestedManyWithoutCompaniesInput = {
+    create?: XOR<job_postsCreateWithoutCompaniesInput, job_postsUncheckedCreateWithoutCompaniesInput> | job_postsCreateWithoutCompaniesInput[] | job_postsUncheckedCreateWithoutCompaniesInput[]
+    connectOrCreate?: job_postsCreateOrConnectWithoutCompaniesInput | job_postsCreateOrConnectWithoutCompaniesInput[]
+    createMany?: job_postsCreateManyCompaniesInputEnvelope
+    connect?: job_postsWhereUniqueInput | job_postsWhereUniqueInput[]
+  }
+
+  export type job_postsUncheckedCreateNestedManyWithoutCompaniesInput = {
+    create?: XOR<job_postsCreateWithoutCompaniesInput, job_postsUncheckedCreateWithoutCompaniesInput> | job_postsCreateWithoutCompaniesInput[] | job_postsUncheckedCreateWithoutCompaniesInput[]
+    connectOrCreate?: job_postsCreateOrConnectWithoutCompaniesInput | job_postsCreateOrConnectWithoutCompaniesInput[]
+    createMany?: job_postsCreateManyCompaniesInputEnvelope
+    connect?: job_postsWhereUniqueInput | job_postsWhereUniqueInput[]
+  }
+
+  export type job_postsUpdateManyWithoutCompaniesNestedInput = {
+    create?: XOR<job_postsCreateWithoutCompaniesInput, job_postsUncheckedCreateWithoutCompaniesInput> | job_postsCreateWithoutCompaniesInput[] | job_postsUncheckedCreateWithoutCompaniesInput[]
+    connectOrCreate?: job_postsCreateOrConnectWithoutCompaniesInput | job_postsCreateOrConnectWithoutCompaniesInput[]
+    upsert?: job_postsUpsertWithWhereUniqueWithoutCompaniesInput | job_postsUpsertWithWhereUniqueWithoutCompaniesInput[]
+    createMany?: job_postsCreateManyCompaniesInputEnvelope
+    set?: job_postsWhereUniqueInput | job_postsWhereUniqueInput[]
+    disconnect?: job_postsWhereUniqueInput | job_postsWhereUniqueInput[]
+    delete?: job_postsWhereUniqueInput | job_postsWhereUniqueInput[]
+    connect?: job_postsWhereUniqueInput | job_postsWhereUniqueInput[]
+    update?: job_postsUpdateWithWhereUniqueWithoutCompaniesInput | job_postsUpdateWithWhereUniqueWithoutCompaniesInput[]
+    updateMany?: job_postsUpdateManyWithWhereWithoutCompaniesInput | job_postsUpdateManyWithWhereWithoutCompaniesInput[]
+    deleteMany?: job_postsScalarWhereInput | job_postsScalarWhereInput[]
+  }
+
+  export type job_postsUncheckedUpdateManyWithoutCompaniesNestedInput = {
+    create?: XOR<job_postsCreateWithoutCompaniesInput, job_postsUncheckedCreateWithoutCompaniesInput> | job_postsCreateWithoutCompaniesInput[] | job_postsUncheckedCreateWithoutCompaniesInput[]
+    connectOrCreate?: job_postsCreateOrConnectWithoutCompaniesInput | job_postsCreateOrConnectWithoutCompaniesInput[]
+    upsert?: job_postsUpsertWithWhereUniqueWithoutCompaniesInput | job_postsUpsertWithWhereUniqueWithoutCompaniesInput[]
+    createMany?: job_postsCreateManyCompaniesInputEnvelope
+    set?: job_postsWhereUniqueInput | job_postsWhereUniqueInput[]
+    disconnect?: job_postsWhereUniqueInput | job_postsWhereUniqueInput[]
+    delete?: job_postsWhereUniqueInput | job_postsWhereUniqueInput[]
+    connect?: job_postsWhereUniqueInput | job_postsWhereUniqueInput[]
+    update?: job_postsUpdateWithWhereUniqueWithoutCompaniesInput | job_postsUpdateWithWhereUniqueWithoutCompaniesInput[]
+    updateMany?: job_postsUpdateManyWithWhereWithoutCompaniesInput | job_postsUpdateManyWithWhereWithoutCompaniesInput[]
+    deleteMany?: job_postsScalarWhereInput | job_postsScalarWhereInput[]
+  }
+
   export type BigIntFieldUpdateOperationsInput = {
     set?: bigint | number
     increment?: bigint | number
@@ -19044,6 +19218,12 @@ export namespace Prisma {
     connect?: job_categories_job_postsWhereUniqueInput | job_categories_job_postsWhereUniqueInput[]
   }
 
+  export type companiesCreateNestedOneWithoutJob_postsInput = {
+    create?: XOR<companiesCreateWithoutJob_postsInput, companiesUncheckedCreateWithoutJob_postsInput>
+    connectOrCreate?: companiesCreateOrConnectWithoutJob_postsInput
+    connect?: companiesWhereUniqueInput
+  }
+
   export type selectionsCreateNestedManyWithoutJob_postsInput = {
     create?: XOR<selectionsCreateWithoutJob_postsInput, selectionsUncheckedCreateWithoutJob_postsInput> | selectionsCreateWithoutJob_postsInput[] | selectionsUncheckedCreateWithoutJob_postsInput[]
     connectOrCreate?: selectionsCreateOrConnectWithoutJob_postsInput | selectionsCreateOrConnectWithoutJob_postsInput[]
@@ -19106,6 +19286,14 @@ export namespace Prisma {
     update?: job_categories_job_postsUpdateWithWhereUniqueWithoutJob_postsInput | job_categories_job_postsUpdateWithWhereUniqueWithoutJob_postsInput[]
     updateMany?: job_categories_job_postsUpdateManyWithWhereWithoutJob_postsInput | job_categories_job_postsUpdateManyWithWhereWithoutJob_postsInput[]
     deleteMany?: job_categories_job_postsScalarWhereInput | job_categories_job_postsScalarWhereInput[]
+  }
+
+  export type companiesUpdateOneRequiredWithoutJob_postsNestedInput = {
+    create?: XOR<companiesCreateWithoutJob_postsInput, companiesUncheckedCreateWithoutJob_postsInput>
+    connectOrCreate?: companiesCreateOrConnectWithoutJob_postsInput
+    upsert?: companiesUpsertWithoutJob_postsInput
+    connect?: companiesWhereUniqueInput
+    update?: XOR<XOR<companiesUpdateToOneWithWhereWithoutJob_postsInput, companiesUpdateWithoutJob_postsInput>, companiesUncheckedUpdateWithoutJob_postsInput>
   }
 
   export type selectionsUpdateManyWithoutJob_postsNestedInput = {
@@ -19579,11 +19767,13 @@ export namespace Prisma {
     updated_at?: Date | string | null
     deleted_at?: Date | string | null
     job_categories_job_posts?: job_categories_job_postsCreateNestedManyWithoutJob_postsInput
+    companies: companiesCreateNestedOneWithoutJob_postsInput
     selections?: selectionsCreateNestedManyWithoutJob_postsInput
   }
 
   export type job_postsUncheckedCreateWithoutApplicantsInput = {
     id: string
+    company_id: string
     title: string
     description: string
     requirements: string
@@ -19694,11 +19884,13 @@ export namespace Prisma {
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     job_categories_job_posts?: job_categories_job_postsUpdateManyWithoutJob_postsNestedInput
+    companies?: companiesUpdateOneRequiredWithoutJob_postsNestedInput
     selections?: selectionsUpdateManyWithoutJob_postsNestedInput
   }
 
   export type job_postsUncheckedUpdateWithoutApplicantsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    company_id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     requirements?: StringFieldUpdateOperationsInput | string
@@ -19786,6 +19978,81 @@ export namespace Prisma {
     deleted_at?: DateTimeNullableFilter<"selections"> | Date | string | null
   }
 
+  export type job_postsCreateWithoutCompaniesInput = {
+    id: string
+    title: string
+    description: string
+    requirements: string
+    benefits: string
+    type: $Enums.job_posts_type
+    status?: $Enums.job_posts_status
+    created_at?: Date | string | null
+    updated_at?: Date | string | null
+    deleted_at?: Date | string | null
+    applicants?: applicantsCreateNestedManyWithoutJob_postsInput
+    job_categories_job_posts?: job_categories_job_postsCreateNestedManyWithoutJob_postsInput
+    selections?: selectionsCreateNestedManyWithoutJob_postsInput
+  }
+
+  export type job_postsUncheckedCreateWithoutCompaniesInput = {
+    id: string
+    title: string
+    description: string
+    requirements: string
+    benefits: string
+    type: $Enums.job_posts_type
+    status?: $Enums.job_posts_status
+    created_at?: Date | string | null
+    updated_at?: Date | string | null
+    deleted_at?: Date | string | null
+    applicants?: applicantsUncheckedCreateNestedManyWithoutJob_postsInput
+    job_categories_job_posts?: job_categories_job_postsUncheckedCreateNestedManyWithoutJob_postsInput
+    selections?: selectionsUncheckedCreateNestedManyWithoutJob_postsInput
+  }
+
+  export type job_postsCreateOrConnectWithoutCompaniesInput = {
+    where: job_postsWhereUniqueInput
+    create: XOR<job_postsCreateWithoutCompaniesInput, job_postsUncheckedCreateWithoutCompaniesInput>
+  }
+
+  export type job_postsCreateManyCompaniesInputEnvelope = {
+    data: job_postsCreateManyCompaniesInput | job_postsCreateManyCompaniesInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type job_postsUpsertWithWhereUniqueWithoutCompaniesInput = {
+    where: job_postsWhereUniqueInput
+    update: XOR<job_postsUpdateWithoutCompaniesInput, job_postsUncheckedUpdateWithoutCompaniesInput>
+    create: XOR<job_postsCreateWithoutCompaniesInput, job_postsUncheckedCreateWithoutCompaniesInput>
+  }
+
+  export type job_postsUpdateWithWhereUniqueWithoutCompaniesInput = {
+    where: job_postsWhereUniqueInput
+    data: XOR<job_postsUpdateWithoutCompaniesInput, job_postsUncheckedUpdateWithoutCompaniesInput>
+  }
+
+  export type job_postsUpdateManyWithWhereWithoutCompaniesInput = {
+    where: job_postsScalarWhereInput
+    data: XOR<job_postsUpdateManyMutationInput, job_postsUncheckedUpdateManyWithoutCompaniesInput>
+  }
+
+  export type job_postsScalarWhereInput = {
+    AND?: job_postsScalarWhereInput | job_postsScalarWhereInput[]
+    OR?: job_postsScalarWhereInput[]
+    NOT?: job_postsScalarWhereInput | job_postsScalarWhereInput[]
+    id?: StringFilter<"job_posts"> | string
+    company_id?: StringFilter<"job_posts"> | string
+    title?: StringFilter<"job_posts"> | string
+    description?: StringFilter<"job_posts"> | string
+    requirements?: StringFilter<"job_posts"> | string
+    benefits?: StringFilter<"job_posts"> | string
+    type?: Enumjob_posts_typeFilter<"job_posts"> | $Enums.job_posts_type
+    status?: Enumjob_posts_statusFilter<"job_posts"> | $Enums.job_posts_status
+    created_at?: DateTimeNullableFilter<"job_posts"> | Date | string | null
+    updated_at?: DateTimeNullableFilter<"job_posts"> | Date | string | null
+    deleted_at?: DateTimeNullableFilter<"job_posts"> | Date | string | null
+  }
+
   export type job_categories_job_postsCreateWithoutJob_categoriesInput = {
     job_posts: job_postsCreateNestedOneWithoutJob_categories_job_postsInput
   }
@@ -19861,11 +20128,13 @@ export namespace Prisma {
     updated_at?: Date | string | null
     deleted_at?: Date | string | null
     applicants?: applicantsCreateNestedManyWithoutJob_postsInput
+    companies: companiesCreateNestedOneWithoutJob_postsInput
     selections?: selectionsCreateNestedManyWithoutJob_postsInput
   }
 
   export type job_postsUncheckedCreateWithoutJob_categories_job_postsInput = {
     id: string
+    company_id: string
     title: string
     description: string
     requirements: string
@@ -19934,11 +20203,13 @@ export namespace Prisma {
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     applicants?: applicantsUpdateManyWithoutJob_postsNestedInput
+    companies?: companiesUpdateOneRequiredWithoutJob_postsNestedInput
     selections?: selectionsUpdateManyWithoutJob_postsNestedInput
   }
 
   export type job_postsUncheckedUpdateWithoutJob_categories_job_postsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    company_id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     requirements?: StringFieldUpdateOperationsInput | string
@@ -20002,6 +20273,35 @@ export namespace Prisma {
   export type job_categories_job_postsCreateManyJob_postsInputEnvelope = {
     data: job_categories_job_postsCreateManyJob_postsInput | job_categories_job_postsCreateManyJob_postsInput[]
     skipDuplicates?: boolean
+  }
+
+  export type companiesCreateWithoutJob_postsInput = {
+    id: string
+    name: string
+    email: string
+    phone: string
+    website: string
+    address: string
+    created_at?: Date | string | null
+    updated_at?: Date | string | null
+    deleted_at?: Date | string | null
+  }
+
+  export type companiesUncheckedCreateWithoutJob_postsInput = {
+    id: string
+    name: string
+    email: string
+    phone: string
+    website: string
+    address: string
+    created_at?: Date | string | null
+    updated_at?: Date | string | null
+    deleted_at?: Date | string | null
+  }
+
+  export type companiesCreateOrConnectWithoutJob_postsInput = {
+    where: companiesWhereUniqueInput
+    create: XOR<companiesCreateWithoutJob_postsInput, companiesUncheckedCreateWithoutJob_postsInput>
   }
 
   export type selectionsCreateWithoutJob_postsInput = {
@@ -20083,6 +20383,41 @@ export namespace Prisma {
     data: XOR<job_categories_job_postsUpdateManyMutationInput, job_categories_job_postsUncheckedUpdateManyWithoutJob_postsInput>
   }
 
+  export type companiesUpsertWithoutJob_postsInput = {
+    update: XOR<companiesUpdateWithoutJob_postsInput, companiesUncheckedUpdateWithoutJob_postsInput>
+    create: XOR<companiesCreateWithoutJob_postsInput, companiesUncheckedCreateWithoutJob_postsInput>
+    where?: companiesWhereInput
+  }
+
+  export type companiesUpdateToOneWithWhereWithoutJob_postsInput = {
+    where?: companiesWhereInput
+    data: XOR<companiesUpdateWithoutJob_postsInput, companiesUncheckedUpdateWithoutJob_postsInput>
+  }
+
+  export type companiesUpdateWithoutJob_postsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    website?: StringFieldUpdateOperationsInput | string
+    address?: StringFieldUpdateOperationsInput | string
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type companiesUncheckedUpdateWithoutJob_postsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    website?: StringFieldUpdateOperationsInput | string
+    address?: StringFieldUpdateOperationsInput | string
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
   export type selectionsUpsertWithWhereUniqueWithoutJob_postsInput = {
     where: selectionsWhereUniqueInput
     update: XOR<selectionsUpdateWithoutJob_postsInput, selectionsUncheckedUpdateWithoutJob_postsInput>
@@ -20141,10 +20476,12 @@ export namespace Prisma {
     deleted_at?: Date | string | null
     applicants?: applicantsCreateNestedManyWithoutJob_postsInput
     job_categories_job_posts?: job_categories_job_postsCreateNestedManyWithoutJob_postsInput
+    companies: companiesCreateNestedOneWithoutJob_postsInput
   }
 
   export type job_postsUncheckedCreateWithoutSelectionsInput = {
     id: string
+    company_id: string
     title: string
     description: string
     requirements: string
@@ -20222,10 +20559,12 @@ export namespace Prisma {
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     applicants?: applicantsUpdateManyWithoutJob_postsNestedInput
     job_categories_job_posts?: job_categories_job_postsUpdateManyWithoutJob_postsNestedInput
+    companies?: companiesUpdateOneRequiredWithoutJob_postsNestedInput
   }
 
   export type job_postsUncheckedUpdateWithoutSelectionsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    company_id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     requirements?: StringFieldUpdateOperationsInput | string
@@ -20328,6 +20667,64 @@ export namespace Prisma {
     stage?: Enumselections_stageFieldUpdateOperationsInput | $Enums.selections_stage
     status?: Enumselections_statusFieldUpdateOperationsInput | $Enums.selections_status
     attachment?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type job_postsCreateManyCompaniesInput = {
+    id: string
+    title: string
+    description: string
+    requirements: string
+    benefits: string
+    type: $Enums.job_posts_type
+    status?: $Enums.job_posts_status
+    created_at?: Date | string | null
+    updated_at?: Date | string | null
+    deleted_at?: Date | string | null
+  }
+
+  export type job_postsUpdateWithoutCompaniesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    requirements?: StringFieldUpdateOperationsInput | string
+    benefits?: StringFieldUpdateOperationsInput | string
+    type?: Enumjob_posts_typeFieldUpdateOperationsInput | $Enums.job_posts_type
+    status?: Enumjob_posts_statusFieldUpdateOperationsInput | $Enums.job_posts_status
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    applicants?: applicantsUpdateManyWithoutJob_postsNestedInput
+    job_categories_job_posts?: job_categories_job_postsUpdateManyWithoutJob_postsNestedInput
+    selections?: selectionsUpdateManyWithoutJob_postsNestedInput
+  }
+
+  export type job_postsUncheckedUpdateWithoutCompaniesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    requirements?: StringFieldUpdateOperationsInput | string
+    benefits?: StringFieldUpdateOperationsInput | string
+    type?: Enumjob_posts_typeFieldUpdateOperationsInput | $Enums.job_posts_type
+    status?: Enumjob_posts_statusFieldUpdateOperationsInput | $Enums.job_posts_status
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    applicants?: applicantsUncheckedUpdateManyWithoutJob_postsNestedInput
+    job_categories_job_posts?: job_categories_job_postsUncheckedUpdateManyWithoutJob_postsNestedInput
+    selections?: selectionsUncheckedUpdateManyWithoutJob_postsNestedInput
+  }
+
+  export type job_postsUncheckedUpdateManyWithoutCompaniesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    requirements?: StringFieldUpdateOperationsInput | string
+    benefits?: StringFieldUpdateOperationsInput | string
+    type?: Enumjob_posts_typeFieldUpdateOperationsInput | $Enums.job_posts_type
+    status?: Enumjob_posts_statusFieldUpdateOperationsInput | $Enums.job_posts_status
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null

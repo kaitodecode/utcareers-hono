@@ -150,7 +150,6 @@ exports.Prisma.CompaniesScalarFieldEnum = {
   email: 'email',
   phone: 'phone',
   website: 'website',
-  logo: 'logo',
   address: 'address',
   created_at: 'created_at',
   updated_at: 'updated_at',
@@ -195,6 +194,7 @@ exports.Prisma.Job_categories_job_postsScalarFieldEnum = {
 
 exports.Prisma.Job_postsScalarFieldEnum = {
   id: 'id',
+  company_id: 'company_id',
   title: 'title',
   description: 'description',
   requirements: 'requirements',
@@ -293,7 +293,6 @@ exports.Prisma.companiesOrderByRelevanceFieldEnum = {
   email: 'email',
   phone: 'phone',
   website: 'website',
-  logo: 'logo',
   address: 'address'
 };
 
@@ -324,6 +323,7 @@ exports.Prisma.job_categories_job_postsOrderByRelevanceFieldEnum = {
 
 exports.Prisma.job_postsOrderByRelevanceFieldEnum = {
   id: 'id',
+  company_id: 'company_id',
   title: 'title',
   description: 'description',
   requirements: 'requirements',
