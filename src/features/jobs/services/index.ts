@@ -13,12 +13,12 @@ export const GetJobsService = async (c: Context) => {
             prisma.job_posts.findMany({
                 skip,
                 include:{
-                    job_categories_job_posts:{
+                    companies: true,
+                    job_post_categories:{
                         include:{
                             job_categories: true
                         }
-                    },
-                    companies: true,
+                    }
                 },
                 take: perPage,
             })

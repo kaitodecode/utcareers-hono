@@ -1,6 +1,6 @@
 import z from "zod";
 
 export const LoginScheme = z.object({
-    phone: z.string().regex(/^(\+62|62|0)8[1-9][0-9]{6,9}$/),
-    password: z.string().min(8),
+    identifier: z.string().min(1, "Email atau nomor telepon harus diisi"),
+    password: z.string().min(8, "Password minimal 8 karakter"),
 })

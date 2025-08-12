@@ -123,7 +123,7 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
 exports.Prisma.ApplicantsScalarFieldEnum = {
   id: 'id',
   user_id: 'user_id',
-  job_id: 'job_id',
+  job_post_category_id: 'job_post_category_id',
   status: 'status',
   cv: 'cv',
   national_identity_card: 'national_identity_card',
@@ -150,7 +150,9 @@ exports.Prisma.CompaniesScalarFieldEnum = {
   email: 'email',
   phone: 'phone',
   website: 'website',
-  address: 'address',
+  logo: 'logo',
+  location: 'location',
+  description: 'description',
   created_at: 'created_at',
   updated_at: 'updated_at',
   deleted_at: 'deleted_at'
@@ -187,19 +189,11 @@ exports.Prisma.Job_categoriesScalarFieldEnum = {
   deleted_at: 'deleted_at'
 };
 
-exports.Prisma.Job_categories_job_postsScalarFieldEnum = {
-  job_category_id: 'job_category_id',
-  job_post_id: 'job_post_id'
-};
-
 exports.Prisma.Job_postsScalarFieldEnum = {
   id: 'id',
   company_id: 'company_id',
   title: 'title',
-  description: 'description',
-  requirements: 'requirements',
-  benefits: 'benefits',
-  type: 'type',
+  thumbnail: 'thumbnail',
   status: 'status',
   created_at: 'created_at',
   updated_at: 'updated_at',
@@ -225,7 +219,7 @@ exports.Prisma.MigrationsScalarFieldEnum = {
 exports.Prisma.SelectionsScalarFieldEnum = {
   id: 'id',
   applicant_id: 'applicant_id',
-  job_id: 'job_id',
+  job_post_category_id: 'job_post_category_id',
   stage: 'stage',
   status: 'status',
   attachment: 'attachment',
@@ -254,6 +248,21 @@ exports.Prisma.UsersScalarFieldEnum = {
   password: 'password',
   role: 'role',
   verified_at: 'verified_at',
+  remember_token: 'remember_token',
+  created_at: 'created_at',
+  updated_at: 'updated_at',
+  deleted_at: 'deleted_at'
+};
+
+exports.Prisma.Job_post_categoriesScalarFieldEnum = {
+  id: 'id',
+  job_category_id: 'job_category_id',
+  job_post_id: 'job_post_id',
+  type: 'type',
+  required_count: 'required_count',
+  description: 'description',
+  requirements: 'requirements',
+  benefits: 'benefits',
   created_at: 'created_at',
   updated_at: 'updated_at',
   deleted_at: 'deleted_at'
@@ -272,7 +281,7 @@ exports.Prisma.NullsOrder = {
 exports.Prisma.applicantsOrderByRelevanceFieldEnum = {
   id: 'id',
   user_id: 'user_id',
-  job_id: 'job_id',
+  job_post_category_id: 'job_post_category_id',
   cv: 'cv',
   national_identity_card: 'national_identity_card'
 };
@@ -293,7 +302,9 @@ exports.Prisma.companiesOrderByRelevanceFieldEnum = {
   email: 'email',
   phone: 'phone',
   website: 'website',
-  address: 'address'
+  logo: 'logo',
+  location: 'location',
+  description: 'description'
 };
 
 exports.Prisma.failed_jobsOrderByRelevanceFieldEnum = {
@@ -316,18 +327,11 @@ exports.Prisma.job_categoriesOrderByRelevanceFieldEnum = {
   name: 'name'
 };
 
-exports.Prisma.job_categories_job_postsOrderByRelevanceFieldEnum = {
-  job_category_id: 'job_category_id',
-  job_post_id: 'job_post_id'
-};
-
 exports.Prisma.job_postsOrderByRelevanceFieldEnum = {
   id: 'id',
   company_id: 'company_id',
   title: 'title',
-  description: 'description',
-  requirements: 'requirements',
-  benefits: 'benefits'
+  thumbnail: 'thumbnail'
 };
 
 exports.Prisma.jobsOrderByRelevanceFieldEnum = {
@@ -342,7 +346,7 @@ exports.Prisma.migrationsOrderByRelevanceFieldEnum = {
 exports.Prisma.selectionsOrderByRelevanceFieldEnum = {
   id: 'id',
   applicant_id: 'applicant_id',
-  job_id: 'job_id',
+  job_post_category_id: 'job_post_category_id',
   attachment: 'attachment'
 };
 
@@ -362,7 +366,17 @@ exports.Prisma.usersOrderByRelevanceFieldEnum = {
   email: 'email',
   address: 'address',
   description: 'description',
-  password: 'password'
+  password: 'password',
+  remember_token: 'remember_token'
+};
+
+exports.Prisma.job_post_categoriesOrderByRelevanceFieldEnum = {
+  id: 'id',
+  job_category_id: 'job_category_id',
+  job_post_id: 'job_post_id',
+  description: 'description',
+  requirements: 'requirements',
+  benefits: 'benefits'
 };
 exports.applicants_status = exports.$Enums.applicants_status = {
   pending: 'pending',
@@ -371,16 +385,9 @@ exports.applicants_status = exports.$Enums.applicants_status = {
   rejected: 'rejected'
 };
 
-exports.job_posts_type = exports.$Enums.job_posts_type = {
-  full_time: 'full_time',
-  part_time: 'part_time',
-  contract: 'contract',
-  remote: 'remote'
-};
-
 exports.job_posts_status = exports.$Enums.job_posts_status = {
   active: 'active',
-  inactive: 'inactive'
+  closed: 'closed'
 };
 
 exports.selections_stage = exports.$Enums.selections_stage = {
@@ -401,6 +408,13 @@ exports.users_role = exports.$Enums.users_role = {
   admin: 'admin'
 };
 
+exports.job_post_categories_type = exports.$Enums.job_post_categories_type = {
+  full_time: 'full_time',
+  part_time: 'part_time',
+  contract: 'contract',
+  remote: 'remote'
+};
+
 exports.Prisma.ModelName = {
   applicants: 'applicants',
   cache: 'cache',
@@ -409,13 +423,13 @@ exports.Prisma.ModelName = {
   failed_jobs: 'failed_jobs',
   job_batches: 'job_batches',
   job_categories: 'job_categories',
-  job_categories_job_posts: 'job_categories_job_posts',
   job_posts: 'job_posts',
   jobs: 'jobs',
   migrations: 'migrations',
   selections: 'selections',
   sessions: 'sessions',
-  users: 'users'
+  users: 'users',
+  job_post_categories: 'job_post_categories'
 };
 
 /**

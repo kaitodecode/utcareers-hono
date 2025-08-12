@@ -5,32 +5,41 @@ import { uploadFile } from "../../../libs/s3";
 
 export const ApplyJobService = async (c: Context) => {
     try {
-        // Get id from URL parameter
-        const { id } = c.req.param();
+        // Get job_post_category_id from URL parameter
+        const { id: jobPostCategoryId } = c.req.param();
         // Get user id from request header
         const user = c.get("user") as { id: string };
 
-        // Check if job exists
-        const job = await prisma.job_posts.findUnique({
-            where: { id },
+        // Check if job post category exists and get related job post info
+        const jobPostCategory = await prisma.job_post_categories.findUnique({
+            where: { id: jobPostCategoryId },
             include: {
-                applicants: true
+                job_categories: true,
+                job_posts: {
+                    include: {
+                        companies: true
+                    }
+                },
+                applicants: {
+                    where: {
+                        user_id: user.id
+                    }
+                }
             }
         });
 
-        if (!job) {
-            return Response(c, null, "Job not found", 404);
+        if (!jobPostCategory) {
+            return Response(c, null, "Job position not found", 404);
         }
 
-        // Check if user has already applied
-        const existingApplication = await prisma.applicants.findFirst({
-            where: {
-                job_id: id,
-                user_id: user.id
-            }
-        });
-        if (existingApplication) {
-            return Response(c, null, "You have already applied for this job", 400);
+        // Check if job post is still active
+        if (jobPostCategory.job_posts.status === "closed") {
+            return Response(c, null, "Job is no longer accepting applications", 400);
+        }
+
+        // Check if user has already applied for this specific job post category
+        if (jobPostCategory.applicants.length > 0) {
+            return Response(c, null, "You have already applied for this position", 400);
         }
 
         // Get validated form data
@@ -63,7 +72,7 @@ export const ApplyJobService = async (c: Context) => {
             data: {
                 id: crypto.randomUUID(),
                 user_id: user.id,
-                job_id: id,
+                job_post_category_id: jobPostCategoryId,
                 status: 'pending',
                 cv: cvUrl,
                 national_identity_card: nationalIdCardUrl,
@@ -72,19 +81,19 @@ export const ApplyJobService = async (c: Context) => {
                         data: [
                             {
                                 id: crypto.randomUUID(),
-                                job_id: id,
+                                job_post_category_id: jobPostCategoryId,
+                                stage: "portfolio",
+                                status: "pending",
+                            },
+                            {
+                                id: crypto.randomUUID(),
+                                job_post_category_id: jobPostCategoryId,
                                 stage: "interview",
                                 status: "pending",
                             },
                             {
                                 id: crypto.randomUUID(),
-                                job_id: id,
-                                stage: "interview",
-                                status: "pending",
-                            },
-                            {
-                                id: crypto.randomUUID(),
-                                job_id: id,
+                                job_post_category_id: jobPostCategoryId,
                                 stage: "medical_checkup",
                                 status: "pending",
                             }
@@ -92,11 +101,24 @@ export const ApplyJobService = async (c: Context) => {
                     }
                 }
             },
+            include: {
+                job_post_categories: {
+                    include: {
+                        job_categories: true,
+                        job_posts: {
+                            include: {
+                                companies: true
+                            }
+                        }
+                    }
+                }
+            }
         });
 
-        return Response(c, application, "Successfully applied for job", 201);
+        return Response(c, application, "Successfully applied for the position", 201);
 
     } catch (error) {
-        return Response(c, null, "Failed to apply job", 500);
+        console.error("Error applying for job:", error);
+        return Response(c, null, error instanceof Error ? error.message : "Failed to apply for the position", 500);
     }
 }

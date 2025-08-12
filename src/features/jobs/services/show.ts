@@ -11,16 +11,6 @@ export const ShowJobService = async (c: Context) => {
         const job = await prisma.job_posts.findUnique({
             where: { id },
             include: {
-                job_categories_job_posts: {
-                    include: {
-                        job_categories: true
-                    }
-                },
-                applicants: {
-                    include: {
-                        users: true
-                    }
-                },
                 companies: true
             }
         });

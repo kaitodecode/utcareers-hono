@@ -49,11 +49,6 @@ export type job_batches = $Result.DefaultSelection<Prisma.$job_batchesPayload>
  */
 export type job_categories = $Result.DefaultSelection<Prisma.$job_categoriesPayload>
 /**
- * Model job_categories_job_posts
- * 
- */
-export type job_categories_job_posts = $Result.DefaultSelection<Prisma.$job_categories_job_postsPayload>
-/**
  * Model job_posts
  * 
  */
@@ -83,6 +78,11 @@ export type sessions = $Result.DefaultSelection<Prisma.$sessionsPayload>
  * 
  */
 export type users = $Result.DefaultSelection<Prisma.$usersPayload>
+/**
+ * Model job_post_categories
+ * 
+ */
+export type job_post_categories = $Result.DefaultSelection<Prisma.$job_post_categoriesPayload>
 
 /**
  * Enums
@@ -117,30 +117,30 @@ export const selections_status: {
 export type selections_status = (typeof selections_status)[keyof typeof selections_status]
 
 
-export const job_posts_type: {
-  full_time: 'full_time',
-  part_time: 'part_time',
-  contract: 'contract',
-  remote: 'remote'
-};
-
-export type job_posts_type = (typeof job_posts_type)[keyof typeof job_posts_type]
-
-
-export const job_posts_status: {
-  active: 'active',
-  inactive: 'inactive'
-};
-
-export type job_posts_status = (typeof job_posts_status)[keyof typeof job_posts_status]
-
-
 export const users_role: {
   pelamar: 'pelamar',
   admin: 'admin'
 };
 
 export type users_role = (typeof users_role)[keyof typeof users_role]
+
+
+export const job_post_categories_type: {
+  full_time: 'full_time',
+  part_time: 'part_time',
+  contract: 'contract',
+  remote: 'remote'
+};
+
+export type job_post_categories_type = (typeof job_post_categories_type)[keyof typeof job_post_categories_type]
+
+
+export const job_posts_status: {
+  active: 'active',
+  closed: 'closed'
+};
+
+export type job_posts_status = (typeof job_posts_status)[keyof typeof job_posts_status]
 
 }
 
@@ -156,17 +156,17 @@ export type selections_status = $Enums.selections_status
 
 export const selections_status: typeof $Enums.selections_status
 
-export type job_posts_type = $Enums.job_posts_type
+export type users_role = $Enums.users_role
 
-export const job_posts_type: typeof $Enums.job_posts_type
+export const users_role: typeof $Enums.users_role
+
+export type job_post_categories_type = $Enums.job_post_categories_type
+
+export const job_post_categories_type: typeof $Enums.job_post_categories_type
 
 export type job_posts_status = $Enums.job_posts_status
 
 export const job_posts_status: typeof $Enums.job_posts_status
-
-export type users_role = $Enums.users_role
-
-export const users_role: typeof $Enums.users_role
 
 /**
  * ##  Prisma Client ʲˢ
@@ -364,16 +364,6 @@ export class PrismaClient<
   get job_categories(): Prisma.job_categoriesDelegate<ExtArgs, ClientOptions>;
 
   /**
-   * `prisma.job_categories_job_posts`: Exposes CRUD operations for the **job_categories_job_posts** model.
-    * Example usage:
-    * ```ts
-    * // Fetch zero or more Job_categories_job_posts
-    * const job_categories_job_posts = await prisma.job_categories_job_posts.findMany()
-    * ```
-    */
-  get job_categories_job_posts(): Prisma.job_categories_job_postsDelegate<ExtArgs, ClientOptions>;
-
-  /**
    * `prisma.job_posts`: Exposes CRUD operations for the **job_posts** model.
     * Example usage:
     * ```ts
@@ -432,6 +422,16 @@ export class PrismaClient<
     * ```
     */
   get users(): Prisma.usersDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.job_post_categories`: Exposes CRUD operations for the **job_post_categories** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Job_post_categories
+    * const job_post_categories = await prisma.job_post_categories.findMany()
+    * ```
+    */
+  get job_post_categories(): Prisma.job_post_categoriesDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -879,13 +879,13 @@ export namespace Prisma {
     failed_jobs: 'failed_jobs',
     job_batches: 'job_batches',
     job_categories: 'job_categories',
-    job_categories_job_posts: 'job_categories_job_posts',
     job_posts: 'job_posts',
     jobs: 'jobs',
     migrations: 'migrations',
     selections: 'selections',
     sessions: 'sessions',
-    users: 'users'
+    users: 'users',
+    job_post_categories: 'job_post_categories'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -904,7 +904,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "applicants" | "cache" | "cache_locks" | "companies" | "failed_jobs" | "job_batches" | "job_categories" | "job_categories_job_posts" | "job_posts" | "jobs" | "migrations" | "selections" | "sessions" | "users"
+      modelProps: "applicants" | "cache" | "cache_locks" | "companies" | "failed_jobs" | "job_batches" | "job_categories" | "job_posts" | "jobs" | "migrations" | "selections" | "sessions" | "users" | "job_post_categories"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1370,72 +1370,6 @@ export namespace Prisma {
           }
         }
       }
-      job_categories_job_posts: {
-        payload: Prisma.$job_categories_job_postsPayload<ExtArgs>
-        fields: Prisma.job_categories_job_postsFieldRefs
-        operations: {
-          findUnique: {
-            args: Prisma.job_categories_job_postsFindUniqueArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$job_categories_job_postsPayload> | null
-          }
-          findUniqueOrThrow: {
-            args: Prisma.job_categories_job_postsFindUniqueOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$job_categories_job_postsPayload>
-          }
-          findFirst: {
-            args: Prisma.job_categories_job_postsFindFirstArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$job_categories_job_postsPayload> | null
-          }
-          findFirstOrThrow: {
-            args: Prisma.job_categories_job_postsFindFirstOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$job_categories_job_postsPayload>
-          }
-          findMany: {
-            args: Prisma.job_categories_job_postsFindManyArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$job_categories_job_postsPayload>[]
-          }
-          create: {
-            args: Prisma.job_categories_job_postsCreateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$job_categories_job_postsPayload>
-          }
-          createMany: {
-            args: Prisma.job_categories_job_postsCreateManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          delete: {
-            args: Prisma.job_categories_job_postsDeleteArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$job_categories_job_postsPayload>
-          }
-          update: {
-            args: Prisma.job_categories_job_postsUpdateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$job_categories_job_postsPayload>
-          }
-          deleteMany: {
-            args: Prisma.job_categories_job_postsDeleteManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          updateMany: {
-            args: Prisma.job_categories_job_postsUpdateManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          upsert: {
-            args: Prisma.job_categories_job_postsUpsertArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$job_categories_job_postsPayload>
-          }
-          aggregate: {
-            args: Prisma.Job_categories_job_postsAggregateArgs<ExtArgs>
-            result: $Utils.Optional<AggregateJob_categories_job_posts>
-          }
-          groupBy: {
-            args: Prisma.job_categories_job_postsGroupByArgs<ExtArgs>
-            result: $Utils.Optional<Job_categories_job_postsGroupByOutputType>[]
-          }
-          count: {
-            args: Prisma.job_categories_job_postsCountArgs<ExtArgs>
-            result: $Utils.Optional<Job_categories_job_postsCountAggregateOutputType> | number
-          }
-        }
-      }
       job_posts: {
         payload: Prisma.$job_postsPayload<ExtArgs>
         fields: Prisma.job_postsFieldRefs
@@ -1832,6 +1766,72 @@ export namespace Prisma {
           }
         }
       }
+      job_post_categories: {
+        payload: Prisma.$job_post_categoriesPayload<ExtArgs>
+        fields: Prisma.job_post_categoriesFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.job_post_categoriesFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$job_post_categoriesPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.job_post_categoriesFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$job_post_categoriesPayload>
+          }
+          findFirst: {
+            args: Prisma.job_post_categoriesFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$job_post_categoriesPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.job_post_categoriesFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$job_post_categoriesPayload>
+          }
+          findMany: {
+            args: Prisma.job_post_categoriesFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$job_post_categoriesPayload>[]
+          }
+          create: {
+            args: Prisma.job_post_categoriesCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$job_post_categoriesPayload>
+          }
+          createMany: {
+            args: Prisma.job_post_categoriesCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          delete: {
+            args: Prisma.job_post_categoriesDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$job_post_categoriesPayload>
+          }
+          update: {
+            args: Prisma.job_post_categoriesUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$job_post_categoriesPayload>
+          }
+          deleteMany: {
+            args: Prisma.job_post_categoriesDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.job_post_categoriesUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.job_post_categoriesUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$job_post_categoriesPayload>
+          }
+          aggregate: {
+            args: Prisma.Job_post_categoriesAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateJob_post_categories>
+          }
+          groupBy: {
+            args: Prisma.job_post_categoriesGroupByArgs<ExtArgs>
+            result: $Utils.Optional<Job_post_categoriesGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.job_post_categoriesCountArgs<ExtArgs>
+            result: $Utils.Optional<Job_post_categoriesCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1931,13 +1931,13 @@ export namespace Prisma {
     failed_jobs?: failed_jobsOmit
     job_batches?: job_batchesOmit
     job_categories?: job_categoriesOmit
-    job_categories_job_posts?: job_categories_job_postsOmit
     job_posts?: job_postsOmit
     jobs?: jobsOmit
     migrations?: migrationsOmit
     selections?: selectionsOmit
     sessions?: sessionsOmit
     users?: usersOmit
+    job_post_categories?: job_post_categoriesOmit
   }
 
   /* Types for Logging */
@@ -2099,11 +2099,11 @@ export namespace Prisma {
    */
 
   export type Job_categoriesCountOutputType = {
-    job_categories_job_posts: number
+    job_post_categories: number
   }
 
   export type Job_categoriesCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    job_categories_job_posts?: boolean | Job_categoriesCountOutputTypeCountJob_categories_job_postsArgs
+    job_post_categories?: boolean | Job_categoriesCountOutputTypeCountJob_post_categoriesArgs
   }
 
   // Custom InputTypes
@@ -2120,8 +2120,8 @@ export namespace Prisma {
   /**
    * Job_categoriesCountOutputType without action
    */
-  export type Job_categoriesCountOutputTypeCountJob_categories_job_postsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: job_categories_job_postsWhereInput
+  export type Job_categoriesCountOutputTypeCountJob_post_categoriesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: job_post_categoriesWhereInput
   }
 
 
@@ -2130,15 +2130,11 @@ export namespace Prisma {
    */
 
   export type Job_postsCountOutputType = {
-    applicants: number
-    job_categories_job_posts: number
-    selections: number
+    job_post_categories: number
   }
 
   export type Job_postsCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    applicants?: boolean | Job_postsCountOutputTypeCountApplicantsArgs
-    job_categories_job_posts?: boolean | Job_postsCountOutputTypeCountJob_categories_job_postsArgs
-    selections?: boolean | Job_postsCountOutputTypeCountSelectionsArgs
+    job_post_categories?: boolean | Job_postsCountOutputTypeCountJob_post_categoriesArgs
   }
 
   // Custom InputTypes
@@ -2155,22 +2151,8 @@ export namespace Prisma {
   /**
    * Job_postsCountOutputType without action
    */
-  export type Job_postsCountOutputTypeCountApplicantsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: applicantsWhereInput
-  }
-
-  /**
-   * Job_postsCountOutputType without action
-   */
-  export type Job_postsCountOutputTypeCountJob_categories_job_postsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: job_categories_job_postsWhereInput
-  }
-
-  /**
-   * Job_postsCountOutputType without action
-   */
-  export type Job_postsCountOutputTypeCountSelectionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: selectionsWhereInput
+  export type Job_postsCountOutputTypeCountJob_post_categoriesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: job_post_categoriesWhereInput
   }
 
 
@@ -2206,6 +2188,46 @@ export namespace Prisma {
 
 
   /**
+   * Count Type Job_post_categoriesCountOutputType
+   */
+
+  export type Job_post_categoriesCountOutputType = {
+    applicants: number
+    selections: number
+  }
+
+  export type Job_post_categoriesCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    applicants?: boolean | Job_post_categoriesCountOutputTypeCountApplicantsArgs
+    selections?: boolean | Job_post_categoriesCountOutputTypeCountSelectionsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * Job_post_categoriesCountOutputType without action
+   */
+  export type Job_post_categoriesCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Job_post_categoriesCountOutputType
+     */
+    select?: Job_post_categoriesCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * Job_post_categoriesCountOutputType without action
+   */
+  export type Job_post_categoriesCountOutputTypeCountApplicantsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: applicantsWhereInput
+  }
+
+  /**
+   * Job_post_categoriesCountOutputType without action
+   */
+  export type Job_post_categoriesCountOutputTypeCountSelectionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: selectionsWhereInput
+  }
+
+
+  /**
    * Models
    */
 
@@ -2222,7 +2244,7 @@ export namespace Prisma {
   export type ApplicantsMinAggregateOutputType = {
     id: string | null
     user_id: string | null
-    job_id: string | null
+    job_post_category_id: string | null
     status: $Enums.applicants_status | null
     cv: string | null
     national_identity_card: string | null
@@ -2234,7 +2256,7 @@ export namespace Prisma {
   export type ApplicantsMaxAggregateOutputType = {
     id: string | null
     user_id: string | null
-    job_id: string | null
+    job_post_category_id: string | null
     status: $Enums.applicants_status | null
     cv: string | null
     national_identity_card: string | null
@@ -2246,7 +2268,7 @@ export namespace Prisma {
   export type ApplicantsCountAggregateOutputType = {
     id: number
     user_id: number
-    job_id: number
+    job_post_category_id: number
     status: number
     cv: number
     national_identity_card: number
@@ -2260,7 +2282,7 @@ export namespace Prisma {
   export type ApplicantsMinAggregateInputType = {
     id?: true
     user_id?: true
-    job_id?: true
+    job_post_category_id?: true
     status?: true
     cv?: true
     national_identity_card?: true
@@ -2272,7 +2294,7 @@ export namespace Prisma {
   export type ApplicantsMaxAggregateInputType = {
     id?: true
     user_id?: true
-    job_id?: true
+    job_post_category_id?: true
     status?: true
     cv?: true
     national_identity_card?: true
@@ -2284,7 +2306,7 @@ export namespace Prisma {
   export type ApplicantsCountAggregateInputType = {
     id?: true
     user_id?: true
-    job_id?: true
+    job_post_category_id?: true
     status?: true
     cv?: true
     national_identity_card?: true
@@ -2369,7 +2391,7 @@ export namespace Prisma {
   export type ApplicantsGroupByOutputType = {
     id: string
     user_id: string
-    job_id: string
+    job_post_category_id: string
     status: $Enums.applicants_status
     cv: string
     national_identity_card: string
@@ -2398,14 +2420,14 @@ export namespace Prisma {
   export type applicantsSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     user_id?: boolean
-    job_id?: boolean
+    job_post_category_id?: boolean
     status?: boolean
     cv?: boolean
     national_identity_card?: boolean
     created_at?: boolean
     updated_at?: boolean
     deleted_at?: boolean
-    job_posts?: boolean | job_postsDefaultArgs<ExtArgs>
+    job_post_categories?: boolean | job_post_categoriesDefaultArgs<ExtArgs>
     users?: boolean | usersDefaultArgs<ExtArgs>
     selections?: boolean | applicants$selectionsArgs<ExtArgs>
     _count?: boolean | ApplicantsCountOutputTypeDefaultArgs<ExtArgs>
@@ -2416,7 +2438,7 @@ export namespace Prisma {
   export type applicantsSelectScalar = {
     id?: boolean
     user_id?: boolean
-    job_id?: boolean
+    job_post_category_id?: boolean
     status?: boolean
     cv?: boolean
     national_identity_card?: boolean
@@ -2425,9 +2447,9 @@ export namespace Prisma {
     deleted_at?: boolean
   }
 
-  export type applicantsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "user_id" | "job_id" | "status" | "cv" | "national_identity_card" | "created_at" | "updated_at" | "deleted_at", ExtArgs["result"]["applicants"]>
+  export type applicantsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "user_id" | "job_post_category_id" | "status" | "cv" | "national_identity_card" | "created_at" | "updated_at" | "deleted_at", ExtArgs["result"]["applicants"]>
   export type applicantsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    job_posts?: boolean | job_postsDefaultArgs<ExtArgs>
+    job_post_categories?: boolean | job_post_categoriesDefaultArgs<ExtArgs>
     users?: boolean | usersDefaultArgs<ExtArgs>
     selections?: boolean | applicants$selectionsArgs<ExtArgs>
     _count?: boolean | ApplicantsCountOutputTypeDefaultArgs<ExtArgs>
@@ -2436,14 +2458,14 @@ export namespace Prisma {
   export type $applicantsPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "applicants"
     objects: {
-      job_posts: Prisma.$job_postsPayload<ExtArgs>
+      job_post_categories: Prisma.$job_post_categoriesPayload<ExtArgs>
       users: Prisma.$usersPayload<ExtArgs>
       selections: Prisma.$selectionsPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       user_id: string
-      job_id: string
+      job_post_category_id: string
       status: $Enums.applicants_status
       cv: string
       national_identity_card: string
@@ -2790,7 +2812,7 @@ export namespace Prisma {
    */
   export interface Prisma__applicantsClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    job_posts<T extends job_postsDefaultArgs<ExtArgs> = {}>(args?: Subset<T, job_postsDefaultArgs<ExtArgs>>): Prisma__job_postsClient<$Result.GetResult<Prisma.$job_postsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    job_post_categories<T extends job_post_categoriesDefaultArgs<ExtArgs> = {}>(args?: Subset<T, job_post_categoriesDefaultArgs<ExtArgs>>): Prisma__job_post_categoriesClient<$Result.GetResult<Prisma.$job_post_categoriesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     users<T extends usersDefaultArgs<ExtArgs> = {}>(args?: Subset<T, usersDefaultArgs<ExtArgs>>): Prisma__usersClient<$Result.GetResult<Prisma.$usersPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     selections<T extends applicants$selectionsArgs<ExtArgs> = {}>(args?: Subset<T, applicants$selectionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$selectionsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
@@ -2824,7 +2846,7 @@ export namespace Prisma {
   interface applicantsFieldRefs {
     readonly id: FieldRef<"applicants", 'String'>
     readonly user_id: FieldRef<"applicants", 'String'>
-    readonly job_id: FieldRef<"applicants", 'String'>
+    readonly job_post_category_id: FieldRef<"applicants", 'String'>
     readonly status: FieldRef<"applicants", 'applicants_status'>
     readonly cv: FieldRef<"applicants", 'String'>
     readonly national_identity_card: FieldRef<"applicants", 'String'>
@@ -5020,7 +5042,9 @@ export namespace Prisma {
     email: string | null
     phone: string | null
     website: string | null
-    address: string | null
+    logo: string | null
+    location: string | null
+    description: string | null
     created_at: Date | null
     updated_at: Date | null
     deleted_at: Date | null
@@ -5032,7 +5056,9 @@ export namespace Prisma {
     email: string | null
     phone: string | null
     website: string | null
-    address: string | null
+    logo: string | null
+    location: string | null
+    description: string | null
     created_at: Date | null
     updated_at: Date | null
     deleted_at: Date | null
@@ -5044,7 +5070,9 @@ export namespace Prisma {
     email: number
     phone: number
     website: number
-    address: number
+    logo: number
+    location: number
+    description: number
     created_at: number
     updated_at: number
     deleted_at: number
@@ -5058,7 +5086,9 @@ export namespace Prisma {
     email?: true
     phone?: true
     website?: true
-    address?: true
+    logo?: true
+    location?: true
+    description?: true
     created_at?: true
     updated_at?: true
     deleted_at?: true
@@ -5070,7 +5100,9 @@ export namespace Prisma {
     email?: true
     phone?: true
     website?: true
-    address?: true
+    logo?: true
+    location?: true
+    description?: true
     created_at?: true
     updated_at?: true
     deleted_at?: true
@@ -5082,7 +5114,9 @@ export namespace Prisma {
     email?: true
     phone?: true
     website?: true
-    address?: true
+    logo?: true
+    location?: true
+    description?: true
     created_at?: true
     updated_at?: true
     deleted_at?: true
@@ -5166,8 +5200,10 @@ export namespace Prisma {
     name: string
     email: string
     phone: string
-    website: string
-    address: string
+    website: string | null
+    logo: string | null
+    location: string
+    description: string | null
     created_at: Date | null
     updated_at: Date | null
     deleted_at: Date | null
@@ -5196,7 +5232,9 @@ export namespace Prisma {
     email?: boolean
     phone?: boolean
     website?: boolean
-    address?: boolean
+    logo?: boolean
+    location?: boolean
+    description?: boolean
     created_at?: boolean
     updated_at?: boolean
     deleted_at?: boolean
@@ -5212,13 +5250,15 @@ export namespace Prisma {
     email?: boolean
     phone?: boolean
     website?: boolean
-    address?: boolean
+    logo?: boolean
+    location?: boolean
+    description?: boolean
     created_at?: boolean
     updated_at?: boolean
     deleted_at?: boolean
   }
 
-  export type companiesOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "phone" | "website" | "address" | "created_at" | "updated_at" | "deleted_at", ExtArgs["result"]["companies"]>
+  export type companiesOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "phone" | "website" | "logo" | "location" | "description" | "created_at" | "updated_at" | "deleted_at", ExtArgs["result"]["companies"]>
   export type companiesInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     job_posts?: boolean | companies$job_postsArgs<ExtArgs>
     _count?: boolean | CompaniesCountOutputTypeDefaultArgs<ExtArgs>
@@ -5234,8 +5274,10 @@ export namespace Prisma {
       name: string
       email: string
       phone: string
-      website: string
-      address: string
+      website: string | null
+      logo: string | null
+      location: string
+      description: string | null
       created_at: Date | null
       updated_at: Date | null
       deleted_at: Date | null
@@ -5614,7 +5656,9 @@ export namespace Prisma {
     readonly email: FieldRef<"companies", 'String'>
     readonly phone: FieldRef<"companies", 'String'>
     readonly website: FieldRef<"companies", 'String'>
-    readonly address: FieldRef<"companies", 'String'>
+    readonly logo: FieldRef<"companies", 'String'>
+    readonly location: FieldRef<"companies", 'String'>
+    readonly description: FieldRef<"companies", 'String'>
     readonly created_at: FieldRef<"companies", 'DateTime'>
     readonly updated_at: FieldRef<"companies", 'DateTime'>
     readonly deleted_at: FieldRef<"companies", 'DateTime'>
@@ -8096,7 +8140,7 @@ export namespace Prisma {
     created_at?: boolean
     updated_at?: boolean
     deleted_at?: boolean
-    job_categories_job_posts?: boolean | job_categories$job_categories_job_postsArgs<ExtArgs>
+    job_post_categories?: boolean | job_categories$job_post_categoriesArgs<ExtArgs>
     _count?: boolean | Job_categoriesCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["job_categories"]>
 
@@ -8112,14 +8156,14 @@ export namespace Prisma {
 
   export type job_categoriesOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "created_at" | "updated_at" | "deleted_at", ExtArgs["result"]["job_categories"]>
   export type job_categoriesInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    job_categories_job_posts?: boolean | job_categories$job_categories_job_postsArgs<ExtArgs>
+    job_post_categories?: boolean | job_categories$job_post_categoriesArgs<ExtArgs>
     _count?: boolean | Job_categoriesCountOutputTypeDefaultArgs<ExtArgs>
   }
 
   export type $job_categoriesPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "job_categories"
     objects: {
-      job_categories_job_posts: Prisma.$job_categories_job_postsPayload<ExtArgs>[]
+      job_post_categories: Prisma.$job_post_categoriesPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -8467,7 +8511,7 @@ export namespace Prisma {
    */
   export interface Prisma__job_categoriesClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    job_categories_job_posts<T extends job_categories$job_categories_job_postsArgs<ExtArgs> = {}>(args?: Subset<T, job_categories$job_categories_job_postsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$job_categories_job_postsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    job_post_categories<T extends job_categories$job_post_categoriesArgs<ExtArgs> = {}>(args?: Subset<T, job_categories$job_post_categoriesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$job_post_categoriesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -8845,27 +8889,27 @@ export namespace Prisma {
   }
 
   /**
-   * job_categories.job_categories_job_posts
+   * job_categories.job_post_categories
    */
-  export type job_categories$job_categories_job_postsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type job_categories$job_post_categoriesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the job_categories_job_posts
+     * Select specific fields to fetch from the job_post_categories
      */
-    select?: job_categories_job_postsSelect<ExtArgs> | null
+    select?: job_post_categoriesSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the job_categories_job_posts
+     * Omit specific fields from the job_post_categories
      */
-    omit?: job_categories_job_postsOmit<ExtArgs> | null
+    omit?: job_post_categoriesOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: job_categories_job_postsInclude<ExtArgs> | null
-    where?: job_categories_job_postsWhereInput
-    orderBy?: job_categories_job_postsOrderByWithRelationInput | job_categories_job_postsOrderByWithRelationInput[]
-    cursor?: job_categories_job_postsWhereUniqueInput
+    include?: job_post_categoriesInclude<ExtArgs> | null
+    where?: job_post_categoriesWhereInput
+    orderBy?: job_post_categoriesOrderByWithRelationInput | job_post_categoriesOrderByWithRelationInput[]
+    cursor?: job_post_categoriesWhereUniqueInput
     take?: number
     skip?: number
-    distinct?: Job_categories_job_postsScalarFieldEnum | Job_categories_job_postsScalarFieldEnum[]
+    distinct?: Job_post_categoriesScalarFieldEnum | Job_post_categoriesScalarFieldEnum[]
   }
 
   /**
@@ -8888,906 +8932,6 @@ export namespace Prisma {
 
 
   /**
-   * Model job_categories_job_posts
-   */
-
-  export type AggregateJob_categories_job_posts = {
-    _count: Job_categories_job_postsCountAggregateOutputType | null
-    _min: Job_categories_job_postsMinAggregateOutputType | null
-    _max: Job_categories_job_postsMaxAggregateOutputType | null
-  }
-
-  export type Job_categories_job_postsMinAggregateOutputType = {
-    job_category_id: string | null
-    job_post_id: string | null
-  }
-
-  export type Job_categories_job_postsMaxAggregateOutputType = {
-    job_category_id: string | null
-    job_post_id: string | null
-  }
-
-  export type Job_categories_job_postsCountAggregateOutputType = {
-    job_category_id: number
-    job_post_id: number
-    _all: number
-  }
-
-
-  export type Job_categories_job_postsMinAggregateInputType = {
-    job_category_id?: true
-    job_post_id?: true
-  }
-
-  export type Job_categories_job_postsMaxAggregateInputType = {
-    job_category_id?: true
-    job_post_id?: true
-  }
-
-  export type Job_categories_job_postsCountAggregateInputType = {
-    job_category_id?: true
-    job_post_id?: true
-    _all?: true
-  }
-
-  export type Job_categories_job_postsAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which job_categories_job_posts to aggregate.
-     */
-    where?: job_categories_job_postsWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of job_categories_job_posts to fetch.
-     */
-    orderBy?: job_categories_job_postsOrderByWithRelationInput | job_categories_job_postsOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the start position
-     */
-    cursor?: job_categories_job_postsWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` job_categories_job_posts from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` job_categories_job_posts.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Count returned job_categories_job_posts
-    **/
-    _count?: true | Job_categories_job_postsCountAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the minimum value
-    **/
-    _min?: Job_categories_job_postsMinAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the maximum value
-    **/
-    _max?: Job_categories_job_postsMaxAggregateInputType
-  }
-
-  export type GetJob_categories_job_postsAggregateType<T extends Job_categories_job_postsAggregateArgs> = {
-        [P in keyof T & keyof AggregateJob_categories_job_posts]: P extends '_count' | 'count'
-      ? T[P] extends true
-        ? number
-        : GetScalarType<T[P], AggregateJob_categories_job_posts[P]>
-      : GetScalarType<T[P], AggregateJob_categories_job_posts[P]>
-  }
-
-
-
-
-  export type job_categories_job_postsGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: job_categories_job_postsWhereInput
-    orderBy?: job_categories_job_postsOrderByWithAggregationInput | job_categories_job_postsOrderByWithAggregationInput[]
-    by: Job_categories_job_postsScalarFieldEnum[] | Job_categories_job_postsScalarFieldEnum
-    having?: job_categories_job_postsScalarWhereWithAggregatesInput
-    take?: number
-    skip?: number
-    _count?: Job_categories_job_postsCountAggregateInputType | true
-    _min?: Job_categories_job_postsMinAggregateInputType
-    _max?: Job_categories_job_postsMaxAggregateInputType
-  }
-
-  export type Job_categories_job_postsGroupByOutputType = {
-    job_category_id: string
-    job_post_id: string
-    _count: Job_categories_job_postsCountAggregateOutputType | null
-    _min: Job_categories_job_postsMinAggregateOutputType | null
-    _max: Job_categories_job_postsMaxAggregateOutputType | null
-  }
-
-  type GetJob_categories_job_postsGroupByPayload<T extends job_categories_job_postsGroupByArgs> = Prisma.PrismaPromise<
-    Array<
-      PickEnumerable<Job_categories_job_postsGroupByOutputType, T['by']> &
-        {
-          [P in ((keyof T) & (keyof Job_categories_job_postsGroupByOutputType))]: P extends '_count'
-            ? T[P] extends boolean
-              ? number
-              : GetScalarType<T[P], Job_categories_job_postsGroupByOutputType[P]>
-            : GetScalarType<T[P], Job_categories_job_postsGroupByOutputType[P]>
-        }
-      >
-    >
-
-
-  export type job_categories_job_postsSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    job_category_id?: boolean
-    job_post_id?: boolean
-    job_categories?: boolean | job_categoriesDefaultArgs<ExtArgs>
-    job_posts?: boolean | job_postsDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["job_categories_job_posts"]>
-
-
-
-  export type job_categories_job_postsSelectScalar = {
-    job_category_id?: boolean
-    job_post_id?: boolean
-  }
-
-  export type job_categories_job_postsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"job_category_id" | "job_post_id", ExtArgs["result"]["job_categories_job_posts"]>
-  export type job_categories_job_postsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    job_categories?: boolean | job_categoriesDefaultArgs<ExtArgs>
-    job_posts?: boolean | job_postsDefaultArgs<ExtArgs>
-  }
-
-  export type $job_categories_job_postsPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    name: "job_categories_job_posts"
-    objects: {
-      job_categories: Prisma.$job_categoriesPayload<ExtArgs>
-      job_posts: Prisma.$job_postsPayload<ExtArgs>
-    }
-    scalars: $Extensions.GetPayloadResult<{
-      job_category_id: string
-      job_post_id: string
-    }, ExtArgs["result"]["job_categories_job_posts"]>
-    composites: {}
-  }
-
-  type job_categories_job_postsGetPayload<S extends boolean | null | undefined | job_categories_job_postsDefaultArgs> = $Result.GetResult<Prisma.$job_categories_job_postsPayload, S>
-
-  type job_categories_job_postsCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
-    Omit<job_categories_job_postsFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
-      select?: Job_categories_job_postsCountAggregateInputType | true
-    }
-
-  export interface job_categories_job_postsDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
-    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['job_categories_job_posts'], meta: { name: 'job_categories_job_posts' } }
-    /**
-     * Find zero or one Job_categories_job_posts that matches the filter.
-     * @param {job_categories_job_postsFindUniqueArgs} args - Arguments to find a Job_categories_job_posts
-     * @example
-     * // Get one Job_categories_job_posts
-     * const job_categories_job_posts = await prisma.job_categories_job_posts.findUnique({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUnique<T extends job_categories_job_postsFindUniqueArgs>(args: SelectSubset<T, job_categories_job_postsFindUniqueArgs<ExtArgs>>): Prisma__job_categories_job_postsClient<$Result.GetResult<Prisma.$job_categories_job_postsPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find one Job_categories_job_posts that matches the filter or throw an error with `error.code='P2025'`
-     * if no matches were found.
-     * @param {job_categories_job_postsFindUniqueOrThrowArgs} args - Arguments to find a Job_categories_job_posts
-     * @example
-     * // Get one Job_categories_job_posts
-     * const job_categories_job_posts = await prisma.job_categories_job_posts.findUniqueOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUniqueOrThrow<T extends job_categories_job_postsFindUniqueOrThrowArgs>(args: SelectSubset<T, job_categories_job_postsFindUniqueOrThrowArgs<ExtArgs>>): Prisma__job_categories_job_postsClient<$Result.GetResult<Prisma.$job_categories_job_postsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first Job_categories_job_posts that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {job_categories_job_postsFindFirstArgs} args - Arguments to find a Job_categories_job_posts
-     * @example
-     * // Get one Job_categories_job_posts
-     * const job_categories_job_posts = await prisma.job_categories_job_posts.findFirst({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirst<T extends job_categories_job_postsFindFirstArgs>(args?: SelectSubset<T, job_categories_job_postsFindFirstArgs<ExtArgs>>): Prisma__job_categories_job_postsClient<$Result.GetResult<Prisma.$job_categories_job_postsPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first Job_categories_job_posts that matches the filter or
-     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {job_categories_job_postsFindFirstOrThrowArgs} args - Arguments to find a Job_categories_job_posts
-     * @example
-     * // Get one Job_categories_job_posts
-     * const job_categories_job_posts = await prisma.job_categories_job_posts.findFirstOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirstOrThrow<T extends job_categories_job_postsFindFirstOrThrowArgs>(args?: SelectSubset<T, job_categories_job_postsFindFirstOrThrowArgs<ExtArgs>>): Prisma__job_categories_job_postsClient<$Result.GetResult<Prisma.$job_categories_job_postsPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find zero or more Job_categories_job_posts that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {job_categories_job_postsFindManyArgs} args - Arguments to filter and select certain fields only.
-     * @example
-     * // Get all Job_categories_job_posts
-     * const job_categories_job_posts = await prisma.job_categories_job_posts.findMany()
-     * 
-     * // Get first 10 Job_categories_job_posts
-     * const job_categories_job_posts = await prisma.job_categories_job_posts.findMany({ take: 10 })
-     * 
-     * // Only select the `job_category_id`
-     * const job_categories_job_postsWithJob_category_idOnly = await prisma.job_categories_job_posts.findMany({ select: { job_category_id: true } })
-     * 
-     */
-    findMany<T extends job_categories_job_postsFindManyArgs>(args?: SelectSubset<T, job_categories_job_postsFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$job_categories_job_postsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
-
-    /**
-     * Create a Job_categories_job_posts.
-     * @param {job_categories_job_postsCreateArgs} args - Arguments to create a Job_categories_job_posts.
-     * @example
-     * // Create one Job_categories_job_posts
-     * const Job_categories_job_posts = await prisma.job_categories_job_posts.create({
-     *   data: {
-     *     // ... data to create a Job_categories_job_posts
-     *   }
-     * })
-     * 
-     */
-    create<T extends job_categories_job_postsCreateArgs>(args: SelectSubset<T, job_categories_job_postsCreateArgs<ExtArgs>>): Prisma__job_categories_job_postsClient<$Result.GetResult<Prisma.$job_categories_job_postsPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Create many Job_categories_job_posts.
-     * @param {job_categories_job_postsCreateManyArgs} args - Arguments to create many Job_categories_job_posts.
-     * @example
-     * // Create many Job_categories_job_posts
-     * const job_categories_job_posts = await prisma.job_categories_job_posts.createMany({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     *     
-     */
-    createMany<T extends job_categories_job_postsCreateManyArgs>(args?: SelectSubset<T, job_categories_job_postsCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Delete a Job_categories_job_posts.
-     * @param {job_categories_job_postsDeleteArgs} args - Arguments to delete one Job_categories_job_posts.
-     * @example
-     * // Delete one Job_categories_job_posts
-     * const Job_categories_job_posts = await prisma.job_categories_job_posts.delete({
-     *   where: {
-     *     // ... filter to delete one Job_categories_job_posts
-     *   }
-     * })
-     * 
-     */
-    delete<T extends job_categories_job_postsDeleteArgs>(args: SelectSubset<T, job_categories_job_postsDeleteArgs<ExtArgs>>): Prisma__job_categories_job_postsClient<$Result.GetResult<Prisma.$job_categories_job_postsPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Update one Job_categories_job_posts.
-     * @param {job_categories_job_postsUpdateArgs} args - Arguments to update one Job_categories_job_posts.
-     * @example
-     * // Update one Job_categories_job_posts
-     * const job_categories_job_posts = await prisma.job_categories_job_posts.update({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    update<T extends job_categories_job_postsUpdateArgs>(args: SelectSubset<T, job_categories_job_postsUpdateArgs<ExtArgs>>): Prisma__job_categories_job_postsClient<$Result.GetResult<Prisma.$job_categories_job_postsPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Delete zero or more Job_categories_job_posts.
-     * @param {job_categories_job_postsDeleteManyArgs} args - Arguments to filter Job_categories_job_posts to delete.
-     * @example
-     * // Delete a few Job_categories_job_posts
-     * const { count } = await prisma.job_categories_job_posts.deleteMany({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     * 
-     */
-    deleteMany<T extends job_categories_job_postsDeleteManyArgs>(args?: SelectSubset<T, job_categories_job_postsDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more Job_categories_job_posts.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {job_categories_job_postsUpdateManyArgs} args - Arguments to update one or more rows.
-     * @example
-     * // Update many Job_categories_job_posts
-     * const job_categories_job_posts = await prisma.job_categories_job_posts.updateMany({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    updateMany<T extends job_categories_job_postsUpdateManyArgs>(args: SelectSubset<T, job_categories_job_postsUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Create or update one Job_categories_job_posts.
-     * @param {job_categories_job_postsUpsertArgs} args - Arguments to update or create a Job_categories_job_posts.
-     * @example
-     * // Update or create a Job_categories_job_posts
-     * const job_categories_job_posts = await prisma.job_categories_job_posts.upsert({
-     *   create: {
-     *     // ... data to create a Job_categories_job_posts
-     *   },
-     *   update: {
-     *     // ... in case it already exists, update
-     *   },
-     *   where: {
-     *     // ... the filter for the Job_categories_job_posts we want to update
-     *   }
-     * })
-     */
-    upsert<T extends job_categories_job_postsUpsertArgs>(args: SelectSubset<T, job_categories_job_postsUpsertArgs<ExtArgs>>): Prisma__job_categories_job_postsClient<$Result.GetResult<Prisma.$job_categories_job_postsPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-
-    /**
-     * Count the number of Job_categories_job_posts.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {job_categories_job_postsCountArgs} args - Arguments to filter Job_categories_job_posts to count.
-     * @example
-     * // Count the number of Job_categories_job_posts
-     * const count = await prisma.job_categories_job_posts.count({
-     *   where: {
-     *     // ... the filter for the Job_categories_job_posts we want to count
-     *   }
-     * })
-    **/
-    count<T extends job_categories_job_postsCountArgs>(
-      args?: Subset<T, job_categories_job_postsCountArgs>,
-    ): Prisma.PrismaPromise<
-      T extends $Utils.Record<'select', any>
-        ? T['select'] extends true
-          ? number
-          : GetScalarType<T['select'], Job_categories_job_postsCountAggregateOutputType>
-        : number
-    >
-
-    /**
-     * Allows you to perform aggregations operations on a Job_categories_job_posts.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {Job_categories_job_postsAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
-     * @example
-     * // Ordered by age ascending
-     * // Where email contains prisma.io
-     * // Limited to the 10 users
-     * const aggregations = await prisma.user.aggregate({
-     *   _avg: {
-     *     age: true,
-     *   },
-     *   where: {
-     *     email: {
-     *       contains: "prisma.io",
-     *     },
-     *   },
-     *   orderBy: {
-     *     age: "asc",
-     *   },
-     *   take: 10,
-     * })
-    **/
-    aggregate<T extends Job_categories_job_postsAggregateArgs>(args: Subset<T, Job_categories_job_postsAggregateArgs>): Prisma.PrismaPromise<GetJob_categories_job_postsAggregateType<T>>
-
-    /**
-     * Group by Job_categories_job_posts.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {job_categories_job_postsGroupByArgs} args - Group by arguments.
-     * @example
-     * // Group by city, order by createdAt, get count
-     * const result = await prisma.user.groupBy({
-     *   by: ['city', 'createdAt'],
-     *   orderBy: {
-     *     createdAt: true
-     *   },
-     *   _count: {
-     *     _all: true
-     *   },
-     * })
-     * 
-    **/
-    groupBy<
-      T extends job_categories_job_postsGroupByArgs,
-      HasSelectOrTake extends Or<
-        Extends<'skip', Keys<T>>,
-        Extends<'take', Keys<T>>
-      >,
-      OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: job_categories_job_postsGroupByArgs['orderBy'] }
-        : { orderBy?: job_categories_job_postsGroupByArgs['orderBy'] },
-      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
-      ByFields extends MaybeTupleToUnion<T['by']>,
-      ByValid extends Has<ByFields, OrderFields>,
-      HavingFields extends GetHavingFields<T['having']>,
-      HavingValid extends Has<ByFields, HavingFields>,
-      ByEmpty extends T['by'] extends never[] ? True : False,
-      InputErrors extends ByEmpty extends True
-      ? `Error: "by" must not be empty.`
-      : HavingValid extends False
-      ? {
-          [P in HavingFields]: P extends ByFields
-            ? never
-            : P extends string
-            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
-            : [
-                Error,
-                'Field ',
-                P,
-                ` in "having" needs to be provided in "by"`,
-              ]
-        }[HavingFields]
-      : 'take' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "take", you also need to provide "orderBy"'
-      : 'skip' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "skip", you also need to provide "orderBy"'
-      : ByValid extends True
-      ? {}
-      : {
-          [P in OrderFields]: P extends ByFields
-            ? never
-            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-        }[OrderFields]
-    >(args: SubsetIntersection<T, job_categories_job_postsGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetJob_categories_job_postsGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
-  /**
-   * Fields of the job_categories_job_posts model
-   */
-  readonly fields: job_categories_job_postsFieldRefs;
-  }
-
-  /**
-   * The delegate class that acts as a "Promise-like" for job_categories_job_posts.
-   * Why is this prefixed with `Prisma__`?
-   * Because we want to prevent naming conflicts as mentioned in
-   * https://github.com/prisma/prisma-client-js/issues/707
-   */
-  export interface Prisma__job_categories_job_postsClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
-    readonly [Symbol.toStringTag]: "PrismaPromise"
-    job_categories<T extends job_categoriesDefaultArgs<ExtArgs> = {}>(args?: Subset<T, job_categoriesDefaultArgs<ExtArgs>>): Prisma__job_categoriesClient<$Result.GetResult<Prisma.$job_categoriesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    job_posts<T extends job_postsDefaultArgs<ExtArgs> = {}>(args?: Subset<T, job_postsDefaultArgs<ExtArgs>>): Prisma__job_postsClient<$Result.GetResult<Prisma.$job_postsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    /**
-     * Attaches callbacks for the resolution and/or rejection of the Promise.
-     * @param onfulfilled The callback to execute when the Promise is resolved.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of which ever callback is executed.
-     */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
-    /**
-     * Attaches a callback for only the rejection of the Promise.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of the callback.
-     */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
-    /**
-     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
-     * resolved value cannot be modified from the callback.
-     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
-     * @returns A Promise for the completion of the callback.
-     */
-    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
-  }
-
-
-
-
-  /**
-   * Fields of the job_categories_job_posts model
-   */
-  interface job_categories_job_postsFieldRefs {
-    readonly job_category_id: FieldRef<"job_categories_job_posts", 'String'>
-    readonly job_post_id: FieldRef<"job_categories_job_posts", 'String'>
-  }
-    
-
-  // Custom InputTypes
-  /**
-   * job_categories_job_posts findUnique
-   */
-  export type job_categories_job_postsFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the job_categories_job_posts
-     */
-    select?: job_categories_job_postsSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the job_categories_job_posts
-     */
-    omit?: job_categories_job_postsOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: job_categories_job_postsInclude<ExtArgs> | null
-    /**
-     * Filter, which job_categories_job_posts to fetch.
-     */
-    where: job_categories_job_postsWhereUniqueInput
-  }
-
-  /**
-   * job_categories_job_posts findUniqueOrThrow
-   */
-  export type job_categories_job_postsFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the job_categories_job_posts
-     */
-    select?: job_categories_job_postsSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the job_categories_job_posts
-     */
-    omit?: job_categories_job_postsOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: job_categories_job_postsInclude<ExtArgs> | null
-    /**
-     * Filter, which job_categories_job_posts to fetch.
-     */
-    where: job_categories_job_postsWhereUniqueInput
-  }
-
-  /**
-   * job_categories_job_posts findFirst
-   */
-  export type job_categories_job_postsFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the job_categories_job_posts
-     */
-    select?: job_categories_job_postsSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the job_categories_job_posts
-     */
-    omit?: job_categories_job_postsOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: job_categories_job_postsInclude<ExtArgs> | null
-    /**
-     * Filter, which job_categories_job_posts to fetch.
-     */
-    where?: job_categories_job_postsWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of job_categories_job_posts to fetch.
-     */
-    orderBy?: job_categories_job_postsOrderByWithRelationInput | job_categories_job_postsOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for job_categories_job_posts.
-     */
-    cursor?: job_categories_job_postsWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` job_categories_job_posts from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` job_categories_job_posts.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of job_categories_job_posts.
-     */
-    distinct?: Job_categories_job_postsScalarFieldEnum | Job_categories_job_postsScalarFieldEnum[]
-  }
-
-  /**
-   * job_categories_job_posts findFirstOrThrow
-   */
-  export type job_categories_job_postsFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the job_categories_job_posts
-     */
-    select?: job_categories_job_postsSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the job_categories_job_posts
-     */
-    omit?: job_categories_job_postsOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: job_categories_job_postsInclude<ExtArgs> | null
-    /**
-     * Filter, which job_categories_job_posts to fetch.
-     */
-    where?: job_categories_job_postsWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of job_categories_job_posts to fetch.
-     */
-    orderBy?: job_categories_job_postsOrderByWithRelationInput | job_categories_job_postsOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for job_categories_job_posts.
-     */
-    cursor?: job_categories_job_postsWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` job_categories_job_posts from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` job_categories_job_posts.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of job_categories_job_posts.
-     */
-    distinct?: Job_categories_job_postsScalarFieldEnum | Job_categories_job_postsScalarFieldEnum[]
-  }
-
-  /**
-   * job_categories_job_posts findMany
-   */
-  export type job_categories_job_postsFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the job_categories_job_posts
-     */
-    select?: job_categories_job_postsSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the job_categories_job_posts
-     */
-    omit?: job_categories_job_postsOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: job_categories_job_postsInclude<ExtArgs> | null
-    /**
-     * Filter, which job_categories_job_posts to fetch.
-     */
-    where?: job_categories_job_postsWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of job_categories_job_posts to fetch.
-     */
-    orderBy?: job_categories_job_postsOrderByWithRelationInput | job_categories_job_postsOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for listing job_categories_job_posts.
-     */
-    cursor?: job_categories_job_postsWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` job_categories_job_posts from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` job_categories_job_posts.
-     */
-    skip?: number
-    distinct?: Job_categories_job_postsScalarFieldEnum | Job_categories_job_postsScalarFieldEnum[]
-  }
-
-  /**
-   * job_categories_job_posts create
-   */
-  export type job_categories_job_postsCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the job_categories_job_posts
-     */
-    select?: job_categories_job_postsSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the job_categories_job_posts
-     */
-    omit?: job_categories_job_postsOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: job_categories_job_postsInclude<ExtArgs> | null
-    /**
-     * The data needed to create a job_categories_job_posts.
-     */
-    data: XOR<job_categories_job_postsCreateInput, job_categories_job_postsUncheckedCreateInput>
-  }
-
-  /**
-   * job_categories_job_posts createMany
-   */
-  export type job_categories_job_postsCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to create many job_categories_job_posts.
-     */
-    data: job_categories_job_postsCreateManyInput | job_categories_job_postsCreateManyInput[]
-    skipDuplicates?: boolean
-  }
-
-  /**
-   * job_categories_job_posts update
-   */
-  export type job_categories_job_postsUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the job_categories_job_posts
-     */
-    select?: job_categories_job_postsSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the job_categories_job_posts
-     */
-    omit?: job_categories_job_postsOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: job_categories_job_postsInclude<ExtArgs> | null
-    /**
-     * The data needed to update a job_categories_job_posts.
-     */
-    data: XOR<job_categories_job_postsUpdateInput, job_categories_job_postsUncheckedUpdateInput>
-    /**
-     * Choose, which job_categories_job_posts to update.
-     */
-    where: job_categories_job_postsWhereUniqueInput
-  }
-
-  /**
-   * job_categories_job_posts updateMany
-   */
-  export type job_categories_job_postsUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to update job_categories_job_posts.
-     */
-    data: XOR<job_categories_job_postsUpdateManyMutationInput, job_categories_job_postsUncheckedUpdateManyInput>
-    /**
-     * Filter which job_categories_job_posts to update
-     */
-    where?: job_categories_job_postsWhereInput
-    /**
-     * Limit how many job_categories_job_posts to update.
-     */
-    limit?: number
-  }
-
-  /**
-   * job_categories_job_posts upsert
-   */
-  export type job_categories_job_postsUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the job_categories_job_posts
-     */
-    select?: job_categories_job_postsSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the job_categories_job_posts
-     */
-    omit?: job_categories_job_postsOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: job_categories_job_postsInclude<ExtArgs> | null
-    /**
-     * The filter to search for the job_categories_job_posts to update in case it exists.
-     */
-    where: job_categories_job_postsWhereUniqueInput
-    /**
-     * In case the job_categories_job_posts found by the `where` argument doesn't exist, create a new job_categories_job_posts with this data.
-     */
-    create: XOR<job_categories_job_postsCreateInput, job_categories_job_postsUncheckedCreateInput>
-    /**
-     * In case the job_categories_job_posts was found with the provided `where` argument, update it with this data.
-     */
-    update: XOR<job_categories_job_postsUpdateInput, job_categories_job_postsUncheckedUpdateInput>
-  }
-
-  /**
-   * job_categories_job_posts delete
-   */
-  export type job_categories_job_postsDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the job_categories_job_posts
-     */
-    select?: job_categories_job_postsSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the job_categories_job_posts
-     */
-    omit?: job_categories_job_postsOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: job_categories_job_postsInclude<ExtArgs> | null
-    /**
-     * Filter which job_categories_job_posts to delete.
-     */
-    where: job_categories_job_postsWhereUniqueInput
-  }
-
-  /**
-   * job_categories_job_posts deleteMany
-   */
-  export type job_categories_job_postsDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which job_categories_job_posts to delete
-     */
-    where?: job_categories_job_postsWhereInput
-    /**
-     * Limit how many job_categories_job_posts to delete.
-     */
-    limit?: number
-  }
-
-  /**
-   * job_categories_job_posts without action
-   */
-  export type job_categories_job_postsDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the job_categories_job_posts
-     */
-    select?: job_categories_job_postsSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the job_categories_job_posts
-     */
-    omit?: job_categories_job_postsOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: job_categories_job_postsInclude<ExtArgs> | null
-  }
-
-
-  /**
    * Model job_posts
    */
 
@@ -9801,10 +8945,7 @@ export namespace Prisma {
     id: string | null
     company_id: string | null
     title: string | null
-    description: string | null
-    requirements: string | null
-    benefits: string | null
-    type: $Enums.job_posts_type | null
+    thumbnail: string | null
     status: $Enums.job_posts_status | null
     created_at: Date | null
     updated_at: Date | null
@@ -9815,10 +8956,7 @@ export namespace Prisma {
     id: string | null
     company_id: string | null
     title: string | null
-    description: string | null
-    requirements: string | null
-    benefits: string | null
-    type: $Enums.job_posts_type | null
+    thumbnail: string | null
     status: $Enums.job_posts_status | null
     created_at: Date | null
     updated_at: Date | null
@@ -9829,10 +8967,7 @@ export namespace Prisma {
     id: number
     company_id: number
     title: number
-    description: number
-    requirements: number
-    benefits: number
-    type: number
+    thumbnail: number
     status: number
     created_at: number
     updated_at: number
@@ -9845,10 +8980,7 @@ export namespace Prisma {
     id?: true
     company_id?: true
     title?: true
-    description?: true
-    requirements?: true
-    benefits?: true
-    type?: true
+    thumbnail?: true
     status?: true
     created_at?: true
     updated_at?: true
@@ -9859,10 +8991,7 @@ export namespace Prisma {
     id?: true
     company_id?: true
     title?: true
-    description?: true
-    requirements?: true
-    benefits?: true
-    type?: true
+    thumbnail?: true
     status?: true
     created_at?: true
     updated_at?: true
@@ -9873,10 +9002,7 @@ export namespace Prisma {
     id?: true
     company_id?: true
     title?: true
-    description?: true
-    requirements?: true
-    benefits?: true
-    type?: true
+    thumbnail?: true
     status?: true
     created_at?: true
     updated_at?: true
@@ -9960,10 +9086,7 @@ export namespace Prisma {
     id: string
     company_id: string
     title: string
-    description: string
-    requirements: string
-    benefits: string
-    type: $Enums.job_posts_type
+    thumbnail: string
     status: $Enums.job_posts_status
     created_at: Date | null
     updated_at: Date | null
@@ -9991,18 +9114,13 @@ export namespace Prisma {
     id?: boolean
     company_id?: boolean
     title?: boolean
-    description?: boolean
-    requirements?: boolean
-    benefits?: boolean
-    type?: boolean
+    thumbnail?: boolean
     status?: boolean
     created_at?: boolean
     updated_at?: boolean
     deleted_at?: boolean
-    applicants?: boolean | job_posts$applicantsArgs<ExtArgs>
-    job_categories_job_posts?: boolean | job_posts$job_categories_job_postsArgs<ExtArgs>
+    job_post_categories?: boolean | job_posts$job_post_categoriesArgs<ExtArgs>
     companies?: boolean | companiesDefaultArgs<ExtArgs>
-    selections?: boolean | job_posts$selectionsArgs<ExtArgs>
     _count?: boolean | Job_postsCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["job_posts"]>
 
@@ -10012,41 +9130,31 @@ export namespace Prisma {
     id?: boolean
     company_id?: boolean
     title?: boolean
-    description?: boolean
-    requirements?: boolean
-    benefits?: boolean
-    type?: boolean
+    thumbnail?: boolean
     status?: boolean
     created_at?: boolean
     updated_at?: boolean
     deleted_at?: boolean
   }
 
-  export type job_postsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "company_id" | "title" | "description" | "requirements" | "benefits" | "type" | "status" | "created_at" | "updated_at" | "deleted_at", ExtArgs["result"]["job_posts"]>
+  export type job_postsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "company_id" | "title" | "thumbnail" | "status" | "created_at" | "updated_at" | "deleted_at", ExtArgs["result"]["job_posts"]>
   export type job_postsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    applicants?: boolean | job_posts$applicantsArgs<ExtArgs>
-    job_categories_job_posts?: boolean | job_posts$job_categories_job_postsArgs<ExtArgs>
+    job_post_categories?: boolean | job_posts$job_post_categoriesArgs<ExtArgs>
     companies?: boolean | companiesDefaultArgs<ExtArgs>
-    selections?: boolean | job_posts$selectionsArgs<ExtArgs>
     _count?: boolean | Job_postsCountOutputTypeDefaultArgs<ExtArgs>
   }
 
   export type $job_postsPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "job_posts"
     objects: {
-      applicants: Prisma.$applicantsPayload<ExtArgs>[]
-      job_categories_job_posts: Prisma.$job_categories_job_postsPayload<ExtArgs>[]
+      job_post_categories: Prisma.$job_post_categoriesPayload<ExtArgs>[]
       companies: Prisma.$companiesPayload<ExtArgs>
-      selections: Prisma.$selectionsPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       company_id: string
       title: string
-      description: string
-      requirements: string
-      benefits: string
-      type: $Enums.job_posts_type
+      thumbnail: string
       status: $Enums.job_posts_status
       created_at: Date | null
       updated_at: Date | null
@@ -10391,10 +9499,8 @@ export namespace Prisma {
    */
   export interface Prisma__job_postsClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    applicants<T extends job_posts$applicantsArgs<ExtArgs> = {}>(args?: Subset<T, job_posts$applicantsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$applicantsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    job_categories_job_posts<T extends job_posts$job_categories_job_postsArgs<ExtArgs> = {}>(args?: Subset<T, job_posts$job_categories_job_postsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$job_categories_job_postsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    job_post_categories<T extends job_posts$job_post_categoriesArgs<ExtArgs> = {}>(args?: Subset<T, job_posts$job_post_categoriesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$job_post_categoriesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     companies<T extends companiesDefaultArgs<ExtArgs> = {}>(args?: Subset<T, companiesDefaultArgs<ExtArgs>>): Prisma__companiesClient<$Result.GetResult<Prisma.$companiesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    selections<T extends job_posts$selectionsArgs<ExtArgs> = {}>(args?: Subset<T, job_posts$selectionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$selectionsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -10427,10 +9533,7 @@ export namespace Prisma {
     readonly id: FieldRef<"job_posts", 'String'>
     readonly company_id: FieldRef<"job_posts", 'String'>
     readonly title: FieldRef<"job_posts", 'String'>
-    readonly description: FieldRef<"job_posts", 'String'>
-    readonly requirements: FieldRef<"job_posts", 'String'>
-    readonly benefits: FieldRef<"job_posts", 'String'>
-    readonly type: FieldRef<"job_posts", 'job_posts_type'>
+    readonly thumbnail: FieldRef<"job_posts", 'String'>
     readonly status: FieldRef<"job_posts", 'job_posts_status'>
     readonly created_at: FieldRef<"job_posts", 'DateTime'>
     readonly updated_at: FieldRef<"job_posts", 'DateTime'>
@@ -10778,75 +9881,27 @@ export namespace Prisma {
   }
 
   /**
-   * job_posts.applicants
+   * job_posts.job_post_categories
    */
-  export type job_posts$applicantsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type job_posts$job_post_categoriesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the applicants
+     * Select specific fields to fetch from the job_post_categories
      */
-    select?: applicantsSelect<ExtArgs> | null
+    select?: job_post_categoriesSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the applicants
+     * Omit specific fields from the job_post_categories
      */
-    omit?: applicantsOmit<ExtArgs> | null
+    omit?: job_post_categoriesOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: applicantsInclude<ExtArgs> | null
-    where?: applicantsWhereInput
-    orderBy?: applicantsOrderByWithRelationInput | applicantsOrderByWithRelationInput[]
-    cursor?: applicantsWhereUniqueInput
+    include?: job_post_categoriesInclude<ExtArgs> | null
+    where?: job_post_categoriesWhereInput
+    orderBy?: job_post_categoriesOrderByWithRelationInput | job_post_categoriesOrderByWithRelationInput[]
+    cursor?: job_post_categoriesWhereUniqueInput
     take?: number
     skip?: number
-    distinct?: ApplicantsScalarFieldEnum | ApplicantsScalarFieldEnum[]
-  }
-
-  /**
-   * job_posts.job_categories_job_posts
-   */
-  export type job_posts$job_categories_job_postsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the job_categories_job_posts
-     */
-    select?: job_categories_job_postsSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the job_categories_job_posts
-     */
-    omit?: job_categories_job_postsOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: job_categories_job_postsInclude<ExtArgs> | null
-    where?: job_categories_job_postsWhereInput
-    orderBy?: job_categories_job_postsOrderByWithRelationInput | job_categories_job_postsOrderByWithRelationInput[]
-    cursor?: job_categories_job_postsWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: Job_categories_job_postsScalarFieldEnum | Job_categories_job_postsScalarFieldEnum[]
-  }
-
-  /**
-   * job_posts.selections
-   */
-  export type job_posts$selectionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the selections
-     */
-    select?: selectionsSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the selections
-     */
-    omit?: selectionsOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: selectionsInclude<ExtArgs> | null
-    where?: selectionsWhereInput
-    orderBy?: selectionsOrderByWithRelationInput | selectionsOrderByWithRelationInput[]
-    cursor?: selectionsWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: SelectionsScalarFieldEnum | SelectionsScalarFieldEnum[]
+    distinct?: Job_post_categoriesScalarFieldEnum | Job_post_categoriesScalarFieldEnum[]
   }
 
   /**
@@ -12733,7 +11788,7 @@ export namespace Prisma {
   export type SelectionsMinAggregateOutputType = {
     id: string | null
     applicant_id: string | null
-    job_id: string | null
+    job_post_category_id: string | null
     stage: $Enums.selections_stage | null
     status: $Enums.selections_status | null
     attachment: string | null
@@ -12745,7 +11800,7 @@ export namespace Prisma {
   export type SelectionsMaxAggregateOutputType = {
     id: string | null
     applicant_id: string | null
-    job_id: string | null
+    job_post_category_id: string | null
     stage: $Enums.selections_stage | null
     status: $Enums.selections_status | null
     attachment: string | null
@@ -12757,7 +11812,7 @@ export namespace Prisma {
   export type SelectionsCountAggregateOutputType = {
     id: number
     applicant_id: number
-    job_id: number
+    job_post_category_id: number
     stage: number
     status: number
     attachment: number
@@ -12771,7 +11826,7 @@ export namespace Prisma {
   export type SelectionsMinAggregateInputType = {
     id?: true
     applicant_id?: true
-    job_id?: true
+    job_post_category_id?: true
     stage?: true
     status?: true
     attachment?: true
@@ -12783,7 +11838,7 @@ export namespace Prisma {
   export type SelectionsMaxAggregateInputType = {
     id?: true
     applicant_id?: true
-    job_id?: true
+    job_post_category_id?: true
     stage?: true
     status?: true
     attachment?: true
@@ -12795,7 +11850,7 @@ export namespace Prisma {
   export type SelectionsCountAggregateInputType = {
     id?: true
     applicant_id?: true
-    job_id?: true
+    job_post_category_id?: true
     stage?: true
     status?: true
     attachment?: true
@@ -12880,7 +11935,7 @@ export namespace Prisma {
   export type SelectionsGroupByOutputType = {
     id: string
     applicant_id: string
-    job_id: string
+    job_post_category_id: string
     stage: $Enums.selections_stage
     status: $Enums.selections_status
     attachment: string | null
@@ -12909,7 +11964,7 @@ export namespace Prisma {
   export type selectionsSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     applicant_id?: boolean
-    job_id?: boolean
+    job_post_category_id?: boolean
     stage?: boolean
     status?: boolean
     attachment?: boolean
@@ -12917,7 +11972,7 @@ export namespace Prisma {
     updated_at?: boolean
     deleted_at?: boolean
     applicants?: boolean | applicantsDefaultArgs<ExtArgs>
-    job_posts?: boolean | job_postsDefaultArgs<ExtArgs>
+    job_post_categories?: boolean | job_post_categoriesDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["selections"]>
 
 
@@ -12925,7 +11980,7 @@ export namespace Prisma {
   export type selectionsSelectScalar = {
     id?: boolean
     applicant_id?: boolean
-    job_id?: boolean
+    job_post_category_id?: boolean
     stage?: boolean
     status?: boolean
     attachment?: boolean
@@ -12934,22 +11989,22 @@ export namespace Prisma {
     deleted_at?: boolean
   }
 
-  export type selectionsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "applicant_id" | "job_id" | "stage" | "status" | "attachment" | "created_at" | "updated_at" | "deleted_at", ExtArgs["result"]["selections"]>
+  export type selectionsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "applicant_id" | "job_post_category_id" | "stage" | "status" | "attachment" | "created_at" | "updated_at" | "deleted_at", ExtArgs["result"]["selections"]>
   export type selectionsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     applicants?: boolean | applicantsDefaultArgs<ExtArgs>
-    job_posts?: boolean | job_postsDefaultArgs<ExtArgs>
+    job_post_categories?: boolean | job_post_categoriesDefaultArgs<ExtArgs>
   }
 
   export type $selectionsPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "selections"
     objects: {
       applicants: Prisma.$applicantsPayload<ExtArgs>
-      job_posts: Prisma.$job_postsPayload<ExtArgs>
+      job_post_categories: Prisma.$job_post_categoriesPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       applicant_id: string
-      job_id: string
+      job_post_category_id: string
       stage: $Enums.selections_stage
       status: $Enums.selections_status
       attachment: string | null
@@ -13297,7 +12352,7 @@ export namespace Prisma {
   export interface Prisma__selectionsClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     applicants<T extends applicantsDefaultArgs<ExtArgs> = {}>(args?: Subset<T, applicantsDefaultArgs<ExtArgs>>): Prisma__applicantsClient<$Result.GetResult<Prisma.$applicantsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    job_posts<T extends job_postsDefaultArgs<ExtArgs> = {}>(args?: Subset<T, job_postsDefaultArgs<ExtArgs>>): Prisma__job_postsClient<$Result.GetResult<Prisma.$job_postsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    job_post_categories<T extends job_post_categoriesDefaultArgs<ExtArgs> = {}>(args?: Subset<T, job_post_categoriesDefaultArgs<ExtArgs>>): Prisma__job_post_categoriesClient<$Result.GetResult<Prisma.$job_post_categoriesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -13329,7 +12384,7 @@ export namespace Prisma {
   interface selectionsFieldRefs {
     readonly id: FieldRef<"selections", 'String'>
     readonly applicant_id: FieldRef<"selections", 'String'>
-    readonly job_id: FieldRef<"selections", 'String'>
+    readonly job_post_category_id: FieldRef<"selections", 'String'>
     readonly stage: FieldRef<"selections", 'selections_stage'>
     readonly status: FieldRef<"selections", 'selections_status'>
     readonly attachment: FieldRef<"selections", 'String'>
@@ -14645,6 +13700,7 @@ export namespace Prisma {
     password: string | null
     role: $Enums.users_role | null
     verified_at: Date | null
+    remember_token: string | null
     created_at: Date | null
     updated_at: Date | null
     deleted_at: Date | null
@@ -14661,6 +13717,7 @@ export namespace Prisma {
     password: string | null
     role: $Enums.users_role | null
     verified_at: Date | null
+    remember_token: string | null
     created_at: Date | null
     updated_at: Date | null
     deleted_at: Date | null
@@ -14677,6 +13734,7 @@ export namespace Prisma {
     password: number
     role: number
     verified_at: number
+    remember_token: number
     created_at: number
     updated_at: number
     deleted_at: number
@@ -14695,6 +13753,7 @@ export namespace Prisma {
     password?: true
     role?: true
     verified_at?: true
+    remember_token?: true
     created_at?: true
     updated_at?: true
     deleted_at?: true
@@ -14711,6 +13770,7 @@ export namespace Prisma {
     password?: true
     role?: true
     verified_at?: true
+    remember_token?: true
     created_at?: true
     updated_at?: true
     deleted_at?: true
@@ -14727,6 +13787,7 @@ export namespace Prisma {
     password?: true
     role?: true
     verified_at?: true
+    remember_token?: true
     created_at?: true
     updated_at?: true
     deleted_at?: true
@@ -14816,6 +13877,7 @@ export namespace Prisma {
     password: string
     role: $Enums.users_role
     verified_at: Date | null
+    remember_token: string | null
     created_at: Date | null
     updated_at: Date | null
     deleted_at: Date | null
@@ -14849,6 +13911,7 @@ export namespace Prisma {
     password?: boolean
     role?: boolean
     verified_at?: boolean
+    remember_token?: boolean
     created_at?: boolean
     updated_at?: boolean
     deleted_at?: boolean
@@ -14869,12 +13932,13 @@ export namespace Prisma {
     password?: boolean
     role?: boolean
     verified_at?: boolean
+    remember_token?: boolean
     created_at?: boolean
     updated_at?: boolean
     deleted_at?: boolean
   }
 
-  export type usersOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "photo" | "name" | "phone" | "email" | "address" | "description" | "password" | "role" | "verified_at" | "created_at" | "updated_at" | "deleted_at", ExtArgs["result"]["users"]>
+  export type usersOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "photo" | "name" | "phone" | "email" | "address" | "description" | "password" | "role" | "verified_at" | "remember_token" | "created_at" | "updated_at" | "deleted_at", ExtArgs["result"]["users"]>
   export type usersInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     applicants?: boolean | users$applicantsArgs<ExtArgs>
     _count?: boolean | UsersCountOutputTypeDefaultArgs<ExtArgs>
@@ -14896,6 +13960,7 @@ export namespace Prisma {
       password: string
       role: $Enums.users_role
       verified_at: Date | null
+      remember_token: string | null
       created_at: Date | null
       updated_at: Date | null
       deleted_at: Date | null
@@ -15279,6 +14344,7 @@ export namespace Prisma {
     readonly password: FieldRef<"users", 'String'>
     readonly role: FieldRef<"users", 'users_role'>
     readonly verified_at: FieldRef<"users", 'DateTime'>
+    readonly remember_token: FieldRef<"users", 'String'>
     readonly created_at: FieldRef<"users", 'DateTime'>
     readonly updated_at: FieldRef<"users", 'DateTime'>
     readonly deleted_at: FieldRef<"users", 'DateTime'>
@@ -15668,6 +14734,1097 @@ export namespace Prisma {
 
 
   /**
+   * Model job_post_categories
+   */
+
+  export type AggregateJob_post_categories = {
+    _count: Job_post_categoriesCountAggregateOutputType | null
+    _avg: Job_post_categoriesAvgAggregateOutputType | null
+    _sum: Job_post_categoriesSumAggregateOutputType | null
+    _min: Job_post_categoriesMinAggregateOutputType | null
+    _max: Job_post_categoriesMaxAggregateOutputType | null
+  }
+
+  export type Job_post_categoriesAvgAggregateOutputType = {
+    required_count: number | null
+  }
+
+  export type Job_post_categoriesSumAggregateOutputType = {
+    required_count: number | null
+  }
+
+  export type Job_post_categoriesMinAggregateOutputType = {
+    id: string | null
+    job_category_id: string | null
+    job_post_id: string | null
+    type: $Enums.job_post_categories_type | null
+    required_count: number | null
+    description: string | null
+    requirements: string | null
+    benefits: string | null
+    created_at: Date | null
+    updated_at: Date | null
+    deleted_at: Date | null
+  }
+
+  export type Job_post_categoriesMaxAggregateOutputType = {
+    id: string | null
+    job_category_id: string | null
+    job_post_id: string | null
+    type: $Enums.job_post_categories_type | null
+    required_count: number | null
+    description: string | null
+    requirements: string | null
+    benefits: string | null
+    created_at: Date | null
+    updated_at: Date | null
+    deleted_at: Date | null
+  }
+
+  export type Job_post_categoriesCountAggregateOutputType = {
+    id: number
+    job_category_id: number
+    job_post_id: number
+    type: number
+    required_count: number
+    description: number
+    requirements: number
+    benefits: number
+    created_at: number
+    updated_at: number
+    deleted_at: number
+    _all: number
+  }
+
+
+  export type Job_post_categoriesAvgAggregateInputType = {
+    required_count?: true
+  }
+
+  export type Job_post_categoriesSumAggregateInputType = {
+    required_count?: true
+  }
+
+  export type Job_post_categoriesMinAggregateInputType = {
+    id?: true
+    job_category_id?: true
+    job_post_id?: true
+    type?: true
+    required_count?: true
+    description?: true
+    requirements?: true
+    benefits?: true
+    created_at?: true
+    updated_at?: true
+    deleted_at?: true
+  }
+
+  export type Job_post_categoriesMaxAggregateInputType = {
+    id?: true
+    job_category_id?: true
+    job_post_id?: true
+    type?: true
+    required_count?: true
+    description?: true
+    requirements?: true
+    benefits?: true
+    created_at?: true
+    updated_at?: true
+    deleted_at?: true
+  }
+
+  export type Job_post_categoriesCountAggregateInputType = {
+    id?: true
+    job_category_id?: true
+    job_post_id?: true
+    type?: true
+    required_count?: true
+    description?: true
+    requirements?: true
+    benefits?: true
+    created_at?: true
+    updated_at?: true
+    deleted_at?: true
+    _all?: true
+  }
+
+  export type Job_post_categoriesAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which job_post_categories to aggregate.
+     */
+    where?: job_post_categoriesWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of job_post_categories to fetch.
+     */
+    orderBy?: job_post_categoriesOrderByWithRelationInput | job_post_categoriesOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: job_post_categoriesWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` job_post_categories from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` job_post_categories.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned job_post_categories
+    **/
+    _count?: true | Job_post_categoriesCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: Job_post_categoriesAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: Job_post_categoriesSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: Job_post_categoriesMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: Job_post_categoriesMaxAggregateInputType
+  }
+
+  export type GetJob_post_categoriesAggregateType<T extends Job_post_categoriesAggregateArgs> = {
+        [P in keyof T & keyof AggregateJob_post_categories]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateJob_post_categories[P]>
+      : GetScalarType<T[P], AggregateJob_post_categories[P]>
+  }
+
+
+
+
+  export type job_post_categoriesGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: job_post_categoriesWhereInput
+    orderBy?: job_post_categoriesOrderByWithAggregationInput | job_post_categoriesOrderByWithAggregationInput[]
+    by: Job_post_categoriesScalarFieldEnum[] | Job_post_categoriesScalarFieldEnum
+    having?: job_post_categoriesScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: Job_post_categoriesCountAggregateInputType | true
+    _avg?: Job_post_categoriesAvgAggregateInputType
+    _sum?: Job_post_categoriesSumAggregateInputType
+    _min?: Job_post_categoriesMinAggregateInputType
+    _max?: Job_post_categoriesMaxAggregateInputType
+  }
+
+  export type Job_post_categoriesGroupByOutputType = {
+    id: string
+    job_category_id: string
+    job_post_id: string
+    type: $Enums.job_post_categories_type
+    required_count: number
+    description: string | null
+    requirements: string | null
+    benefits: string | null
+    created_at: Date | null
+    updated_at: Date | null
+    deleted_at: Date | null
+    _count: Job_post_categoriesCountAggregateOutputType | null
+    _avg: Job_post_categoriesAvgAggregateOutputType | null
+    _sum: Job_post_categoriesSumAggregateOutputType | null
+    _min: Job_post_categoriesMinAggregateOutputType | null
+    _max: Job_post_categoriesMaxAggregateOutputType | null
+  }
+
+  type GetJob_post_categoriesGroupByPayload<T extends job_post_categoriesGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<Job_post_categoriesGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof Job_post_categoriesGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], Job_post_categoriesGroupByOutputType[P]>
+            : GetScalarType<T[P], Job_post_categoriesGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type job_post_categoriesSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    job_category_id?: boolean
+    job_post_id?: boolean
+    type?: boolean
+    required_count?: boolean
+    description?: boolean
+    requirements?: boolean
+    benefits?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    deleted_at?: boolean
+    applicants?: boolean | job_post_categories$applicantsArgs<ExtArgs>
+    job_categories?: boolean | job_categoriesDefaultArgs<ExtArgs>
+    job_posts?: boolean | job_postsDefaultArgs<ExtArgs>
+    selections?: boolean | job_post_categories$selectionsArgs<ExtArgs>
+    _count?: boolean | Job_post_categoriesCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["job_post_categories"]>
+
+
+
+  export type job_post_categoriesSelectScalar = {
+    id?: boolean
+    job_category_id?: boolean
+    job_post_id?: boolean
+    type?: boolean
+    required_count?: boolean
+    description?: boolean
+    requirements?: boolean
+    benefits?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    deleted_at?: boolean
+  }
+
+  export type job_post_categoriesOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "job_category_id" | "job_post_id" | "type" | "required_count" | "description" | "requirements" | "benefits" | "created_at" | "updated_at" | "deleted_at", ExtArgs["result"]["job_post_categories"]>
+  export type job_post_categoriesInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    applicants?: boolean | job_post_categories$applicantsArgs<ExtArgs>
+    job_categories?: boolean | job_categoriesDefaultArgs<ExtArgs>
+    job_posts?: boolean | job_postsDefaultArgs<ExtArgs>
+    selections?: boolean | job_post_categories$selectionsArgs<ExtArgs>
+    _count?: boolean | Job_post_categoriesCountOutputTypeDefaultArgs<ExtArgs>
+  }
+
+  export type $job_post_categoriesPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "job_post_categories"
+    objects: {
+      applicants: Prisma.$applicantsPayload<ExtArgs>[]
+      job_categories: Prisma.$job_categoriesPayload<ExtArgs>
+      job_posts: Prisma.$job_postsPayload<ExtArgs>
+      selections: Prisma.$selectionsPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      job_category_id: string
+      job_post_id: string
+      type: $Enums.job_post_categories_type
+      required_count: number
+      description: string | null
+      requirements: string | null
+      benefits: string | null
+      created_at: Date | null
+      updated_at: Date | null
+      deleted_at: Date | null
+    }, ExtArgs["result"]["job_post_categories"]>
+    composites: {}
+  }
+
+  type job_post_categoriesGetPayload<S extends boolean | null | undefined | job_post_categoriesDefaultArgs> = $Result.GetResult<Prisma.$job_post_categoriesPayload, S>
+
+  type job_post_categoriesCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<job_post_categoriesFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: Job_post_categoriesCountAggregateInputType | true
+    }
+
+  export interface job_post_categoriesDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['job_post_categories'], meta: { name: 'job_post_categories' } }
+    /**
+     * Find zero or one Job_post_categories that matches the filter.
+     * @param {job_post_categoriesFindUniqueArgs} args - Arguments to find a Job_post_categories
+     * @example
+     * // Get one Job_post_categories
+     * const job_post_categories = await prisma.job_post_categories.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends job_post_categoriesFindUniqueArgs>(args: SelectSubset<T, job_post_categoriesFindUniqueArgs<ExtArgs>>): Prisma__job_post_categoriesClient<$Result.GetResult<Prisma.$job_post_categoriesPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Job_post_categories that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {job_post_categoriesFindUniqueOrThrowArgs} args - Arguments to find a Job_post_categories
+     * @example
+     * // Get one Job_post_categories
+     * const job_post_categories = await prisma.job_post_categories.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends job_post_categoriesFindUniqueOrThrowArgs>(args: SelectSubset<T, job_post_categoriesFindUniqueOrThrowArgs<ExtArgs>>): Prisma__job_post_categoriesClient<$Result.GetResult<Prisma.$job_post_categoriesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Job_post_categories that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {job_post_categoriesFindFirstArgs} args - Arguments to find a Job_post_categories
+     * @example
+     * // Get one Job_post_categories
+     * const job_post_categories = await prisma.job_post_categories.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends job_post_categoriesFindFirstArgs>(args?: SelectSubset<T, job_post_categoriesFindFirstArgs<ExtArgs>>): Prisma__job_post_categoriesClient<$Result.GetResult<Prisma.$job_post_categoriesPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Job_post_categories that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {job_post_categoriesFindFirstOrThrowArgs} args - Arguments to find a Job_post_categories
+     * @example
+     * // Get one Job_post_categories
+     * const job_post_categories = await prisma.job_post_categories.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends job_post_categoriesFindFirstOrThrowArgs>(args?: SelectSubset<T, job_post_categoriesFindFirstOrThrowArgs<ExtArgs>>): Prisma__job_post_categoriesClient<$Result.GetResult<Prisma.$job_post_categoriesPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Job_post_categories that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {job_post_categoriesFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Job_post_categories
+     * const job_post_categories = await prisma.job_post_categories.findMany()
+     * 
+     * // Get first 10 Job_post_categories
+     * const job_post_categories = await prisma.job_post_categories.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const job_post_categoriesWithIdOnly = await prisma.job_post_categories.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends job_post_categoriesFindManyArgs>(args?: SelectSubset<T, job_post_categoriesFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$job_post_categoriesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Job_post_categories.
+     * @param {job_post_categoriesCreateArgs} args - Arguments to create a Job_post_categories.
+     * @example
+     * // Create one Job_post_categories
+     * const Job_post_categories = await prisma.job_post_categories.create({
+     *   data: {
+     *     // ... data to create a Job_post_categories
+     *   }
+     * })
+     * 
+     */
+    create<T extends job_post_categoriesCreateArgs>(args: SelectSubset<T, job_post_categoriesCreateArgs<ExtArgs>>): Prisma__job_post_categoriesClient<$Result.GetResult<Prisma.$job_post_categoriesPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Job_post_categories.
+     * @param {job_post_categoriesCreateManyArgs} args - Arguments to create many Job_post_categories.
+     * @example
+     * // Create many Job_post_categories
+     * const job_post_categories = await prisma.job_post_categories.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends job_post_categoriesCreateManyArgs>(args?: SelectSubset<T, job_post_categoriesCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a Job_post_categories.
+     * @param {job_post_categoriesDeleteArgs} args - Arguments to delete one Job_post_categories.
+     * @example
+     * // Delete one Job_post_categories
+     * const Job_post_categories = await prisma.job_post_categories.delete({
+     *   where: {
+     *     // ... filter to delete one Job_post_categories
+     *   }
+     * })
+     * 
+     */
+    delete<T extends job_post_categoriesDeleteArgs>(args: SelectSubset<T, job_post_categoriesDeleteArgs<ExtArgs>>): Prisma__job_post_categoriesClient<$Result.GetResult<Prisma.$job_post_categoriesPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Job_post_categories.
+     * @param {job_post_categoriesUpdateArgs} args - Arguments to update one Job_post_categories.
+     * @example
+     * // Update one Job_post_categories
+     * const job_post_categories = await prisma.job_post_categories.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends job_post_categoriesUpdateArgs>(args: SelectSubset<T, job_post_categoriesUpdateArgs<ExtArgs>>): Prisma__job_post_categoriesClient<$Result.GetResult<Prisma.$job_post_categoriesPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Job_post_categories.
+     * @param {job_post_categoriesDeleteManyArgs} args - Arguments to filter Job_post_categories to delete.
+     * @example
+     * // Delete a few Job_post_categories
+     * const { count } = await prisma.job_post_categories.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends job_post_categoriesDeleteManyArgs>(args?: SelectSubset<T, job_post_categoriesDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Job_post_categories.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {job_post_categoriesUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Job_post_categories
+     * const job_post_categories = await prisma.job_post_categories.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends job_post_categoriesUpdateManyArgs>(args: SelectSubset<T, job_post_categoriesUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one Job_post_categories.
+     * @param {job_post_categoriesUpsertArgs} args - Arguments to update or create a Job_post_categories.
+     * @example
+     * // Update or create a Job_post_categories
+     * const job_post_categories = await prisma.job_post_categories.upsert({
+     *   create: {
+     *     // ... data to create a Job_post_categories
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Job_post_categories we want to update
+     *   }
+     * })
+     */
+    upsert<T extends job_post_categoriesUpsertArgs>(args: SelectSubset<T, job_post_categoriesUpsertArgs<ExtArgs>>): Prisma__job_post_categoriesClient<$Result.GetResult<Prisma.$job_post_categoriesPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Job_post_categories.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {job_post_categoriesCountArgs} args - Arguments to filter Job_post_categories to count.
+     * @example
+     * // Count the number of Job_post_categories
+     * const count = await prisma.job_post_categories.count({
+     *   where: {
+     *     // ... the filter for the Job_post_categories we want to count
+     *   }
+     * })
+    **/
+    count<T extends job_post_categoriesCountArgs>(
+      args?: Subset<T, job_post_categoriesCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], Job_post_categoriesCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Job_post_categories.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {Job_post_categoriesAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends Job_post_categoriesAggregateArgs>(args: Subset<T, Job_post_categoriesAggregateArgs>): Prisma.PrismaPromise<GetJob_post_categoriesAggregateType<T>>
+
+    /**
+     * Group by Job_post_categories.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {job_post_categoriesGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends job_post_categoriesGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: job_post_categoriesGroupByArgs['orderBy'] }
+        : { orderBy?: job_post_categoriesGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, job_post_categoriesGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetJob_post_categoriesGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the job_post_categories model
+   */
+  readonly fields: job_post_categoriesFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for job_post_categories.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__job_post_categoriesClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    applicants<T extends job_post_categories$applicantsArgs<ExtArgs> = {}>(args?: Subset<T, job_post_categories$applicantsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$applicantsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    job_categories<T extends job_categoriesDefaultArgs<ExtArgs> = {}>(args?: Subset<T, job_categoriesDefaultArgs<ExtArgs>>): Prisma__job_categoriesClient<$Result.GetResult<Prisma.$job_categoriesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    job_posts<T extends job_postsDefaultArgs<ExtArgs> = {}>(args?: Subset<T, job_postsDefaultArgs<ExtArgs>>): Prisma__job_postsClient<$Result.GetResult<Prisma.$job_postsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    selections<T extends job_post_categories$selectionsArgs<ExtArgs> = {}>(args?: Subset<T, job_post_categories$selectionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$selectionsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the job_post_categories model
+   */
+  interface job_post_categoriesFieldRefs {
+    readonly id: FieldRef<"job_post_categories", 'String'>
+    readonly job_category_id: FieldRef<"job_post_categories", 'String'>
+    readonly job_post_id: FieldRef<"job_post_categories", 'String'>
+    readonly type: FieldRef<"job_post_categories", 'job_post_categories_type'>
+    readonly required_count: FieldRef<"job_post_categories", 'Int'>
+    readonly description: FieldRef<"job_post_categories", 'String'>
+    readonly requirements: FieldRef<"job_post_categories", 'String'>
+    readonly benefits: FieldRef<"job_post_categories", 'String'>
+    readonly created_at: FieldRef<"job_post_categories", 'DateTime'>
+    readonly updated_at: FieldRef<"job_post_categories", 'DateTime'>
+    readonly deleted_at: FieldRef<"job_post_categories", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * job_post_categories findUnique
+   */
+  export type job_post_categoriesFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the job_post_categories
+     */
+    select?: job_post_categoriesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the job_post_categories
+     */
+    omit?: job_post_categoriesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: job_post_categoriesInclude<ExtArgs> | null
+    /**
+     * Filter, which job_post_categories to fetch.
+     */
+    where: job_post_categoriesWhereUniqueInput
+  }
+
+  /**
+   * job_post_categories findUniqueOrThrow
+   */
+  export type job_post_categoriesFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the job_post_categories
+     */
+    select?: job_post_categoriesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the job_post_categories
+     */
+    omit?: job_post_categoriesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: job_post_categoriesInclude<ExtArgs> | null
+    /**
+     * Filter, which job_post_categories to fetch.
+     */
+    where: job_post_categoriesWhereUniqueInput
+  }
+
+  /**
+   * job_post_categories findFirst
+   */
+  export type job_post_categoriesFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the job_post_categories
+     */
+    select?: job_post_categoriesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the job_post_categories
+     */
+    omit?: job_post_categoriesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: job_post_categoriesInclude<ExtArgs> | null
+    /**
+     * Filter, which job_post_categories to fetch.
+     */
+    where?: job_post_categoriesWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of job_post_categories to fetch.
+     */
+    orderBy?: job_post_categoriesOrderByWithRelationInput | job_post_categoriesOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for job_post_categories.
+     */
+    cursor?: job_post_categoriesWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` job_post_categories from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` job_post_categories.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of job_post_categories.
+     */
+    distinct?: Job_post_categoriesScalarFieldEnum | Job_post_categoriesScalarFieldEnum[]
+  }
+
+  /**
+   * job_post_categories findFirstOrThrow
+   */
+  export type job_post_categoriesFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the job_post_categories
+     */
+    select?: job_post_categoriesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the job_post_categories
+     */
+    omit?: job_post_categoriesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: job_post_categoriesInclude<ExtArgs> | null
+    /**
+     * Filter, which job_post_categories to fetch.
+     */
+    where?: job_post_categoriesWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of job_post_categories to fetch.
+     */
+    orderBy?: job_post_categoriesOrderByWithRelationInput | job_post_categoriesOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for job_post_categories.
+     */
+    cursor?: job_post_categoriesWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` job_post_categories from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` job_post_categories.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of job_post_categories.
+     */
+    distinct?: Job_post_categoriesScalarFieldEnum | Job_post_categoriesScalarFieldEnum[]
+  }
+
+  /**
+   * job_post_categories findMany
+   */
+  export type job_post_categoriesFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the job_post_categories
+     */
+    select?: job_post_categoriesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the job_post_categories
+     */
+    omit?: job_post_categoriesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: job_post_categoriesInclude<ExtArgs> | null
+    /**
+     * Filter, which job_post_categories to fetch.
+     */
+    where?: job_post_categoriesWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of job_post_categories to fetch.
+     */
+    orderBy?: job_post_categoriesOrderByWithRelationInput | job_post_categoriesOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing job_post_categories.
+     */
+    cursor?: job_post_categoriesWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` job_post_categories from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` job_post_categories.
+     */
+    skip?: number
+    distinct?: Job_post_categoriesScalarFieldEnum | Job_post_categoriesScalarFieldEnum[]
+  }
+
+  /**
+   * job_post_categories create
+   */
+  export type job_post_categoriesCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the job_post_categories
+     */
+    select?: job_post_categoriesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the job_post_categories
+     */
+    omit?: job_post_categoriesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: job_post_categoriesInclude<ExtArgs> | null
+    /**
+     * The data needed to create a job_post_categories.
+     */
+    data: XOR<job_post_categoriesCreateInput, job_post_categoriesUncheckedCreateInput>
+  }
+
+  /**
+   * job_post_categories createMany
+   */
+  export type job_post_categoriesCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many job_post_categories.
+     */
+    data: job_post_categoriesCreateManyInput | job_post_categoriesCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * job_post_categories update
+   */
+  export type job_post_categoriesUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the job_post_categories
+     */
+    select?: job_post_categoriesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the job_post_categories
+     */
+    omit?: job_post_categoriesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: job_post_categoriesInclude<ExtArgs> | null
+    /**
+     * The data needed to update a job_post_categories.
+     */
+    data: XOR<job_post_categoriesUpdateInput, job_post_categoriesUncheckedUpdateInput>
+    /**
+     * Choose, which job_post_categories to update.
+     */
+    where: job_post_categoriesWhereUniqueInput
+  }
+
+  /**
+   * job_post_categories updateMany
+   */
+  export type job_post_categoriesUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update job_post_categories.
+     */
+    data: XOR<job_post_categoriesUpdateManyMutationInput, job_post_categoriesUncheckedUpdateManyInput>
+    /**
+     * Filter which job_post_categories to update
+     */
+    where?: job_post_categoriesWhereInput
+    /**
+     * Limit how many job_post_categories to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * job_post_categories upsert
+   */
+  export type job_post_categoriesUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the job_post_categories
+     */
+    select?: job_post_categoriesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the job_post_categories
+     */
+    omit?: job_post_categoriesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: job_post_categoriesInclude<ExtArgs> | null
+    /**
+     * The filter to search for the job_post_categories to update in case it exists.
+     */
+    where: job_post_categoriesWhereUniqueInput
+    /**
+     * In case the job_post_categories found by the `where` argument doesn't exist, create a new job_post_categories with this data.
+     */
+    create: XOR<job_post_categoriesCreateInput, job_post_categoriesUncheckedCreateInput>
+    /**
+     * In case the job_post_categories was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<job_post_categoriesUpdateInput, job_post_categoriesUncheckedUpdateInput>
+  }
+
+  /**
+   * job_post_categories delete
+   */
+  export type job_post_categoriesDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the job_post_categories
+     */
+    select?: job_post_categoriesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the job_post_categories
+     */
+    omit?: job_post_categoriesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: job_post_categoriesInclude<ExtArgs> | null
+    /**
+     * Filter which job_post_categories to delete.
+     */
+    where: job_post_categoriesWhereUniqueInput
+  }
+
+  /**
+   * job_post_categories deleteMany
+   */
+  export type job_post_categoriesDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which job_post_categories to delete
+     */
+    where?: job_post_categoriesWhereInput
+    /**
+     * Limit how many job_post_categories to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * job_post_categories.applicants
+   */
+  export type job_post_categories$applicantsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the applicants
+     */
+    select?: applicantsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the applicants
+     */
+    omit?: applicantsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: applicantsInclude<ExtArgs> | null
+    where?: applicantsWhereInput
+    orderBy?: applicantsOrderByWithRelationInput | applicantsOrderByWithRelationInput[]
+    cursor?: applicantsWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ApplicantsScalarFieldEnum | ApplicantsScalarFieldEnum[]
+  }
+
+  /**
+   * job_post_categories.selections
+   */
+  export type job_post_categories$selectionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the selections
+     */
+    select?: selectionsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the selections
+     */
+    omit?: selectionsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: selectionsInclude<ExtArgs> | null
+    where?: selectionsWhereInput
+    orderBy?: selectionsOrderByWithRelationInput | selectionsOrderByWithRelationInput[]
+    cursor?: selectionsWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: SelectionsScalarFieldEnum | SelectionsScalarFieldEnum[]
+  }
+
+  /**
+   * job_post_categories without action
+   */
+  export type job_post_categoriesDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the job_post_categories
+     */
+    select?: job_post_categoriesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the job_post_categories
+     */
+    omit?: job_post_categoriesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: job_post_categoriesInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -15684,7 +15841,7 @@ export namespace Prisma {
   export const ApplicantsScalarFieldEnum: {
     id: 'id',
     user_id: 'user_id',
-    job_id: 'job_id',
+    job_post_category_id: 'job_post_category_id',
     status: 'status',
     cv: 'cv',
     national_identity_card: 'national_identity_card',
@@ -15720,7 +15877,9 @@ export namespace Prisma {
     email: 'email',
     phone: 'phone',
     website: 'website',
-    address: 'address',
+    logo: 'logo',
+    location: 'location',
+    description: 'description',
     created_at: 'created_at',
     updated_at: 'updated_at',
     deleted_at: 'deleted_at'
@@ -15769,22 +15928,11 @@ export namespace Prisma {
   export type Job_categoriesScalarFieldEnum = (typeof Job_categoriesScalarFieldEnum)[keyof typeof Job_categoriesScalarFieldEnum]
 
 
-  export const Job_categories_job_postsScalarFieldEnum: {
-    job_category_id: 'job_category_id',
-    job_post_id: 'job_post_id'
-  };
-
-  export type Job_categories_job_postsScalarFieldEnum = (typeof Job_categories_job_postsScalarFieldEnum)[keyof typeof Job_categories_job_postsScalarFieldEnum]
-
-
   export const Job_postsScalarFieldEnum: {
     id: 'id',
     company_id: 'company_id',
     title: 'title',
-    description: 'description',
-    requirements: 'requirements',
-    benefits: 'benefits',
-    type: 'type',
+    thumbnail: 'thumbnail',
     status: 'status',
     created_at: 'created_at',
     updated_at: 'updated_at',
@@ -15819,7 +15967,7 @@ export namespace Prisma {
   export const SelectionsScalarFieldEnum: {
     id: 'id',
     applicant_id: 'applicant_id',
-    job_id: 'job_id',
+    job_post_category_id: 'job_post_category_id',
     stage: 'stage',
     status: 'status',
     attachment: 'attachment',
@@ -15854,12 +16002,30 @@ export namespace Prisma {
     password: 'password',
     role: 'role',
     verified_at: 'verified_at',
+    remember_token: 'remember_token',
     created_at: 'created_at',
     updated_at: 'updated_at',
     deleted_at: 'deleted_at'
   };
 
   export type UsersScalarFieldEnum = (typeof UsersScalarFieldEnum)[keyof typeof UsersScalarFieldEnum]
+
+
+  export const Job_post_categoriesScalarFieldEnum: {
+    id: 'id',
+    job_category_id: 'job_category_id',
+    job_post_id: 'job_post_id',
+    type: 'type',
+    required_count: 'required_count',
+    description: 'description',
+    requirements: 'requirements',
+    benefits: 'benefits',
+    created_at: 'created_at',
+    updated_at: 'updated_at',
+    deleted_at: 'deleted_at'
+  };
+
+  export type Job_post_categoriesScalarFieldEnum = (typeof Job_post_categoriesScalarFieldEnum)[keyof typeof Job_post_categoriesScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -15881,7 +16047,7 @@ export namespace Prisma {
   export const applicantsOrderByRelevanceFieldEnum: {
     id: 'id',
     user_id: 'user_id',
-    job_id: 'job_id',
+    job_post_category_id: 'job_post_category_id',
     cv: 'cv',
     national_identity_card: 'national_identity_card'
   };
@@ -15911,7 +16077,9 @@ export namespace Prisma {
     email: 'email',
     phone: 'phone',
     website: 'website',
-    address: 'address'
+    logo: 'logo',
+    location: 'location',
+    description: 'description'
   };
 
   export type companiesOrderByRelevanceFieldEnum = (typeof companiesOrderByRelevanceFieldEnum)[keyof typeof companiesOrderByRelevanceFieldEnum]
@@ -15946,21 +16114,11 @@ export namespace Prisma {
   export type job_categoriesOrderByRelevanceFieldEnum = (typeof job_categoriesOrderByRelevanceFieldEnum)[keyof typeof job_categoriesOrderByRelevanceFieldEnum]
 
 
-  export const job_categories_job_postsOrderByRelevanceFieldEnum: {
-    job_category_id: 'job_category_id',
-    job_post_id: 'job_post_id'
-  };
-
-  export type job_categories_job_postsOrderByRelevanceFieldEnum = (typeof job_categories_job_postsOrderByRelevanceFieldEnum)[keyof typeof job_categories_job_postsOrderByRelevanceFieldEnum]
-
-
   export const job_postsOrderByRelevanceFieldEnum: {
     id: 'id',
     company_id: 'company_id',
     title: 'title',
-    description: 'description',
-    requirements: 'requirements',
-    benefits: 'benefits'
+    thumbnail: 'thumbnail'
   };
 
   export type job_postsOrderByRelevanceFieldEnum = (typeof job_postsOrderByRelevanceFieldEnum)[keyof typeof job_postsOrderByRelevanceFieldEnum]
@@ -15984,7 +16142,7 @@ export namespace Prisma {
   export const selectionsOrderByRelevanceFieldEnum: {
     id: 'id',
     applicant_id: 'applicant_id',
-    job_id: 'job_id',
+    job_post_category_id: 'job_post_category_id',
     attachment: 'attachment'
   };
 
@@ -16010,10 +16168,23 @@ export namespace Prisma {
     email: 'email',
     address: 'address',
     description: 'description',
-    password: 'password'
+    password: 'password',
+    remember_token: 'remember_token'
   };
 
   export type usersOrderByRelevanceFieldEnum = (typeof usersOrderByRelevanceFieldEnum)[keyof typeof usersOrderByRelevanceFieldEnum]
+
+
+  export const job_post_categoriesOrderByRelevanceFieldEnum: {
+    id: 'id',
+    job_category_id: 'job_category_id',
+    job_post_id: 'job_post_id',
+    description: 'description',
+    requirements: 'requirements',
+    benefits: 'benefits'
+  };
+
+  export type job_post_categoriesOrderByRelevanceFieldEnum = (typeof job_post_categoriesOrderByRelevanceFieldEnum)[keyof typeof job_post_categoriesOrderByRelevanceFieldEnum]
 
 
   /**
@@ -16057,13 +16228,6 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'job_posts_type'
-   */
-  export type Enumjob_posts_typeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'job_posts_type'>
-    
-
-
-  /**
    * Reference to a field of type 'job_posts_status'
    */
   export type Enumjob_posts_statusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'job_posts_status'>
@@ -16092,6 +16256,13 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'job_post_categories_type'
+   */
+  export type Enumjob_post_categories_typeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'job_post_categories_type'>
+    
+
+
+  /**
    * Reference to a field of type 'Float'
    */
   export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -16107,14 +16278,14 @@ export namespace Prisma {
     NOT?: applicantsWhereInput | applicantsWhereInput[]
     id?: StringFilter<"applicants"> | string
     user_id?: StringFilter<"applicants"> | string
-    job_id?: StringFilter<"applicants"> | string
+    job_post_category_id?: StringFilter<"applicants"> | string
     status?: Enumapplicants_statusFilter<"applicants"> | $Enums.applicants_status
     cv?: StringFilter<"applicants"> | string
     national_identity_card?: StringFilter<"applicants"> | string
     created_at?: DateTimeNullableFilter<"applicants"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"applicants"> | Date | string | null
     deleted_at?: DateTimeNullableFilter<"applicants"> | Date | string | null
-    job_posts?: XOR<Job_postsScalarRelationFilter, job_postsWhereInput>
+    job_post_categories?: XOR<Job_post_categoriesScalarRelationFilter, job_post_categoriesWhereInput>
     users?: XOR<UsersScalarRelationFilter, usersWhereInput>
     selections?: SelectionsListRelationFilter
   }
@@ -16122,14 +16293,14 @@ export namespace Prisma {
   export type applicantsOrderByWithRelationInput = {
     id?: SortOrder
     user_id?: SortOrder
-    job_id?: SortOrder
+    job_post_category_id?: SortOrder
     status?: SortOrder
     cv?: SortOrder
     national_identity_card?: SortOrder
     created_at?: SortOrderInput | SortOrder
     updated_at?: SortOrderInput | SortOrder
     deleted_at?: SortOrderInput | SortOrder
-    job_posts?: job_postsOrderByWithRelationInput
+    job_post_categories?: job_post_categoriesOrderByWithRelationInput
     users?: usersOrderByWithRelationInput
     selections?: selectionsOrderByRelationAggregateInput
     _relevance?: applicantsOrderByRelevanceInput
@@ -16141,14 +16312,14 @@ export namespace Prisma {
     OR?: applicantsWhereInput[]
     NOT?: applicantsWhereInput | applicantsWhereInput[]
     user_id?: StringFilter<"applicants"> | string
-    job_id?: StringFilter<"applicants"> | string
+    job_post_category_id?: StringFilter<"applicants"> | string
     status?: Enumapplicants_statusFilter<"applicants"> | $Enums.applicants_status
     cv?: StringFilter<"applicants"> | string
     national_identity_card?: StringFilter<"applicants"> | string
     created_at?: DateTimeNullableFilter<"applicants"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"applicants"> | Date | string | null
     deleted_at?: DateTimeNullableFilter<"applicants"> | Date | string | null
-    job_posts?: XOR<Job_postsScalarRelationFilter, job_postsWhereInput>
+    job_post_categories?: XOR<Job_post_categoriesScalarRelationFilter, job_post_categoriesWhereInput>
     users?: XOR<UsersScalarRelationFilter, usersWhereInput>
     selections?: SelectionsListRelationFilter
   }, "id">
@@ -16156,7 +16327,7 @@ export namespace Prisma {
   export type applicantsOrderByWithAggregationInput = {
     id?: SortOrder
     user_id?: SortOrder
-    job_id?: SortOrder
+    job_post_category_id?: SortOrder
     status?: SortOrder
     cv?: SortOrder
     national_identity_card?: SortOrder
@@ -16174,7 +16345,7 @@ export namespace Prisma {
     NOT?: applicantsScalarWhereWithAggregatesInput | applicantsScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"applicants"> | string
     user_id?: StringWithAggregatesFilter<"applicants"> | string
-    job_id?: StringWithAggregatesFilter<"applicants"> | string
+    job_post_category_id?: StringWithAggregatesFilter<"applicants"> | string
     status?: Enumapplicants_statusWithAggregatesFilter<"applicants"> | $Enums.applicants_status
     cv?: StringWithAggregatesFilter<"applicants"> | string
     national_identity_card?: StringWithAggregatesFilter<"applicants"> | string
@@ -16281,8 +16452,10 @@ export namespace Prisma {
     name?: StringFilter<"companies"> | string
     email?: StringFilter<"companies"> | string
     phone?: StringFilter<"companies"> | string
-    website?: StringFilter<"companies"> | string
-    address?: StringFilter<"companies"> | string
+    website?: StringNullableFilter<"companies"> | string | null
+    logo?: StringNullableFilter<"companies"> | string | null
+    location?: StringFilter<"companies"> | string
+    description?: StringNullableFilter<"companies"> | string | null
     created_at?: DateTimeNullableFilter<"companies"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"companies"> | Date | string | null
     deleted_at?: DateTimeNullableFilter<"companies"> | Date | string | null
@@ -16294,8 +16467,10 @@ export namespace Prisma {
     name?: SortOrder
     email?: SortOrder
     phone?: SortOrder
-    website?: SortOrder
-    address?: SortOrder
+    website?: SortOrderInput | SortOrder
+    logo?: SortOrderInput | SortOrder
+    location?: SortOrder
+    description?: SortOrderInput | SortOrder
     created_at?: SortOrderInput | SortOrder
     updated_at?: SortOrderInput | SortOrder
     deleted_at?: SortOrderInput | SortOrder
@@ -16311,8 +16486,10 @@ export namespace Prisma {
     name?: StringFilter<"companies"> | string
     email?: StringFilter<"companies"> | string
     phone?: StringFilter<"companies"> | string
-    website?: StringFilter<"companies"> | string
-    address?: StringFilter<"companies"> | string
+    website?: StringNullableFilter<"companies"> | string | null
+    logo?: StringNullableFilter<"companies"> | string | null
+    location?: StringFilter<"companies"> | string
+    description?: StringNullableFilter<"companies"> | string | null
     created_at?: DateTimeNullableFilter<"companies"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"companies"> | Date | string | null
     deleted_at?: DateTimeNullableFilter<"companies"> | Date | string | null
@@ -16324,8 +16501,10 @@ export namespace Prisma {
     name?: SortOrder
     email?: SortOrder
     phone?: SortOrder
-    website?: SortOrder
-    address?: SortOrder
+    website?: SortOrderInput | SortOrder
+    logo?: SortOrderInput | SortOrder
+    location?: SortOrder
+    description?: SortOrderInput | SortOrder
     created_at?: SortOrderInput | SortOrder
     updated_at?: SortOrderInput | SortOrder
     deleted_at?: SortOrderInput | SortOrder
@@ -16342,8 +16521,10 @@ export namespace Prisma {
     name?: StringWithAggregatesFilter<"companies"> | string
     email?: StringWithAggregatesFilter<"companies"> | string
     phone?: StringWithAggregatesFilter<"companies"> | string
-    website?: StringWithAggregatesFilter<"companies"> | string
-    address?: StringWithAggregatesFilter<"companies"> | string
+    website?: StringNullableWithAggregatesFilter<"companies"> | string | null
+    logo?: StringNullableWithAggregatesFilter<"companies"> | string | null
+    location?: StringWithAggregatesFilter<"companies"> | string
+    description?: StringNullableWithAggregatesFilter<"companies"> | string | null
     created_at?: DateTimeNullableWithAggregatesFilter<"companies"> | Date | string | null
     updated_at?: DateTimeNullableWithAggregatesFilter<"companies"> | Date | string | null
     deleted_at?: DateTimeNullableWithAggregatesFilter<"companies"> | Date | string | null
@@ -16503,7 +16684,7 @@ export namespace Prisma {
     created_at?: DateTimeNullableFilter<"job_categories"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"job_categories"> | Date | string | null
     deleted_at?: DateTimeNullableFilter<"job_categories"> | Date | string | null
-    job_categories_job_posts?: Job_categories_job_postsListRelationFilter
+    job_post_categories?: Job_post_categoriesListRelationFilter
   }
 
   export type job_categoriesOrderByWithRelationInput = {
@@ -16512,7 +16693,7 @@ export namespace Prisma {
     created_at?: SortOrderInput | SortOrder
     updated_at?: SortOrderInput | SortOrder
     deleted_at?: SortOrderInput | SortOrder
-    job_categories_job_posts?: job_categories_job_postsOrderByRelationAggregateInput
+    job_post_categories?: job_post_categoriesOrderByRelationAggregateInput
     _relevance?: job_categoriesOrderByRelevanceInput
   }
 
@@ -16525,7 +16706,7 @@ export namespace Prisma {
     created_at?: DateTimeNullableFilter<"job_categories"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"job_categories"> | Date | string | null
     deleted_at?: DateTimeNullableFilter<"job_categories"> | Date | string | null
-    job_categories_job_posts?: Job_categories_job_postsListRelationFilter
+    job_post_categories?: Job_post_categoriesListRelationFilter
   }, "id">
 
   export type job_categoriesOrderByWithAggregationInput = {
@@ -16550,51 +16731,6 @@ export namespace Prisma {
     deleted_at?: DateTimeNullableWithAggregatesFilter<"job_categories"> | Date | string | null
   }
 
-  export type job_categories_job_postsWhereInput = {
-    AND?: job_categories_job_postsWhereInput | job_categories_job_postsWhereInput[]
-    OR?: job_categories_job_postsWhereInput[]
-    NOT?: job_categories_job_postsWhereInput | job_categories_job_postsWhereInput[]
-    job_category_id?: StringFilter<"job_categories_job_posts"> | string
-    job_post_id?: StringFilter<"job_categories_job_posts"> | string
-    job_categories?: XOR<Job_categoriesScalarRelationFilter, job_categoriesWhereInput>
-    job_posts?: XOR<Job_postsScalarRelationFilter, job_postsWhereInput>
-  }
-
-  export type job_categories_job_postsOrderByWithRelationInput = {
-    job_category_id?: SortOrder
-    job_post_id?: SortOrder
-    job_categories?: job_categoriesOrderByWithRelationInput
-    job_posts?: job_postsOrderByWithRelationInput
-    _relevance?: job_categories_job_postsOrderByRelevanceInput
-  }
-
-  export type job_categories_job_postsWhereUniqueInput = Prisma.AtLeast<{
-    job_category_id_job_post_id?: job_categories_job_postsJob_category_idJob_post_idCompoundUniqueInput
-    AND?: job_categories_job_postsWhereInput | job_categories_job_postsWhereInput[]
-    OR?: job_categories_job_postsWhereInput[]
-    NOT?: job_categories_job_postsWhereInput | job_categories_job_postsWhereInput[]
-    job_category_id?: StringFilter<"job_categories_job_posts"> | string
-    job_post_id?: StringFilter<"job_categories_job_posts"> | string
-    job_categories?: XOR<Job_categoriesScalarRelationFilter, job_categoriesWhereInput>
-    job_posts?: XOR<Job_postsScalarRelationFilter, job_postsWhereInput>
-  }, "job_category_id_job_post_id">
-
-  export type job_categories_job_postsOrderByWithAggregationInput = {
-    job_category_id?: SortOrder
-    job_post_id?: SortOrder
-    _count?: job_categories_job_postsCountOrderByAggregateInput
-    _max?: job_categories_job_postsMaxOrderByAggregateInput
-    _min?: job_categories_job_postsMinOrderByAggregateInput
-  }
-
-  export type job_categories_job_postsScalarWhereWithAggregatesInput = {
-    AND?: job_categories_job_postsScalarWhereWithAggregatesInput | job_categories_job_postsScalarWhereWithAggregatesInput[]
-    OR?: job_categories_job_postsScalarWhereWithAggregatesInput[]
-    NOT?: job_categories_job_postsScalarWhereWithAggregatesInput | job_categories_job_postsScalarWhereWithAggregatesInput[]
-    job_category_id?: StringWithAggregatesFilter<"job_categories_job_posts"> | string
-    job_post_id?: StringWithAggregatesFilter<"job_categories_job_posts"> | string
-  }
-
   export type job_postsWhereInput = {
     AND?: job_postsWhereInput | job_postsWhereInput[]
     OR?: job_postsWhereInput[]
@@ -16602,36 +16738,26 @@ export namespace Prisma {
     id?: StringFilter<"job_posts"> | string
     company_id?: StringFilter<"job_posts"> | string
     title?: StringFilter<"job_posts"> | string
-    description?: StringFilter<"job_posts"> | string
-    requirements?: StringFilter<"job_posts"> | string
-    benefits?: StringFilter<"job_posts"> | string
-    type?: Enumjob_posts_typeFilter<"job_posts"> | $Enums.job_posts_type
+    thumbnail?: StringFilter<"job_posts"> | string
     status?: Enumjob_posts_statusFilter<"job_posts"> | $Enums.job_posts_status
     created_at?: DateTimeNullableFilter<"job_posts"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"job_posts"> | Date | string | null
     deleted_at?: DateTimeNullableFilter<"job_posts"> | Date | string | null
-    applicants?: ApplicantsListRelationFilter
-    job_categories_job_posts?: Job_categories_job_postsListRelationFilter
+    job_post_categories?: Job_post_categoriesListRelationFilter
     companies?: XOR<CompaniesScalarRelationFilter, companiesWhereInput>
-    selections?: SelectionsListRelationFilter
   }
 
   export type job_postsOrderByWithRelationInput = {
     id?: SortOrder
     company_id?: SortOrder
     title?: SortOrder
-    description?: SortOrder
-    requirements?: SortOrder
-    benefits?: SortOrder
-    type?: SortOrder
+    thumbnail?: SortOrder
     status?: SortOrder
     created_at?: SortOrderInput | SortOrder
     updated_at?: SortOrderInput | SortOrder
     deleted_at?: SortOrderInput | SortOrder
-    applicants?: applicantsOrderByRelationAggregateInput
-    job_categories_job_posts?: job_categories_job_postsOrderByRelationAggregateInput
+    job_post_categories?: job_post_categoriesOrderByRelationAggregateInput
     companies?: companiesOrderByWithRelationInput
-    selections?: selectionsOrderByRelationAggregateInput
     _relevance?: job_postsOrderByRelevanceInput
   }
 
@@ -16642,28 +16768,20 @@ export namespace Prisma {
     NOT?: job_postsWhereInput | job_postsWhereInput[]
     company_id?: StringFilter<"job_posts"> | string
     title?: StringFilter<"job_posts"> | string
-    description?: StringFilter<"job_posts"> | string
-    requirements?: StringFilter<"job_posts"> | string
-    benefits?: StringFilter<"job_posts"> | string
-    type?: Enumjob_posts_typeFilter<"job_posts"> | $Enums.job_posts_type
+    thumbnail?: StringFilter<"job_posts"> | string
     status?: Enumjob_posts_statusFilter<"job_posts"> | $Enums.job_posts_status
     created_at?: DateTimeNullableFilter<"job_posts"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"job_posts"> | Date | string | null
     deleted_at?: DateTimeNullableFilter<"job_posts"> | Date | string | null
-    applicants?: ApplicantsListRelationFilter
-    job_categories_job_posts?: Job_categories_job_postsListRelationFilter
+    job_post_categories?: Job_post_categoriesListRelationFilter
     companies?: XOR<CompaniesScalarRelationFilter, companiesWhereInput>
-    selections?: SelectionsListRelationFilter
   }, "id">
 
   export type job_postsOrderByWithAggregationInput = {
     id?: SortOrder
     company_id?: SortOrder
     title?: SortOrder
-    description?: SortOrder
-    requirements?: SortOrder
-    benefits?: SortOrder
-    type?: SortOrder
+    thumbnail?: SortOrder
     status?: SortOrder
     created_at?: SortOrderInput | SortOrder
     updated_at?: SortOrderInput | SortOrder
@@ -16680,10 +16798,7 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"job_posts"> | string
     company_id?: StringWithAggregatesFilter<"job_posts"> | string
     title?: StringWithAggregatesFilter<"job_posts"> | string
-    description?: StringWithAggregatesFilter<"job_posts"> | string
-    requirements?: StringWithAggregatesFilter<"job_posts"> | string
-    benefits?: StringWithAggregatesFilter<"job_posts"> | string
-    type?: Enumjob_posts_typeWithAggregatesFilter<"job_posts"> | $Enums.job_posts_type
+    thumbnail?: StringWithAggregatesFilter<"job_posts"> | string
     status?: Enumjob_posts_statusWithAggregatesFilter<"job_posts"> | $Enums.job_posts_status
     created_at?: DateTimeNullableWithAggregatesFilter<"job_posts"> | Date | string | null
     updated_at?: DateTimeNullableWithAggregatesFilter<"job_posts"> | Date | string | null
@@ -16806,7 +16921,7 @@ export namespace Prisma {
     NOT?: selectionsWhereInput | selectionsWhereInput[]
     id?: StringFilter<"selections"> | string
     applicant_id?: StringFilter<"selections"> | string
-    job_id?: StringFilter<"selections"> | string
+    job_post_category_id?: StringFilter<"selections"> | string
     stage?: Enumselections_stageFilter<"selections"> | $Enums.selections_stage
     status?: Enumselections_statusFilter<"selections"> | $Enums.selections_status
     attachment?: StringNullableFilter<"selections"> | string | null
@@ -16814,13 +16929,13 @@ export namespace Prisma {
     updated_at?: DateTimeNullableFilter<"selections"> | Date | string | null
     deleted_at?: DateTimeNullableFilter<"selections"> | Date | string | null
     applicants?: XOR<ApplicantsScalarRelationFilter, applicantsWhereInput>
-    job_posts?: XOR<Job_postsScalarRelationFilter, job_postsWhereInput>
+    job_post_categories?: XOR<Job_post_categoriesScalarRelationFilter, job_post_categoriesWhereInput>
   }
 
   export type selectionsOrderByWithRelationInput = {
     id?: SortOrder
     applicant_id?: SortOrder
-    job_id?: SortOrder
+    job_post_category_id?: SortOrder
     stage?: SortOrder
     status?: SortOrder
     attachment?: SortOrderInput | SortOrder
@@ -16828,7 +16943,7 @@ export namespace Prisma {
     updated_at?: SortOrderInput | SortOrder
     deleted_at?: SortOrderInput | SortOrder
     applicants?: applicantsOrderByWithRelationInput
-    job_posts?: job_postsOrderByWithRelationInput
+    job_post_categories?: job_post_categoriesOrderByWithRelationInput
     _relevance?: selectionsOrderByRelevanceInput
   }
 
@@ -16838,7 +16953,7 @@ export namespace Prisma {
     OR?: selectionsWhereInput[]
     NOT?: selectionsWhereInput | selectionsWhereInput[]
     applicant_id?: StringFilter<"selections"> | string
-    job_id?: StringFilter<"selections"> | string
+    job_post_category_id?: StringFilter<"selections"> | string
     stage?: Enumselections_stageFilter<"selections"> | $Enums.selections_stage
     status?: Enumselections_statusFilter<"selections"> | $Enums.selections_status
     attachment?: StringNullableFilter<"selections"> | string | null
@@ -16846,13 +16961,13 @@ export namespace Prisma {
     updated_at?: DateTimeNullableFilter<"selections"> | Date | string | null
     deleted_at?: DateTimeNullableFilter<"selections"> | Date | string | null
     applicants?: XOR<ApplicantsScalarRelationFilter, applicantsWhereInput>
-    job_posts?: XOR<Job_postsScalarRelationFilter, job_postsWhereInput>
+    job_post_categories?: XOR<Job_post_categoriesScalarRelationFilter, job_post_categoriesWhereInput>
   }, "id">
 
   export type selectionsOrderByWithAggregationInput = {
     id?: SortOrder
     applicant_id?: SortOrder
-    job_id?: SortOrder
+    job_post_category_id?: SortOrder
     stage?: SortOrder
     status?: SortOrder
     attachment?: SortOrderInput | SortOrder
@@ -16870,7 +16985,7 @@ export namespace Prisma {
     NOT?: selectionsScalarWhereWithAggregatesInput | selectionsScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"selections"> | string
     applicant_id?: StringWithAggregatesFilter<"selections"> | string
-    job_id?: StringWithAggregatesFilter<"selections"> | string
+    job_post_category_id?: StringWithAggregatesFilter<"selections"> | string
     stage?: Enumselections_stageWithAggregatesFilter<"selections"> | $Enums.selections_stage
     status?: Enumselections_statusWithAggregatesFilter<"selections"> | $Enums.selections_status
     attachment?: StringNullableWithAggregatesFilter<"selections"> | string | null
@@ -16953,6 +17068,7 @@ export namespace Prisma {
     password?: StringFilter<"users"> | string
     role?: Enumusers_roleFilter<"users"> | $Enums.users_role
     verified_at?: DateTimeNullableFilter<"users"> | Date | string | null
+    remember_token?: StringNullableFilter<"users"> | string | null
     created_at?: DateTimeNullableFilter<"users"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"users"> | Date | string | null
     deleted_at?: DateTimeNullableFilter<"users"> | Date | string | null
@@ -16970,6 +17086,7 @@ export namespace Prisma {
     password?: SortOrder
     role?: SortOrder
     verified_at?: SortOrderInput | SortOrder
+    remember_token?: SortOrderInput | SortOrder
     created_at?: SortOrderInput | SortOrder
     updated_at?: SortOrderInput | SortOrder
     deleted_at?: SortOrderInput | SortOrder
@@ -16991,6 +17108,7 @@ export namespace Prisma {
     password?: StringFilter<"users"> | string
     role?: Enumusers_roleFilter<"users"> | $Enums.users_role
     verified_at?: DateTimeNullableFilter<"users"> | Date | string | null
+    remember_token?: StringNullableFilter<"users"> | string | null
     created_at?: DateTimeNullableFilter<"users"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"users"> | Date | string | null
     deleted_at?: DateTimeNullableFilter<"users"> | Date | string | null
@@ -17008,6 +17126,7 @@ export namespace Prisma {
     password?: SortOrder
     role?: SortOrder
     verified_at?: SortOrderInput | SortOrder
+    remember_token?: SortOrderInput | SortOrder
     created_at?: SortOrderInput | SortOrder
     updated_at?: SortOrderInput | SortOrder
     deleted_at?: SortOrderInput | SortOrder
@@ -17030,9 +17149,108 @@ export namespace Prisma {
     password?: StringWithAggregatesFilter<"users"> | string
     role?: Enumusers_roleWithAggregatesFilter<"users"> | $Enums.users_role
     verified_at?: DateTimeNullableWithAggregatesFilter<"users"> | Date | string | null
+    remember_token?: StringNullableWithAggregatesFilter<"users"> | string | null
     created_at?: DateTimeNullableWithAggregatesFilter<"users"> | Date | string | null
     updated_at?: DateTimeNullableWithAggregatesFilter<"users"> | Date | string | null
     deleted_at?: DateTimeNullableWithAggregatesFilter<"users"> | Date | string | null
+  }
+
+  export type job_post_categoriesWhereInput = {
+    AND?: job_post_categoriesWhereInput | job_post_categoriesWhereInput[]
+    OR?: job_post_categoriesWhereInput[]
+    NOT?: job_post_categoriesWhereInput | job_post_categoriesWhereInput[]
+    id?: StringFilter<"job_post_categories"> | string
+    job_category_id?: StringFilter<"job_post_categories"> | string
+    job_post_id?: StringFilter<"job_post_categories"> | string
+    type?: Enumjob_post_categories_typeFilter<"job_post_categories"> | $Enums.job_post_categories_type
+    required_count?: IntFilter<"job_post_categories"> | number
+    description?: StringNullableFilter<"job_post_categories"> | string | null
+    requirements?: StringNullableFilter<"job_post_categories"> | string | null
+    benefits?: StringNullableFilter<"job_post_categories"> | string | null
+    created_at?: DateTimeNullableFilter<"job_post_categories"> | Date | string | null
+    updated_at?: DateTimeNullableFilter<"job_post_categories"> | Date | string | null
+    deleted_at?: DateTimeNullableFilter<"job_post_categories"> | Date | string | null
+    applicants?: ApplicantsListRelationFilter
+    job_categories?: XOR<Job_categoriesScalarRelationFilter, job_categoriesWhereInput>
+    job_posts?: XOR<Job_postsScalarRelationFilter, job_postsWhereInput>
+    selections?: SelectionsListRelationFilter
+  }
+
+  export type job_post_categoriesOrderByWithRelationInput = {
+    id?: SortOrder
+    job_category_id?: SortOrder
+    job_post_id?: SortOrder
+    type?: SortOrder
+    required_count?: SortOrder
+    description?: SortOrderInput | SortOrder
+    requirements?: SortOrderInput | SortOrder
+    benefits?: SortOrderInput | SortOrder
+    created_at?: SortOrderInput | SortOrder
+    updated_at?: SortOrderInput | SortOrder
+    deleted_at?: SortOrderInput | SortOrder
+    applicants?: applicantsOrderByRelationAggregateInput
+    job_categories?: job_categoriesOrderByWithRelationInput
+    job_posts?: job_postsOrderByWithRelationInput
+    selections?: selectionsOrderByRelationAggregateInput
+    _relevance?: job_post_categoriesOrderByRelevanceInput
+  }
+
+  export type job_post_categoriesWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    job_post_id_job_category_id?: job_post_categoriesJob_post_idJob_category_idCompoundUniqueInput
+    AND?: job_post_categoriesWhereInput | job_post_categoriesWhereInput[]
+    OR?: job_post_categoriesWhereInput[]
+    NOT?: job_post_categoriesWhereInput | job_post_categoriesWhereInput[]
+    job_category_id?: StringFilter<"job_post_categories"> | string
+    job_post_id?: StringFilter<"job_post_categories"> | string
+    type?: Enumjob_post_categories_typeFilter<"job_post_categories"> | $Enums.job_post_categories_type
+    required_count?: IntFilter<"job_post_categories"> | number
+    description?: StringNullableFilter<"job_post_categories"> | string | null
+    requirements?: StringNullableFilter<"job_post_categories"> | string | null
+    benefits?: StringNullableFilter<"job_post_categories"> | string | null
+    created_at?: DateTimeNullableFilter<"job_post_categories"> | Date | string | null
+    updated_at?: DateTimeNullableFilter<"job_post_categories"> | Date | string | null
+    deleted_at?: DateTimeNullableFilter<"job_post_categories"> | Date | string | null
+    applicants?: ApplicantsListRelationFilter
+    job_categories?: XOR<Job_categoriesScalarRelationFilter, job_categoriesWhereInput>
+    job_posts?: XOR<Job_postsScalarRelationFilter, job_postsWhereInput>
+    selections?: SelectionsListRelationFilter
+  }, "id" | "job_post_id_job_category_id">
+
+  export type job_post_categoriesOrderByWithAggregationInput = {
+    id?: SortOrder
+    job_category_id?: SortOrder
+    job_post_id?: SortOrder
+    type?: SortOrder
+    required_count?: SortOrder
+    description?: SortOrderInput | SortOrder
+    requirements?: SortOrderInput | SortOrder
+    benefits?: SortOrderInput | SortOrder
+    created_at?: SortOrderInput | SortOrder
+    updated_at?: SortOrderInput | SortOrder
+    deleted_at?: SortOrderInput | SortOrder
+    _count?: job_post_categoriesCountOrderByAggregateInput
+    _avg?: job_post_categoriesAvgOrderByAggregateInput
+    _max?: job_post_categoriesMaxOrderByAggregateInput
+    _min?: job_post_categoriesMinOrderByAggregateInput
+    _sum?: job_post_categoriesSumOrderByAggregateInput
+  }
+
+  export type job_post_categoriesScalarWhereWithAggregatesInput = {
+    AND?: job_post_categoriesScalarWhereWithAggregatesInput | job_post_categoriesScalarWhereWithAggregatesInput[]
+    OR?: job_post_categoriesScalarWhereWithAggregatesInput[]
+    NOT?: job_post_categoriesScalarWhereWithAggregatesInput | job_post_categoriesScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"job_post_categories"> | string
+    job_category_id?: StringWithAggregatesFilter<"job_post_categories"> | string
+    job_post_id?: StringWithAggregatesFilter<"job_post_categories"> | string
+    type?: Enumjob_post_categories_typeWithAggregatesFilter<"job_post_categories"> | $Enums.job_post_categories_type
+    required_count?: IntWithAggregatesFilter<"job_post_categories"> | number
+    description?: StringNullableWithAggregatesFilter<"job_post_categories"> | string | null
+    requirements?: StringNullableWithAggregatesFilter<"job_post_categories"> | string | null
+    benefits?: StringNullableWithAggregatesFilter<"job_post_categories"> | string | null
+    created_at?: DateTimeNullableWithAggregatesFilter<"job_post_categories"> | Date | string | null
+    updated_at?: DateTimeNullableWithAggregatesFilter<"job_post_categories"> | Date | string | null
+    deleted_at?: DateTimeNullableWithAggregatesFilter<"job_post_categories"> | Date | string | null
   }
 
   export type applicantsCreateInput = {
@@ -17043,7 +17261,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     deleted_at?: Date | string | null
-    job_posts: job_postsCreateNestedOneWithoutApplicantsInput
+    job_post_categories: job_post_categoriesCreateNestedOneWithoutApplicantsInput
     users: usersCreateNestedOneWithoutApplicantsInput
     selections?: selectionsCreateNestedManyWithoutApplicantsInput
   }
@@ -17051,7 +17269,7 @@ export namespace Prisma {
   export type applicantsUncheckedCreateInput = {
     id: string
     user_id: string
-    job_id: string
+    job_post_category_id: string
     status?: $Enums.applicants_status
     cv: string
     national_identity_card: string
@@ -17069,7 +17287,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    job_posts?: job_postsUpdateOneRequiredWithoutApplicantsNestedInput
+    job_post_categories?: job_post_categoriesUpdateOneRequiredWithoutApplicantsNestedInput
     users?: usersUpdateOneRequiredWithoutApplicantsNestedInput
     selections?: selectionsUpdateManyWithoutApplicantsNestedInput
   }
@@ -17077,7 +17295,7 @@ export namespace Prisma {
   export type applicantsUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     user_id?: StringFieldUpdateOperationsInput | string
-    job_id?: StringFieldUpdateOperationsInput | string
+    job_post_category_id?: StringFieldUpdateOperationsInput | string
     status?: Enumapplicants_statusFieldUpdateOperationsInput | $Enums.applicants_status
     cv?: StringFieldUpdateOperationsInput | string
     national_identity_card?: StringFieldUpdateOperationsInput | string
@@ -17090,7 +17308,7 @@ export namespace Prisma {
   export type applicantsCreateManyInput = {
     id: string
     user_id: string
-    job_id: string
+    job_post_category_id: string
     status?: $Enums.applicants_status
     cv: string
     national_identity_card: string
@@ -17112,7 +17330,7 @@ export namespace Prisma {
   export type applicantsUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     user_id?: StringFieldUpdateOperationsInput | string
-    job_id?: StringFieldUpdateOperationsInput | string
+    job_post_category_id?: StringFieldUpdateOperationsInput | string
     status?: Enumapplicants_statusFieldUpdateOperationsInput | $Enums.applicants_status
     cv?: StringFieldUpdateOperationsInput | string
     national_identity_card?: StringFieldUpdateOperationsInput | string
@@ -17210,8 +17428,10 @@ export namespace Prisma {
     name: string
     email: string
     phone: string
-    website: string
-    address: string
+    website?: string | null
+    logo?: string | null
+    location: string
+    description?: string | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     deleted_at?: Date | string | null
@@ -17223,8 +17443,10 @@ export namespace Prisma {
     name: string
     email: string
     phone: string
-    website: string
-    address: string
+    website?: string | null
+    logo?: string | null
+    location: string
+    description?: string | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     deleted_at?: Date | string | null
@@ -17236,8 +17458,10 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
-    website?: StringFieldUpdateOperationsInput | string
-    address?: StringFieldUpdateOperationsInput | string
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -17249,8 +17473,10 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
-    website?: StringFieldUpdateOperationsInput | string
-    address?: StringFieldUpdateOperationsInput | string
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -17262,8 +17488,10 @@ export namespace Prisma {
     name: string
     email: string
     phone: string
-    website: string
-    address: string
+    website?: string | null
+    logo?: string | null
+    location: string
+    description?: string | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     deleted_at?: Date | string | null
@@ -17274,8 +17502,10 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
-    website?: StringFieldUpdateOperationsInput | string
-    address?: StringFieldUpdateOperationsInput | string
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -17286,8 +17516,10 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
-    website?: StringFieldUpdateOperationsInput | string
-    address?: StringFieldUpdateOperationsInput | string
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -17460,7 +17692,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     deleted_at?: Date | string | null
-    job_categories_job_posts?: job_categories_job_postsCreateNestedManyWithoutJob_categoriesInput
+    job_post_categories?: job_post_categoriesCreateNestedManyWithoutJob_categoriesInput
   }
 
   export type job_categoriesUncheckedCreateInput = {
@@ -17469,7 +17701,7 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     deleted_at?: Date | string | null
-    job_categories_job_posts?: job_categories_job_postsUncheckedCreateNestedManyWithoutJob_categoriesInput
+    job_post_categories?: job_post_categoriesUncheckedCreateNestedManyWithoutJob_categoriesInput
   }
 
   export type job_categoriesUpdateInput = {
@@ -17478,7 +17710,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    job_categories_job_posts?: job_categories_job_postsUpdateManyWithoutJob_categoriesNestedInput
+    job_post_categories?: job_post_categoriesUpdateManyWithoutJob_categoriesNestedInput
   }
 
   export type job_categoriesUncheckedUpdateInput = {
@@ -17487,7 +17719,7 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    job_categories_job_posts?: job_categories_job_postsUncheckedUpdateManyWithoutJob_categoriesNestedInput
+    job_post_categories?: job_post_categoriesUncheckedUpdateManyWithoutJob_categoriesNestedInput
   }
 
   export type job_categoriesCreateManyInput = {
@@ -17514,116 +17746,59 @@ export namespace Prisma {
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
-  export type job_categories_job_postsCreateInput = {
-    job_categories: job_categoriesCreateNestedOneWithoutJob_categories_job_postsInput
-    job_posts: job_postsCreateNestedOneWithoutJob_categories_job_postsInput
-  }
-
-  export type job_categories_job_postsUncheckedCreateInput = {
-    job_category_id: string
-    job_post_id: string
-  }
-
-  export type job_categories_job_postsUpdateInput = {
-    job_categories?: job_categoriesUpdateOneRequiredWithoutJob_categories_job_postsNestedInput
-    job_posts?: job_postsUpdateOneRequiredWithoutJob_categories_job_postsNestedInput
-  }
-
-  export type job_categories_job_postsUncheckedUpdateInput = {
-    job_category_id?: StringFieldUpdateOperationsInput | string
-    job_post_id?: StringFieldUpdateOperationsInput | string
-  }
-
-  export type job_categories_job_postsCreateManyInput = {
-    job_category_id: string
-    job_post_id: string
-  }
-
-  export type job_categories_job_postsUpdateManyMutationInput = {
-
-  }
-
-  export type job_categories_job_postsUncheckedUpdateManyInput = {
-    job_category_id?: StringFieldUpdateOperationsInput | string
-    job_post_id?: StringFieldUpdateOperationsInput | string
-  }
-
   export type job_postsCreateInput = {
     id: string
     title: string
-    description: string
-    requirements: string
-    benefits: string
-    type: $Enums.job_posts_type
+    thumbnail: string
     status?: $Enums.job_posts_status
     created_at?: Date | string | null
     updated_at?: Date | string | null
     deleted_at?: Date | string | null
-    applicants?: applicantsCreateNestedManyWithoutJob_postsInput
-    job_categories_job_posts?: job_categories_job_postsCreateNestedManyWithoutJob_postsInput
+    job_post_categories?: job_post_categoriesCreateNestedManyWithoutJob_postsInput
     companies: companiesCreateNestedOneWithoutJob_postsInput
-    selections?: selectionsCreateNestedManyWithoutJob_postsInput
   }
 
   export type job_postsUncheckedCreateInput = {
     id: string
     company_id: string
     title: string
-    description: string
-    requirements: string
-    benefits: string
-    type: $Enums.job_posts_type
+    thumbnail: string
     status?: $Enums.job_posts_status
     created_at?: Date | string | null
     updated_at?: Date | string | null
     deleted_at?: Date | string | null
-    applicants?: applicantsUncheckedCreateNestedManyWithoutJob_postsInput
-    job_categories_job_posts?: job_categories_job_postsUncheckedCreateNestedManyWithoutJob_postsInput
-    selections?: selectionsUncheckedCreateNestedManyWithoutJob_postsInput
+    job_post_categories?: job_post_categoriesUncheckedCreateNestedManyWithoutJob_postsInput
   }
 
   export type job_postsUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
-    description?: StringFieldUpdateOperationsInput | string
-    requirements?: StringFieldUpdateOperationsInput | string
-    benefits?: StringFieldUpdateOperationsInput | string
-    type?: Enumjob_posts_typeFieldUpdateOperationsInput | $Enums.job_posts_type
+    thumbnail?: StringFieldUpdateOperationsInput | string
     status?: Enumjob_posts_statusFieldUpdateOperationsInput | $Enums.job_posts_status
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    applicants?: applicantsUpdateManyWithoutJob_postsNestedInput
-    job_categories_job_posts?: job_categories_job_postsUpdateManyWithoutJob_postsNestedInput
+    job_post_categories?: job_post_categoriesUpdateManyWithoutJob_postsNestedInput
     companies?: companiesUpdateOneRequiredWithoutJob_postsNestedInput
-    selections?: selectionsUpdateManyWithoutJob_postsNestedInput
   }
 
   export type job_postsUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     company_id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
-    description?: StringFieldUpdateOperationsInput | string
-    requirements?: StringFieldUpdateOperationsInput | string
-    benefits?: StringFieldUpdateOperationsInput | string
-    type?: Enumjob_posts_typeFieldUpdateOperationsInput | $Enums.job_posts_type
+    thumbnail?: StringFieldUpdateOperationsInput | string
     status?: Enumjob_posts_statusFieldUpdateOperationsInput | $Enums.job_posts_status
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    applicants?: applicantsUncheckedUpdateManyWithoutJob_postsNestedInput
-    job_categories_job_posts?: job_categories_job_postsUncheckedUpdateManyWithoutJob_postsNestedInput
-    selections?: selectionsUncheckedUpdateManyWithoutJob_postsNestedInput
+    job_post_categories?: job_post_categoriesUncheckedUpdateManyWithoutJob_postsNestedInput
   }
 
   export type job_postsCreateManyInput = {
     id: string
     company_id: string
     title: string
-    description: string
-    requirements: string
-    benefits: string
-    type: $Enums.job_posts_type
+    thumbnail: string
     status?: $Enums.job_posts_status
     created_at?: Date | string | null
     updated_at?: Date | string | null
@@ -17633,10 +17808,7 @@ export namespace Prisma {
   export type job_postsUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
-    description?: StringFieldUpdateOperationsInput | string
-    requirements?: StringFieldUpdateOperationsInput | string
-    benefits?: StringFieldUpdateOperationsInput | string
-    type?: Enumjob_posts_typeFieldUpdateOperationsInput | $Enums.job_posts_type
+    thumbnail?: StringFieldUpdateOperationsInput | string
     status?: Enumjob_posts_statusFieldUpdateOperationsInput | $Enums.job_posts_status
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -17647,10 +17819,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     company_id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
-    description?: StringFieldUpdateOperationsInput | string
-    requirements?: StringFieldUpdateOperationsInput | string
-    benefits?: StringFieldUpdateOperationsInput | string
-    type?: Enumjob_posts_typeFieldUpdateOperationsInput | $Enums.job_posts_type
+    thumbnail?: StringFieldUpdateOperationsInput | string
     status?: Enumjob_posts_statusFieldUpdateOperationsInput | $Enums.job_posts_status
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -17775,13 +17944,13 @@ export namespace Prisma {
     updated_at?: Date | string | null
     deleted_at?: Date | string | null
     applicants: applicantsCreateNestedOneWithoutSelectionsInput
-    job_posts: job_postsCreateNestedOneWithoutSelectionsInput
+    job_post_categories: job_post_categoriesCreateNestedOneWithoutSelectionsInput
   }
 
   export type selectionsUncheckedCreateInput = {
     id: string
     applicant_id: string
-    job_id: string
+    job_post_category_id: string
     stage: $Enums.selections_stage
     status?: $Enums.selections_status
     attachment?: string | null
@@ -17799,13 +17968,13 @@ export namespace Prisma {
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     applicants?: applicantsUpdateOneRequiredWithoutSelectionsNestedInput
-    job_posts?: job_postsUpdateOneRequiredWithoutSelectionsNestedInput
+    job_post_categories?: job_post_categoriesUpdateOneRequiredWithoutSelectionsNestedInput
   }
 
   export type selectionsUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     applicant_id?: StringFieldUpdateOperationsInput | string
-    job_id?: StringFieldUpdateOperationsInput | string
+    job_post_category_id?: StringFieldUpdateOperationsInput | string
     stage?: Enumselections_stageFieldUpdateOperationsInput | $Enums.selections_stage
     status?: Enumselections_statusFieldUpdateOperationsInput | $Enums.selections_status
     attachment?: NullableStringFieldUpdateOperationsInput | string | null
@@ -17817,7 +17986,7 @@ export namespace Prisma {
   export type selectionsCreateManyInput = {
     id: string
     applicant_id: string
-    job_id: string
+    job_post_category_id: string
     stage: $Enums.selections_stage
     status?: $Enums.selections_status
     attachment?: string | null
@@ -17839,7 +18008,7 @@ export namespace Prisma {
   export type selectionsUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     applicant_id?: StringFieldUpdateOperationsInput | string
-    job_id?: StringFieldUpdateOperationsInput | string
+    job_post_category_id?: StringFieldUpdateOperationsInput | string
     stage?: Enumselections_stageFieldUpdateOperationsInput | $Enums.selections_stage
     status?: Enumselections_statusFieldUpdateOperationsInput | $Enums.selections_status
     attachment?: NullableStringFieldUpdateOperationsInput | string | null
@@ -17922,6 +18091,7 @@ export namespace Prisma {
     password: string
     role?: $Enums.users_role
     verified_at?: Date | string | null
+    remember_token?: string | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     deleted_at?: Date | string | null
@@ -17939,6 +18109,7 @@ export namespace Prisma {
     password: string
     role?: $Enums.users_role
     verified_at?: Date | string | null
+    remember_token?: string | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     deleted_at?: Date | string | null
@@ -17956,6 +18127,7 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     role?: Enumusers_roleFieldUpdateOperationsInput | $Enums.users_role
     verified_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    remember_token?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -17973,6 +18145,7 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     role?: Enumusers_roleFieldUpdateOperationsInput | $Enums.users_role
     verified_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    remember_token?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -17990,6 +18163,7 @@ export namespace Prisma {
     password: string
     role?: $Enums.users_role
     verified_at?: Date | string | null
+    remember_token?: string | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     deleted_at?: Date | string | null
@@ -18006,6 +18180,7 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     role?: Enumusers_roleFieldUpdateOperationsInput | $Enums.users_role
     verified_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    remember_token?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -18022,6 +18197,111 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     role?: Enumusers_roleFieldUpdateOperationsInput | $Enums.users_role
     verified_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    remember_token?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type job_post_categoriesCreateInput = {
+    id: string
+    type: $Enums.job_post_categories_type
+    required_count?: number
+    description?: string | null
+    requirements?: string | null
+    benefits?: string | null
+    created_at?: Date | string | null
+    updated_at?: Date | string | null
+    deleted_at?: Date | string | null
+    applicants?: applicantsCreateNestedManyWithoutJob_post_categoriesInput
+    job_categories: job_categoriesCreateNestedOneWithoutJob_post_categoriesInput
+    job_posts: job_postsCreateNestedOneWithoutJob_post_categoriesInput
+    selections?: selectionsCreateNestedManyWithoutJob_post_categoriesInput
+  }
+
+  export type job_post_categoriesUncheckedCreateInput = {
+    id: string
+    job_category_id: string
+    job_post_id: string
+    type: $Enums.job_post_categories_type
+    required_count?: number
+    description?: string | null
+    requirements?: string | null
+    benefits?: string | null
+    created_at?: Date | string | null
+    updated_at?: Date | string | null
+    deleted_at?: Date | string | null
+    applicants?: applicantsUncheckedCreateNestedManyWithoutJob_post_categoriesInput
+    selections?: selectionsUncheckedCreateNestedManyWithoutJob_post_categoriesInput
+  }
+
+  export type job_post_categoriesUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: Enumjob_post_categories_typeFieldUpdateOperationsInput | $Enums.job_post_categories_type
+    required_count?: IntFieldUpdateOperationsInput | number
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    requirements?: NullableStringFieldUpdateOperationsInput | string | null
+    benefits?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    applicants?: applicantsUpdateManyWithoutJob_post_categoriesNestedInput
+    job_categories?: job_categoriesUpdateOneRequiredWithoutJob_post_categoriesNestedInput
+    job_posts?: job_postsUpdateOneRequiredWithoutJob_post_categoriesNestedInput
+    selections?: selectionsUpdateManyWithoutJob_post_categoriesNestedInput
+  }
+
+  export type job_post_categoriesUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    job_category_id?: StringFieldUpdateOperationsInput | string
+    job_post_id?: StringFieldUpdateOperationsInput | string
+    type?: Enumjob_post_categories_typeFieldUpdateOperationsInput | $Enums.job_post_categories_type
+    required_count?: IntFieldUpdateOperationsInput | number
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    requirements?: NullableStringFieldUpdateOperationsInput | string | null
+    benefits?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    applicants?: applicantsUncheckedUpdateManyWithoutJob_post_categoriesNestedInput
+    selections?: selectionsUncheckedUpdateManyWithoutJob_post_categoriesNestedInput
+  }
+
+  export type job_post_categoriesCreateManyInput = {
+    id: string
+    job_category_id: string
+    job_post_id: string
+    type: $Enums.job_post_categories_type
+    required_count?: number
+    description?: string | null
+    requirements?: string | null
+    benefits?: string | null
+    created_at?: Date | string | null
+    updated_at?: Date | string | null
+    deleted_at?: Date | string | null
+  }
+
+  export type job_post_categoriesUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: Enumjob_post_categories_typeFieldUpdateOperationsInput | $Enums.job_post_categories_type
+    required_count?: IntFieldUpdateOperationsInput | number
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    requirements?: NullableStringFieldUpdateOperationsInput | string | null
+    benefits?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type job_post_categoriesUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    job_category_id?: StringFieldUpdateOperationsInput | string
+    job_post_id?: StringFieldUpdateOperationsInput | string
+    type?: Enumjob_post_categories_typeFieldUpdateOperationsInput | $Enums.job_post_categories_type
+    required_count?: IntFieldUpdateOperationsInput | number
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    requirements?: NullableStringFieldUpdateOperationsInput | string | null
+    benefits?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -18060,9 +18340,9 @@ export namespace Prisma {
     not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
   }
 
-  export type Job_postsScalarRelationFilter = {
-    is?: job_postsWhereInput
-    isNot?: job_postsWhereInput
+  export type Job_post_categoriesScalarRelationFilter = {
+    is?: job_post_categoriesWhereInput
+    isNot?: job_post_categoriesWhereInput
   }
 
   export type UsersScalarRelationFilter = {
@@ -18094,7 +18374,7 @@ export namespace Prisma {
   export type applicantsCountOrderByAggregateInput = {
     id?: SortOrder
     user_id?: SortOrder
-    job_id?: SortOrder
+    job_post_category_id?: SortOrder
     status?: SortOrder
     cv?: SortOrder
     national_identity_card?: SortOrder
@@ -18106,7 +18386,7 @@ export namespace Prisma {
   export type applicantsMaxOrderByAggregateInput = {
     id?: SortOrder
     user_id?: SortOrder
-    job_id?: SortOrder
+    job_post_category_id?: SortOrder
     status?: SortOrder
     cv?: SortOrder
     national_identity_card?: SortOrder
@@ -18118,7 +18398,7 @@ export namespace Prisma {
   export type applicantsMinOrderByAggregateInput = {
     id?: SortOrder
     user_id?: SortOrder
-    job_id?: SortOrder
+    job_post_category_id?: SortOrder
     status?: SortOrder
     cv?: SortOrder
     national_identity_card?: SortOrder
@@ -18260,6 +18540,21 @@ export namespace Prisma {
     expiration?: SortOrder
   }
 
+  export type StringNullableFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | null
+    notIn?: string[] | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    search?: string
+    not?: NestedStringNullableFilter<$PrismaModel> | string | null
+  }
+
   export type Job_postsListRelationFilter = {
     every?: job_postsWhereInput
     some?: job_postsWhereInput
@@ -18282,7 +18577,9 @@ export namespace Prisma {
     email?: SortOrder
     phone?: SortOrder
     website?: SortOrder
-    address?: SortOrder
+    logo?: SortOrder
+    location?: SortOrder
+    description?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
     deleted_at?: SortOrder
@@ -18294,7 +18591,9 @@ export namespace Prisma {
     email?: SortOrder
     phone?: SortOrder
     website?: SortOrder
-    address?: SortOrder
+    logo?: SortOrder
+    location?: SortOrder
+    description?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
     deleted_at?: SortOrder
@@ -18306,10 +18605,30 @@ export namespace Prisma {
     email?: SortOrder
     phone?: SortOrder
     website?: SortOrder
-    address?: SortOrder
+    logo?: SortOrder
+    location?: SortOrder
+    description?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
     deleted_at?: SortOrder
+  }
+
+  export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | null
+    notIn?: string[] | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    search?: string
+    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedStringNullableFilter<$PrismaModel>
+    _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
   export type BigIntFilter<$PrismaModel = never> = {
@@ -18408,21 +18727,6 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
-  export type StringNullableFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | null
-    notIn?: string[] | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    search?: string
-    not?: NestedStringNullableFilter<$PrismaModel> | string | null
-  }
-
   export type IntNullableFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel> | null
     in?: number[] | null
@@ -18497,24 +18801,6 @@ export namespace Prisma {
     finished_at?: SortOrder
   }
 
-  export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | null
-    notIn?: string[] | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    search?: string
-    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedStringNullableFilter<$PrismaModel>
-    _max?: NestedStringNullableFilter<$PrismaModel>
-  }
-
   export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel> | null
     in?: number[] | null
@@ -18531,13 +18817,13 @@ export namespace Prisma {
     _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
-  export type Job_categories_job_postsListRelationFilter = {
-    every?: job_categories_job_postsWhereInput
-    some?: job_categories_job_postsWhereInput
-    none?: job_categories_job_postsWhereInput
+  export type Job_post_categoriesListRelationFilter = {
+    every?: job_post_categoriesWhereInput
+    some?: job_post_categoriesWhereInput
+    none?: job_post_categoriesWhereInput
   }
 
-  export type job_categories_job_postsOrderByRelationAggregateInput = {
+  export type job_post_categoriesOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -18571,44 +18857,6 @@ export namespace Prisma {
     deleted_at?: SortOrder
   }
 
-  export type Job_categoriesScalarRelationFilter = {
-    is?: job_categoriesWhereInput
-    isNot?: job_categoriesWhereInput
-  }
-
-  export type job_categories_job_postsOrderByRelevanceInput = {
-    fields: job_categories_job_postsOrderByRelevanceFieldEnum | job_categories_job_postsOrderByRelevanceFieldEnum[]
-    sort: SortOrder
-    search: string
-  }
-
-  export type job_categories_job_postsJob_category_idJob_post_idCompoundUniqueInput = {
-    job_category_id: string
-    job_post_id: string
-  }
-
-  export type job_categories_job_postsCountOrderByAggregateInput = {
-    job_category_id?: SortOrder
-    job_post_id?: SortOrder
-  }
-
-  export type job_categories_job_postsMaxOrderByAggregateInput = {
-    job_category_id?: SortOrder
-    job_post_id?: SortOrder
-  }
-
-  export type job_categories_job_postsMinOrderByAggregateInput = {
-    job_category_id?: SortOrder
-    job_post_id?: SortOrder
-  }
-
-  export type Enumjob_posts_typeFilter<$PrismaModel = never> = {
-    equals?: $Enums.job_posts_type | Enumjob_posts_typeFieldRefInput<$PrismaModel>
-    in?: $Enums.job_posts_type[]
-    notIn?: $Enums.job_posts_type[]
-    not?: NestedEnumjob_posts_typeFilter<$PrismaModel> | $Enums.job_posts_type
-  }
-
   export type Enumjob_posts_statusFilter<$PrismaModel = never> = {
     equals?: $Enums.job_posts_status | Enumjob_posts_statusFieldRefInput<$PrismaModel>
     in?: $Enums.job_posts_status[]
@@ -18616,19 +18864,9 @@ export namespace Prisma {
     not?: NestedEnumjob_posts_statusFilter<$PrismaModel> | $Enums.job_posts_status
   }
 
-  export type ApplicantsListRelationFilter = {
-    every?: applicantsWhereInput
-    some?: applicantsWhereInput
-    none?: applicantsWhereInput
-  }
-
   export type CompaniesScalarRelationFilter = {
     is?: companiesWhereInput
     isNot?: companiesWhereInput
-  }
-
-  export type applicantsOrderByRelationAggregateInput = {
-    _count?: SortOrder
   }
 
   export type job_postsOrderByRelevanceInput = {
@@ -18641,10 +18879,7 @@ export namespace Prisma {
     id?: SortOrder
     company_id?: SortOrder
     title?: SortOrder
-    description?: SortOrder
-    requirements?: SortOrder
-    benefits?: SortOrder
-    type?: SortOrder
+    thumbnail?: SortOrder
     status?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
@@ -18655,10 +18890,7 @@ export namespace Prisma {
     id?: SortOrder
     company_id?: SortOrder
     title?: SortOrder
-    description?: SortOrder
-    requirements?: SortOrder
-    benefits?: SortOrder
-    type?: SortOrder
+    thumbnail?: SortOrder
     status?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
@@ -18669,24 +18901,11 @@ export namespace Prisma {
     id?: SortOrder
     company_id?: SortOrder
     title?: SortOrder
-    description?: SortOrder
-    requirements?: SortOrder
-    benefits?: SortOrder
-    type?: SortOrder
+    thumbnail?: SortOrder
     status?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
     deleted_at?: SortOrder
-  }
-
-  export type Enumjob_posts_typeWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.job_posts_type | Enumjob_posts_typeFieldRefInput<$PrismaModel>
-    in?: $Enums.job_posts_type[]
-    notIn?: $Enums.job_posts_type[]
-    not?: NestedEnumjob_posts_typeWithAggregatesFilter<$PrismaModel> | $Enums.job_posts_type
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumjob_posts_typeFilter<$PrismaModel>
-    _max?: NestedEnumjob_posts_typeFilter<$PrismaModel>
   }
 
   export type Enumjob_posts_statusWithAggregatesFilter<$PrismaModel = never> = {
@@ -18813,7 +19032,7 @@ export namespace Prisma {
   export type selectionsCountOrderByAggregateInput = {
     id?: SortOrder
     applicant_id?: SortOrder
-    job_id?: SortOrder
+    job_post_category_id?: SortOrder
     stage?: SortOrder
     status?: SortOrder
     attachment?: SortOrder
@@ -18825,7 +19044,7 @@ export namespace Prisma {
   export type selectionsMaxOrderByAggregateInput = {
     id?: SortOrder
     applicant_id?: SortOrder
-    job_id?: SortOrder
+    job_post_category_id?: SortOrder
     stage?: SortOrder
     status?: SortOrder
     attachment?: SortOrder
@@ -18837,7 +19056,7 @@ export namespace Prisma {
   export type selectionsMinOrderByAggregateInput = {
     id?: SortOrder
     applicant_id?: SortOrder
-    job_id?: SortOrder
+    job_post_category_id?: SortOrder
     stage?: SortOrder
     status?: SortOrder
     attachment?: SortOrder
@@ -18914,6 +19133,16 @@ export namespace Prisma {
     not?: NestedEnumusers_roleFilter<$PrismaModel> | $Enums.users_role
   }
 
+  export type ApplicantsListRelationFilter = {
+    every?: applicantsWhereInput
+    some?: applicantsWhereInput
+    none?: applicantsWhereInput
+  }
+
+  export type applicantsOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type usersOrderByRelevanceInput = {
     fields: usersOrderByRelevanceFieldEnum | usersOrderByRelevanceFieldEnum[]
     sort: SortOrder
@@ -18931,6 +19160,7 @@ export namespace Prisma {
     password?: SortOrder
     role?: SortOrder
     verified_at?: SortOrder
+    remember_token?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
     deleted_at?: SortOrder
@@ -18947,6 +19177,7 @@ export namespace Prisma {
     password?: SortOrder
     role?: SortOrder
     verified_at?: SortOrder
+    remember_token?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
     deleted_at?: SortOrder
@@ -18963,6 +19194,7 @@ export namespace Prisma {
     password?: SortOrder
     role?: SortOrder
     verified_at?: SortOrder
+    remember_token?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
     deleted_at?: SortOrder
@@ -18978,10 +19210,98 @@ export namespace Prisma {
     _max?: NestedEnumusers_roleFilter<$PrismaModel>
   }
 
-  export type job_postsCreateNestedOneWithoutApplicantsInput = {
-    create?: XOR<job_postsCreateWithoutApplicantsInput, job_postsUncheckedCreateWithoutApplicantsInput>
-    connectOrCreate?: job_postsCreateOrConnectWithoutApplicantsInput
-    connect?: job_postsWhereUniqueInput
+  export type Enumjob_post_categories_typeFilter<$PrismaModel = never> = {
+    equals?: $Enums.job_post_categories_type | Enumjob_post_categories_typeFieldRefInput<$PrismaModel>
+    in?: $Enums.job_post_categories_type[]
+    notIn?: $Enums.job_post_categories_type[]
+    not?: NestedEnumjob_post_categories_typeFilter<$PrismaModel> | $Enums.job_post_categories_type
+  }
+
+  export type Job_categoriesScalarRelationFilter = {
+    is?: job_categoriesWhereInput
+    isNot?: job_categoriesWhereInput
+  }
+
+  export type Job_postsScalarRelationFilter = {
+    is?: job_postsWhereInput
+    isNot?: job_postsWhereInput
+  }
+
+  export type job_post_categoriesOrderByRelevanceInput = {
+    fields: job_post_categoriesOrderByRelevanceFieldEnum | job_post_categoriesOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
+  export type job_post_categoriesJob_post_idJob_category_idCompoundUniqueInput = {
+    job_post_id: string
+    job_category_id: string
+  }
+
+  export type job_post_categoriesCountOrderByAggregateInput = {
+    id?: SortOrder
+    job_category_id?: SortOrder
+    job_post_id?: SortOrder
+    type?: SortOrder
+    required_count?: SortOrder
+    description?: SortOrder
+    requirements?: SortOrder
+    benefits?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    deleted_at?: SortOrder
+  }
+
+  export type job_post_categoriesAvgOrderByAggregateInput = {
+    required_count?: SortOrder
+  }
+
+  export type job_post_categoriesMaxOrderByAggregateInput = {
+    id?: SortOrder
+    job_category_id?: SortOrder
+    job_post_id?: SortOrder
+    type?: SortOrder
+    required_count?: SortOrder
+    description?: SortOrder
+    requirements?: SortOrder
+    benefits?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    deleted_at?: SortOrder
+  }
+
+  export type job_post_categoriesMinOrderByAggregateInput = {
+    id?: SortOrder
+    job_category_id?: SortOrder
+    job_post_id?: SortOrder
+    type?: SortOrder
+    required_count?: SortOrder
+    description?: SortOrder
+    requirements?: SortOrder
+    benefits?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    deleted_at?: SortOrder
+  }
+
+  export type job_post_categoriesSumOrderByAggregateInput = {
+    required_count?: SortOrder
+  }
+
+  export type Enumjob_post_categories_typeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.job_post_categories_type | Enumjob_post_categories_typeFieldRefInput<$PrismaModel>
+    in?: $Enums.job_post_categories_type[]
+    notIn?: $Enums.job_post_categories_type[]
+    not?: NestedEnumjob_post_categories_typeWithAggregatesFilter<$PrismaModel> | $Enums.job_post_categories_type
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumjob_post_categories_typeFilter<$PrismaModel>
+    _max?: NestedEnumjob_post_categories_typeFilter<$PrismaModel>
+  }
+
+  export type job_post_categoriesCreateNestedOneWithoutApplicantsInput = {
+    create?: XOR<job_post_categoriesCreateWithoutApplicantsInput, job_post_categoriesUncheckedCreateWithoutApplicantsInput>
+    connectOrCreate?: job_post_categoriesCreateOrConnectWithoutApplicantsInput
+    connect?: job_post_categoriesWhereUniqueInput
   }
 
   export type usersCreateNestedOneWithoutApplicantsInput = {
@@ -19016,12 +19336,12 @@ export namespace Prisma {
     set?: Date | string | null
   }
 
-  export type job_postsUpdateOneRequiredWithoutApplicantsNestedInput = {
-    create?: XOR<job_postsCreateWithoutApplicantsInput, job_postsUncheckedCreateWithoutApplicantsInput>
-    connectOrCreate?: job_postsCreateOrConnectWithoutApplicantsInput
-    upsert?: job_postsUpsertWithoutApplicantsInput
-    connect?: job_postsWhereUniqueInput
-    update?: XOR<XOR<job_postsUpdateToOneWithWhereWithoutApplicantsInput, job_postsUpdateWithoutApplicantsInput>, job_postsUncheckedUpdateWithoutApplicantsInput>
+  export type job_post_categoriesUpdateOneRequiredWithoutApplicantsNestedInput = {
+    create?: XOR<job_post_categoriesCreateWithoutApplicantsInput, job_post_categoriesUncheckedCreateWithoutApplicantsInput>
+    connectOrCreate?: job_post_categoriesCreateOrConnectWithoutApplicantsInput
+    upsert?: job_post_categoriesUpsertWithoutApplicantsInput
+    connect?: job_post_categoriesWhereUniqueInput
+    update?: XOR<XOR<job_post_categoriesUpdateToOneWithWhereWithoutApplicantsInput, job_post_categoriesUpdateWithoutApplicantsInput>, job_post_categoriesUncheckedUpdateWithoutApplicantsInput>
   }
 
   export type usersUpdateOneRequiredWithoutApplicantsNestedInput = {
@@ -19082,6 +19402,10 @@ export namespace Prisma {
     connect?: job_postsWhereUniqueInput | job_postsWhereUniqueInput[]
   }
 
+  export type NullableStringFieldUpdateOperationsInput = {
+    set?: string | null
+  }
+
   export type job_postsUpdateManyWithoutCompaniesNestedInput = {
     create?: XOR<job_postsCreateWithoutCompaniesInput, job_postsUncheckedCreateWithoutCompaniesInput> | job_postsCreateWithoutCompaniesInput[] | job_postsUncheckedCreateWithoutCompaniesInput[]
     connectOrCreate?: job_postsCreateOrConnectWithoutCompaniesInput | job_postsCreateOrConnectWithoutCompaniesInput[]
@@ -19122,10 +19446,6 @@ export namespace Prisma {
     set?: Date | string
   }
 
-  export type NullableStringFieldUpdateOperationsInput = {
-    set?: string | null
-  }
-
   export type NullableIntFieldUpdateOperationsInput = {
     set?: number | null
     increment?: number
@@ -19134,88 +19454,53 @@ export namespace Prisma {
     divide?: number
   }
 
-  export type job_categories_job_postsCreateNestedManyWithoutJob_categoriesInput = {
-    create?: XOR<job_categories_job_postsCreateWithoutJob_categoriesInput, job_categories_job_postsUncheckedCreateWithoutJob_categoriesInput> | job_categories_job_postsCreateWithoutJob_categoriesInput[] | job_categories_job_postsUncheckedCreateWithoutJob_categoriesInput[]
-    connectOrCreate?: job_categories_job_postsCreateOrConnectWithoutJob_categoriesInput | job_categories_job_postsCreateOrConnectWithoutJob_categoriesInput[]
-    createMany?: job_categories_job_postsCreateManyJob_categoriesInputEnvelope
-    connect?: job_categories_job_postsWhereUniqueInput | job_categories_job_postsWhereUniqueInput[]
+  export type job_post_categoriesCreateNestedManyWithoutJob_categoriesInput = {
+    create?: XOR<job_post_categoriesCreateWithoutJob_categoriesInput, job_post_categoriesUncheckedCreateWithoutJob_categoriesInput> | job_post_categoriesCreateWithoutJob_categoriesInput[] | job_post_categoriesUncheckedCreateWithoutJob_categoriesInput[]
+    connectOrCreate?: job_post_categoriesCreateOrConnectWithoutJob_categoriesInput | job_post_categoriesCreateOrConnectWithoutJob_categoriesInput[]
+    createMany?: job_post_categoriesCreateManyJob_categoriesInputEnvelope
+    connect?: job_post_categoriesWhereUniqueInput | job_post_categoriesWhereUniqueInput[]
   }
 
-  export type job_categories_job_postsUncheckedCreateNestedManyWithoutJob_categoriesInput = {
-    create?: XOR<job_categories_job_postsCreateWithoutJob_categoriesInput, job_categories_job_postsUncheckedCreateWithoutJob_categoriesInput> | job_categories_job_postsCreateWithoutJob_categoriesInput[] | job_categories_job_postsUncheckedCreateWithoutJob_categoriesInput[]
-    connectOrCreate?: job_categories_job_postsCreateOrConnectWithoutJob_categoriesInput | job_categories_job_postsCreateOrConnectWithoutJob_categoriesInput[]
-    createMany?: job_categories_job_postsCreateManyJob_categoriesInputEnvelope
-    connect?: job_categories_job_postsWhereUniqueInput | job_categories_job_postsWhereUniqueInput[]
+  export type job_post_categoriesUncheckedCreateNestedManyWithoutJob_categoriesInput = {
+    create?: XOR<job_post_categoriesCreateWithoutJob_categoriesInput, job_post_categoriesUncheckedCreateWithoutJob_categoriesInput> | job_post_categoriesCreateWithoutJob_categoriesInput[] | job_post_categoriesUncheckedCreateWithoutJob_categoriesInput[]
+    connectOrCreate?: job_post_categoriesCreateOrConnectWithoutJob_categoriesInput | job_post_categoriesCreateOrConnectWithoutJob_categoriesInput[]
+    createMany?: job_post_categoriesCreateManyJob_categoriesInputEnvelope
+    connect?: job_post_categoriesWhereUniqueInput | job_post_categoriesWhereUniqueInput[]
   }
 
-  export type job_categories_job_postsUpdateManyWithoutJob_categoriesNestedInput = {
-    create?: XOR<job_categories_job_postsCreateWithoutJob_categoriesInput, job_categories_job_postsUncheckedCreateWithoutJob_categoriesInput> | job_categories_job_postsCreateWithoutJob_categoriesInput[] | job_categories_job_postsUncheckedCreateWithoutJob_categoriesInput[]
-    connectOrCreate?: job_categories_job_postsCreateOrConnectWithoutJob_categoriesInput | job_categories_job_postsCreateOrConnectWithoutJob_categoriesInput[]
-    upsert?: job_categories_job_postsUpsertWithWhereUniqueWithoutJob_categoriesInput | job_categories_job_postsUpsertWithWhereUniqueWithoutJob_categoriesInput[]
-    createMany?: job_categories_job_postsCreateManyJob_categoriesInputEnvelope
-    set?: job_categories_job_postsWhereUniqueInput | job_categories_job_postsWhereUniqueInput[]
-    disconnect?: job_categories_job_postsWhereUniqueInput | job_categories_job_postsWhereUniqueInput[]
-    delete?: job_categories_job_postsWhereUniqueInput | job_categories_job_postsWhereUniqueInput[]
-    connect?: job_categories_job_postsWhereUniqueInput | job_categories_job_postsWhereUniqueInput[]
-    update?: job_categories_job_postsUpdateWithWhereUniqueWithoutJob_categoriesInput | job_categories_job_postsUpdateWithWhereUniqueWithoutJob_categoriesInput[]
-    updateMany?: job_categories_job_postsUpdateManyWithWhereWithoutJob_categoriesInput | job_categories_job_postsUpdateManyWithWhereWithoutJob_categoriesInput[]
-    deleteMany?: job_categories_job_postsScalarWhereInput | job_categories_job_postsScalarWhereInput[]
+  export type job_post_categoriesUpdateManyWithoutJob_categoriesNestedInput = {
+    create?: XOR<job_post_categoriesCreateWithoutJob_categoriesInput, job_post_categoriesUncheckedCreateWithoutJob_categoriesInput> | job_post_categoriesCreateWithoutJob_categoriesInput[] | job_post_categoriesUncheckedCreateWithoutJob_categoriesInput[]
+    connectOrCreate?: job_post_categoriesCreateOrConnectWithoutJob_categoriesInput | job_post_categoriesCreateOrConnectWithoutJob_categoriesInput[]
+    upsert?: job_post_categoriesUpsertWithWhereUniqueWithoutJob_categoriesInput | job_post_categoriesUpsertWithWhereUniqueWithoutJob_categoriesInput[]
+    createMany?: job_post_categoriesCreateManyJob_categoriesInputEnvelope
+    set?: job_post_categoriesWhereUniqueInput | job_post_categoriesWhereUniqueInput[]
+    disconnect?: job_post_categoriesWhereUniqueInput | job_post_categoriesWhereUniqueInput[]
+    delete?: job_post_categoriesWhereUniqueInput | job_post_categoriesWhereUniqueInput[]
+    connect?: job_post_categoriesWhereUniqueInput | job_post_categoriesWhereUniqueInput[]
+    update?: job_post_categoriesUpdateWithWhereUniqueWithoutJob_categoriesInput | job_post_categoriesUpdateWithWhereUniqueWithoutJob_categoriesInput[]
+    updateMany?: job_post_categoriesUpdateManyWithWhereWithoutJob_categoriesInput | job_post_categoriesUpdateManyWithWhereWithoutJob_categoriesInput[]
+    deleteMany?: job_post_categoriesScalarWhereInput | job_post_categoriesScalarWhereInput[]
   }
 
-  export type job_categories_job_postsUncheckedUpdateManyWithoutJob_categoriesNestedInput = {
-    create?: XOR<job_categories_job_postsCreateWithoutJob_categoriesInput, job_categories_job_postsUncheckedCreateWithoutJob_categoriesInput> | job_categories_job_postsCreateWithoutJob_categoriesInput[] | job_categories_job_postsUncheckedCreateWithoutJob_categoriesInput[]
-    connectOrCreate?: job_categories_job_postsCreateOrConnectWithoutJob_categoriesInput | job_categories_job_postsCreateOrConnectWithoutJob_categoriesInput[]
-    upsert?: job_categories_job_postsUpsertWithWhereUniqueWithoutJob_categoriesInput | job_categories_job_postsUpsertWithWhereUniqueWithoutJob_categoriesInput[]
-    createMany?: job_categories_job_postsCreateManyJob_categoriesInputEnvelope
-    set?: job_categories_job_postsWhereUniqueInput | job_categories_job_postsWhereUniqueInput[]
-    disconnect?: job_categories_job_postsWhereUniqueInput | job_categories_job_postsWhereUniqueInput[]
-    delete?: job_categories_job_postsWhereUniqueInput | job_categories_job_postsWhereUniqueInput[]
-    connect?: job_categories_job_postsWhereUniqueInput | job_categories_job_postsWhereUniqueInput[]
-    update?: job_categories_job_postsUpdateWithWhereUniqueWithoutJob_categoriesInput | job_categories_job_postsUpdateWithWhereUniqueWithoutJob_categoriesInput[]
-    updateMany?: job_categories_job_postsUpdateManyWithWhereWithoutJob_categoriesInput | job_categories_job_postsUpdateManyWithWhereWithoutJob_categoriesInput[]
-    deleteMany?: job_categories_job_postsScalarWhereInput | job_categories_job_postsScalarWhereInput[]
+  export type job_post_categoriesUncheckedUpdateManyWithoutJob_categoriesNestedInput = {
+    create?: XOR<job_post_categoriesCreateWithoutJob_categoriesInput, job_post_categoriesUncheckedCreateWithoutJob_categoriesInput> | job_post_categoriesCreateWithoutJob_categoriesInput[] | job_post_categoriesUncheckedCreateWithoutJob_categoriesInput[]
+    connectOrCreate?: job_post_categoriesCreateOrConnectWithoutJob_categoriesInput | job_post_categoriesCreateOrConnectWithoutJob_categoriesInput[]
+    upsert?: job_post_categoriesUpsertWithWhereUniqueWithoutJob_categoriesInput | job_post_categoriesUpsertWithWhereUniqueWithoutJob_categoriesInput[]
+    createMany?: job_post_categoriesCreateManyJob_categoriesInputEnvelope
+    set?: job_post_categoriesWhereUniqueInput | job_post_categoriesWhereUniqueInput[]
+    disconnect?: job_post_categoriesWhereUniqueInput | job_post_categoriesWhereUniqueInput[]
+    delete?: job_post_categoriesWhereUniqueInput | job_post_categoriesWhereUniqueInput[]
+    connect?: job_post_categoriesWhereUniqueInput | job_post_categoriesWhereUniqueInput[]
+    update?: job_post_categoriesUpdateWithWhereUniqueWithoutJob_categoriesInput | job_post_categoriesUpdateWithWhereUniqueWithoutJob_categoriesInput[]
+    updateMany?: job_post_categoriesUpdateManyWithWhereWithoutJob_categoriesInput | job_post_categoriesUpdateManyWithWhereWithoutJob_categoriesInput[]
+    deleteMany?: job_post_categoriesScalarWhereInput | job_post_categoriesScalarWhereInput[]
   }
 
-  export type job_categoriesCreateNestedOneWithoutJob_categories_job_postsInput = {
-    create?: XOR<job_categoriesCreateWithoutJob_categories_job_postsInput, job_categoriesUncheckedCreateWithoutJob_categories_job_postsInput>
-    connectOrCreate?: job_categoriesCreateOrConnectWithoutJob_categories_job_postsInput
-    connect?: job_categoriesWhereUniqueInput
-  }
-
-  export type job_postsCreateNestedOneWithoutJob_categories_job_postsInput = {
-    create?: XOR<job_postsCreateWithoutJob_categories_job_postsInput, job_postsUncheckedCreateWithoutJob_categories_job_postsInput>
-    connectOrCreate?: job_postsCreateOrConnectWithoutJob_categories_job_postsInput
-    connect?: job_postsWhereUniqueInput
-  }
-
-  export type job_categoriesUpdateOneRequiredWithoutJob_categories_job_postsNestedInput = {
-    create?: XOR<job_categoriesCreateWithoutJob_categories_job_postsInput, job_categoriesUncheckedCreateWithoutJob_categories_job_postsInput>
-    connectOrCreate?: job_categoriesCreateOrConnectWithoutJob_categories_job_postsInput
-    upsert?: job_categoriesUpsertWithoutJob_categories_job_postsInput
-    connect?: job_categoriesWhereUniqueInput
-    update?: XOR<XOR<job_categoriesUpdateToOneWithWhereWithoutJob_categories_job_postsInput, job_categoriesUpdateWithoutJob_categories_job_postsInput>, job_categoriesUncheckedUpdateWithoutJob_categories_job_postsInput>
-  }
-
-  export type job_postsUpdateOneRequiredWithoutJob_categories_job_postsNestedInput = {
-    create?: XOR<job_postsCreateWithoutJob_categories_job_postsInput, job_postsUncheckedCreateWithoutJob_categories_job_postsInput>
-    connectOrCreate?: job_postsCreateOrConnectWithoutJob_categories_job_postsInput
-    upsert?: job_postsUpsertWithoutJob_categories_job_postsInput
-    connect?: job_postsWhereUniqueInput
-    update?: XOR<XOR<job_postsUpdateToOneWithWhereWithoutJob_categories_job_postsInput, job_postsUpdateWithoutJob_categories_job_postsInput>, job_postsUncheckedUpdateWithoutJob_categories_job_postsInput>
-  }
-
-  export type applicantsCreateNestedManyWithoutJob_postsInput = {
-    create?: XOR<applicantsCreateWithoutJob_postsInput, applicantsUncheckedCreateWithoutJob_postsInput> | applicantsCreateWithoutJob_postsInput[] | applicantsUncheckedCreateWithoutJob_postsInput[]
-    connectOrCreate?: applicantsCreateOrConnectWithoutJob_postsInput | applicantsCreateOrConnectWithoutJob_postsInput[]
-    createMany?: applicantsCreateManyJob_postsInputEnvelope
-    connect?: applicantsWhereUniqueInput | applicantsWhereUniqueInput[]
-  }
-
-  export type job_categories_job_postsCreateNestedManyWithoutJob_postsInput = {
-    create?: XOR<job_categories_job_postsCreateWithoutJob_postsInput, job_categories_job_postsUncheckedCreateWithoutJob_postsInput> | job_categories_job_postsCreateWithoutJob_postsInput[] | job_categories_job_postsUncheckedCreateWithoutJob_postsInput[]
-    connectOrCreate?: job_categories_job_postsCreateOrConnectWithoutJob_postsInput | job_categories_job_postsCreateOrConnectWithoutJob_postsInput[]
-    createMany?: job_categories_job_postsCreateManyJob_postsInputEnvelope
-    connect?: job_categories_job_postsWhereUniqueInput | job_categories_job_postsWhereUniqueInput[]
+  export type job_post_categoriesCreateNestedManyWithoutJob_postsInput = {
+    create?: XOR<job_post_categoriesCreateWithoutJob_postsInput, job_post_categoriesUncheckedCreateWithoutJob_postsInput> | job_post_categoriesCreateWithoutJob_postsInput[] | job_post_categoriesUncheckedCreateWithoutJob_postsInput[]
+    connectOrCreate?: job_post_categoriesCreateOrConnectWithoutJob_postsInput | job_post_categoriesCreateOrConnectWithoutJob_postsInput[]
+    createMany?: job_post_categoriesCreateManyJob_postsInputEnvelope
+    connect?: job_post_categoriesWhereUniqueInput | job_post_categoriesWhereUniqueInput[]
   }
 
   export type companiesCreateNestedOneWithoutJob_postsInput = {
@@ -19224,68 +19509,29 @@ export namespace Prisma {
     connect?: companiesWhereUniqueInput
   }
 
-  export type selectionsCreateNestedManyWithoutJob_postsInput = {
-    create?: XOR<selectionsCreateWithoutJob_postsInput, selectionsUncheckedCreateWithoutJob_postsInput> | selectionsCreateWithoutJob_postsInput[] | selectionsUncheckedCreateWithoutJob_postsInput[]
-    connectOrCreate?: selectionsCreateOrConnectWithoutJob_postsInput | selectionsCreateOrConnectWithoutJob_postsInput[]
-    createMany?: selectionsCreateManyJob_postsInputEnvelope
-    connect?: selectionsWhereUniqueInput | selectionsWhereUniqueInput[]
-  }
-
-  export type applicantsUncheckedCreateNestedManyWithoutJob_postsInput = {
-    create?: XOR<applicantsCreateWithoutJob_postsInput, applicantsUncheckedCreateWithoutJob_postsInput> | applicantsCreateWithoutJob_postsInput[] | applicantsUncheckedCreateWithoutJob_postsInput[]
-    connectOrCreate?: applicantsCreateOrConnectWithoutJob_postsInput | applicantsCreateOrConnectWithoutJob_postsInput[]
-    createMany?: applicantsCreateManyJob_postsInputEnvelope
-    connect?: applicantsWhereUniqueInput | applicantsWhereUniqueInput[]
-  }
-
-  export type job_categories_job_postsUncheckedCreateNestedManyWithoutJob_postsInput = {
-    create?: XOR<job_categories_job_postsCreateWithoutJob_postsInput, job_categories_job_postsUncheckedCreateWithoutJob_postsInput> | job_categories_job_postsCreateWithoutJob_postsInput[] | job_categories_job_postsUncheckedCreateWithoutJob_postsInput[]
-    connectOrCreate?: job_categories_job_postsCreateOrConnectWithoutJob_postsInput | job_categories_job_postsCreateOrConnectWithoutJob_postsInput[]
-    createMany?: job_categories_job_postsCreateManyJob_postsInputEnvelope
-    connect?: job_categories_job_postsWhereUniqueInput | job_categories_job_postsWhereUniqueInput[]
-  }
-
-  export type selectionsUncheckedCreateNestedManyWithoutJob_postsInput = {
-    create?: XOR<selectionsCreateWithoutJob_postsInput, selectionsUncheckedCreateWithoutJob_postsInput> | selectionsCreateWithoutJob_postsInput[] | selectionsUncheckedCreateWithoutJob_postsInput[]
-    connectOrCreate?: selectionsCreateOrConnectWithoutJob_postsInput | selectionsCreateOrConnectWithoutJob_postsInput[]
-    createMany?: selectionsCreateManyJob_postsInputEnvelope
-    connect?: selectionsWhereUniqueInput | selectionsWhereUniqueInput[]
-  }
-
-  export type Enumjob_posts_typeFieldUpdateOperationsInput = {
-    set?: $Enums.job_posts_type
+  export type job_post_categoriesUncheckedCreateNestedManyWithoutJob_postsInput = {
+    create?: XOR<job_post_categoriesCreateWithoutJob_postsInput, job_post_categoriesUncheckedCreateWithoutJob_postsInput> | job_post_categoriesCreateWithoutJob_postsInput[] | job_post_categoriesUncheckedCreateWithoutJob_postsInput[]
+    connectOrCreate?: job_post_categoriesCreateOrConnectWithoutJob_postsInput | job_post_categoriesCreateOrConnectWithoutJob_postsInput[]
+    createMany?: job_post_categoriesCreateManyJob_postsInputEnvelope
+    connect?: job_post_categoriesWhereUniqueInput | job_post_categoriesWhereUniqueInput[]
   }
 
   export type Enumjob_posts_statusFieldUpdateOperationsInput = {
     set?: $Enums.job_posts_status
   }
 
-  export type applicantsUpdateManyWithoutJob_postsNestedInput = {
-    create?: XOR<applicantsCreateWithoutJob_postsInput, applicantsUncheckedCreateWithoutJob_postsInput> | applicantsCreateWithoutJob_postsInput[] | applicantsUncheckedCreateWithoutJob_postsInput[]
-    connectOrCreate?: applicantsCreateOrConnectWithoutJob_postsInput | applicantsCreateOrConnectWithoutJob_postsInput[]
-    upsert?: applicantsUpsertWithWhereUniqueWithoutJob_postsInput | applicantsUpsertWithWhereUniqueWithoutJob_postsInput[]
-    createMany?: applicantsCreateManyJob_postsInputEnvelope
-    set?: applicantsWhereUniqueInput | applicantsWhereUniqueInput[]
-    disconnect?: applicantsWhereUniqueInput | applicantsWhereUniqueInput[]
-    delete?: applicantsWhereUniqueInput | applicantsWhereUniqueInput[]
-    connect?: applicantsWhereUniqueInput | applicantsWhereUniqueInput[]
-    update?: applicantsUpdateWithWhereUniqueWithoutJob_postsInput | applicantsUpdateWithWhereUniqueWithoutJob_postsInput[]
-    updateMany?: applicantsUpdateManyWithWhereWithoutJob_postsInput | applicantsUpdateManyWithWhereWithoutJob_postsInput[]
-    deleteMany?: applicantsScalarWhereInput | applicantsScalarWhereInput[]
-  }
-
-  export type job_categories_job_postsUpdateManyWithoutJob_postsNestedInput = {
-    create?: XOR<job_categories_job_postsCreateWithoutJob_postsInput, job_categories_job_postsUncheckedCreateWithoutJob_postsInput> | job_categories_job_postsCreateWithoutJob_postsInput[] | job_categories_job_postsUncheckedCreateWithoutJob_postsInput[]
-    connectOrCreate?: job_categories_job_postsCreateOrConnectWithoutJob_postsInput | job_categories_job_postsCreateOrConnectWithoutJob_postsInput[]
-    upsert?: job_categories_job_postsUpsertWithWhereUniqueWithoutJob_postsInput | job_categories_job_postsUpsertWithWhereUniqueWithoutJob_postsInput[]
-    createMany?: job_categories_job_postsCreateManyJob_postsInputEnvelope
-    set?: job_categories_job_postsWhereUniqueInput | job_categories_job_postsWhereUniqueInput[]
-    disconnect?: job_categories_job_postsWhereUniqueInput | job_categories_job_postsWhereUniqueInput[]
-    delete?: job_categories_job_postsWhereUniqueInput | job_categories_job_postsWhereUniqueInput[]
-    connect?: job_categories_job_postsWhereUniqueInput | job_categories_job_postsWhereUniqueInput[]
-    update?: job_categories_job_postsUpdateWithWhereUniqueWithoutJob_postsInput | job_categories_job_postsUpdateWithWhereUniqueWithoutJob_postsInput[]
-    updateMany?: job_categories_job_postsUpdateManyWithWhereWithoutJob_postsInput | job_categories_job_postsUpdateManyWithWhereWithoutJob_postsInput[]
-    deleteMany?: job_categories_job_postsScalarWhereInput | job_categories_job_postsScalarWhereInput[]
+  export type job_post_categoriesUpdateManyWithoutJob_postsNestedInput = {
+    create?: XOR<job_post_categoriesCreateWithoutJob_postsInput, job_post_categoriesUncheckedCreateWithoutJob_postsInput> | job_post_categoriesCreateWithoutJob_postsInput[] | job_post_categoriesUncheckedCreateWithoutJob_postsInput[]
+    connectOrCreate?: job_post_categoriesCreateOrConnectWithoutJob_postsInput | job_post_categoriesCreateOrConnectWithoutJob_postsInput[]
+    upsert?: job_post_categoriesUpsertWithWhereUniqueWithoutJob_postsInput | job_post_categoriesUpsertWithWhereUniqueWithoutJob_postsInput[]
+    createMany?: job_post_categoriesCreateManyJob_postsInputEnvelope
+    set?: job_post_categoriesWhereUniqueInput | job_post_categoriesWhereUniqueInput[]
+    disconnect?: job_post_categoriesWhereUniqueInput | job_post_categoriesWhereUniqueInput[]
+    delete?: job_post_categoriesWhereUniqueInput | job_post_categoriesWhereUniqueInput[]
+    connect?: job_post_categoriesWhereUniqueInput | job_post_categoriesWhereUniqueInput[]
+    update?: job_post_categoriesUpdateWithWhereUniqueWithoutJob_postsInput | job_post_categoriesUpdateWithWhereUniqueWithoutJob_postsInput[]
+    updateMany?: job_post_categoriesUpdateManyWithWhereWithoutJob_postsInput | job_post_categoriesUpdateManyWithWhereWithoutJob_postsInput[]
+    deleteMany?: job_post_categoriesScalarWhereInput | job_post_categoriesScalarWhereInput[]
   }
 
   export type companiesUpdateOneRequiredWithoutJob_postsNestedInput = {
@@ -19296,60 +19542,18 @@ export namespace Prisma {
     update?: XOR<XOR<companiesUpdateToOneWithWhereWithoutJob_postsInput, companiesUpdateWithoutJob_postsInput>, companiesUncheckedUpdateWithoutJob_postsInput>
   }
 
-  export type selectionsUpdateManyWithoutJob_postsNestedInput = {
-    create?: XOR<selectionsCreateWithoutJob_postsInput, selectionsUncheckedCreateWithoutJob_postsInput> | selectionsCreateWithoutJob_postsInput[] | selectionsUncheckedCreateWithoutJob_postsInput[]
-    connectOrCreate?: selectionsCreateOrConnectWithoutJob_postsInput | selectionsCreateOrConnectWithoutJob_postsInput[]
-    upsert?: selectionsUpsertWithWhereUniqueWithoutJob_postsInput | selectionsUpsertWithWhereUniqueWithoutJob_postsInput[]
-    createMany?: selectionsCreateManyJob_postsInputEnvelope
-    set?: selectionsWhereUniqueInput | selectionsWhereUniqueInput[]
-    disconnect?: selectionsWhereUniqueInput | selectionsWhereUniqueInput[]
-    delete?: selectionsWhereUniqueInput | selectionsWhereUniqueInput[]
-    connect?: selectionsWhereUniqueInput | selectionsWhereUniqueInput[]
-    update?: selectionsUpdateWithWhereUniqueWithoutJob_postsInput | selectionsUpdateWithWhereUniqueWithoutJob_postsInput[]
-    updateMany?: selectionsUpdateManyWithWhereWithoutJob_postsInput | selectionsUpdateManyWithWhereWithoutJob_postsInput[]
-    deleteMany?: selectionsScalarWhereInput | selectionsScalarWhereInput[]
-  }
-
-  export type applicantsUncheckedUpdateManyWithoutJob_postsNestedInput = {
-    create?: XOR<applicantsCreateWithoutJob_postsInput, applicantsUncheckedCreateWithoutJob_postsInput> | applicantsCreateWithoutJob_postsInput[] | applicantsUncheckedCreateWithoutJob_postsInput[]
-    connectOrCreate?: applicantsCreateOrConnectWithoutJob_postsInput | applicantsCreateOrConnectWithoutJob_postsInput[]
-    upsert?: applicantsUpsertWithWhereUniqueWithoutJob_postsInput | applicantsUpsertWithWhereUniqueWithoutJob_postsInput[]
-    createMany?: applicantsCreateManyJob_postsInputEnvelope
-    set?: applicantsWhereUniqueInput | applicantsWhereUniqueInput[]
-    disconnect?: applicantsWhereUniqueInput | applicantsWhereUniqueInput[]
-    delete?: applicantsWhereUniqueInput | applicantsWhereUniqueInput[]
-    connect?: applicantsWhereUniqueInput | applicantsWhereUniqueInput[]
-    update?: applicantsUpdateWithWhereUniqueWithoutJob_postsInput | applicantsUpdateWithWhereUniqueWithoutJob_postsInput[]
-    updateMany?: applicantsUpdateManyWithWhereWithoutJob_postsInput | applicantsUpdateManyWithWhereWithoutJob_postsInput[]
-    deleteMany?: applicantsScalarWhereInput | applicantsScalarWhereInput[]
-  }
-
-  export type job_categories_job_postsUncheckedUpdateManyWithoutJob_postsNestedInput = {
-    create?: XOR<job_categories_job_postsCreateWithoutJob_postsInput, job_categories_job_postsUncheckedCreateWithoutJob_postsInput> | job_categories_job_postsCreateWithoutJob_postsInput[] | job_categories_job_postsUncheckedCreateWithoutJob_postsInput[]
-    connectOrCreate?: job_categories_job_postsCreateOrConnectWithoutJob_postsInput | job_categories_job_postsCreateOrConnectWithoutJob_postsInput[]
-    upsert?: job_categories_job_postsUpsertWithWhereUniqueWithoutJob_postsInput | job_categories_job_postsUpsertWithWhereUniqueWithoutJob_postsInput[]
-    createMany?: job_categories_job_postsCreateManyJob_postsInputEnvelope
-    set?: job_categories_job_postsWhereUniqueInput | job_categories_job_postsWhereUniqueInput[]
-    disconnect?: job_categories_job_postsWhereUniqueInput | job_categories_job_postsWhereUniqueInput[]
-    delete?: job_categories_job_postsWhereUniqueInput | job_categories_job_postsWhereUniqueInput[]
-    connect?: job_categories_job_postsWhereUniqueInput | job_categories_job_postsWhereUniqueInput[]
-    update?: job_categories_job_postsUpdateWithWhereUniqueWithoutJob_postsInput | job_categories_job_postsUpdateWithWhereUniqueWithoutJob_postsInput[]
-    updateMany?: job_categories_job_postsUpdateManyWithWhereWithoutJob_postsInput | job_categories_job_postsUpdateManyWithWhereWithoutJob_postsInput[]
-    deleteMany?: job_categories_job_postsScalarWhereInput | job_categories_job_postsScalarWhereInput[]
-  }
-
-  export type selectionsUncheckedUpdateManyWithoutJob_postsNestedInput = {
-    create?: XOR<selectionsCreateWithoutJob_postsInput, selectionsUncheckedCreateWithoutJob_postsInput> | selectionsCreateWithoutJob_postsInput[] | selectionsUncheckedCreateWithoutJob_postsInput[]
-    connectOrCreate?: selectionsCreateOrConnectWithoutJob_postsInput | selectionsCreateOrConnectWithoutJob_postsInput[]
-    upsert?: selectionsUpsertWithWhereUniqueWithoutJob_postsInput | selectionsUpsertWithWhereUniqueWithoutJob_postsInput[]
-    createMany?: selectionsCreateManyJob_postsInputEnvelope
-    set?: selectionsWhereUniqueInput | selectionsWhereUniqueInput[]
-    disconnect?: selectionsWhereUniqueInput | selectionsWhereUniqueInput[]
-    delete?: selectionsWhereUniqueInput | selectionsWhereUniqueInput[]
-    connect?: selectionsWhereUniqueInput | selectionsWhereUniqueInput[]
-    update?: selectionsUpdateWithWhereUniqueWithoutJob_postsInput | selectionsUpdateWithWhereUniqueWithoutJob_postsInput[]
-    updateMany?: selectionsUpdateManyWithWhereWithoutJob_postsInput | selectionsUpdateManyWithWhereWithoutJob_postsInput[]
-    deleteMany?: selectionsScalarWhereInput | selectionsScalarWhereInput[]
+  export type job_post_categoriesUncheckedUpdateManyWithoutJob_postsNestedInput = {
+    create?: XOR<job_post_categoriesCreateWithoutJob_postsInput, job_post_categoriesUncheckedCreateWithoutJob_postsInput> | job_post_categoriesCreateWithoutJob_postsInput[] | job_post_categoriesUncheckedCreateWithoutJob_postsInput[]
+    connectOrCreate?: job_post_categoriesCreateOrConnectWithoutJob_postsInput | job_post_categoriesCreateOrConnectWithoutJob_postsInput[]
+    upsert?: job_post_categoriesUpsertWithWhereUniqueWithoutJob_postsInput | job_post_categoriesUpsertWithWhereUniqueWithoutJob_postsInput[]
+    createMany?: job_post_categoriesCreateManyJob_postsInputEnvelope
+    set?: job_post_categoriesWhereUniqueInput | job_post_categoriesWhereUniqueInput[]
+    disconnect?: job_post_categoriesWhereUniqueInput | job_post_categoriesWhereUniqueInput[]
+    delete?: job_post_categoriesWhereUniqueInput | job_post_categoriesWhereUniqueInput[]
+    connect?: job_post_categoriesWhereUniqueInput | job_post_categoriesWhereUniqueInput[]
+    update?: job_post_categoriesUpdateWithWhereUniqueWithoutJob_postsInput | job_post_categoriesUpdateWithWhereUniqueWithoutJob_postsInput[]
+    updateMany?: job_post_categoriesUpdateManyWithWhereWithoutJob_postsInput | job_post_categoriesUpdateManyWithWhereWithoutJob_postsInput[]
+    deleteMany?: job_post_categoriesScalarWhereInput | job_post_categoriesScalarWhereInput[]
   }
 
   export type applicantsCreateNestedOneWithoutSelectionsInput = {
@@ -19358,10 +19562,10 @@ export namespace Prisma {
     connect?: applicantsWhereUniqueInput
   }
 
-  export type job_postsCreateNestedOneWithoutSelectionsInput = {
-    create?: XOR<job_postsCreateWithoutSelectionsInput, job_postsUncheckedCreateWithoutSelectionsInput>
-    connectOrCreate?: job_postsCreateOrConnectWithoutSelectionsInput
-    connect?: job_postsWhereUniqueInput
+  export type job_post_categoriesCreateNestedOneWithoutSelectionsInput = {
+    create?: XOR<job_post_categoriesCreateWithoutSelectionsInput, job_post_categoriesUncheckedCreateWithoutSelectionsInput>
+    connectOrCreate?: job_post_categoriesCreateOrConnectWithoutSelectionsInput
+    connect?: job_post_categoriesWhereUniqueInput
   }
 
   export type Enumselections_stageFieldUpdateOperationsInput = {
@@ -19380,12 +19584,12 @@ export namespace Prisma {
     update?: XOR<XOR<applicantsUpdateToOneWithWhereWithoutSelectionsInput, applicantsUpdateWithoutSelectionsInput>, applicantsUncheckedUpdateWithoutSelectionsInput>
   }
 
-  export type job_postsUpdateOneRequiredWithoutSelectionsNestedInput = {
-    create?: XOR<job_postsCreateWithoutSelectionsInput, job_postsUncheckedCreateWithoutSelectionsInput>
-    connectOrCreate?: job_postsCreateOrConnectWithoutSelectionsInput
-    upsert?: job_postsUpsertWithoutSelectionsInput
-    connect?: job_postsWhereUniqueInput
-    update?: XOR<XOR<job_postsUpdateToOneWithWhereWithoutSelectionsInput, job_postsUpdateWithoutSelectionsInput>, job_postsUncheckedUpdateWithoutSelectionsInput>
+  export type job_post_categoriesUpdateOneRequiredWithoutSelectionsNestedInput = {
+    create?: XOR<job_post_categoriesCreateWithoutSelectionsInput, job_post_categoriesUncheckedCreateWithoutSelectionsInput>
+    connectOrCreate?: job_post_categoriesCreateOrConnectWithoutSelectionsInput
+    upsert?: job_post_categoriesUpsertWithoutSelectionsInput
+    connect?: job_post_categoriesWhereUniqueInput
+    update?: XOR<XOR<job_post_categoriesUpdateToOneWithWhereWithoutSelectionsInput, job_post_categoriesUpdateWithoutSelectionsInput>, job_post_categoriesUncheckedUpdateWithoutSelectionsInput>
   }
 
   export type applicantsCreateNestedManyWithoutUsersInput = {
@@ -19432,6 +19636,122 @@ export namespace Prisma {
     update?: applicantsUpdateWithWhereUniqueWithoutUsersInput | applicantsUpdateWithWhereUniqueWithoutUsersInput[]
     updateMany?: applicantsUpdateManyWithWhereWithoutUsersInput | applicantsUpdateManyWithWhereWithoutUsersInput[]
     deleteMany?: applicantsScalarWhereInput | applicantsScalarWhereInput[]
+  }
+
+  export type applicantsCreateNestedManyWithoutJob_post_categoriesInput = {
+    create?: XOR<applicantsCreateWithoutJob_post_categoriesInput, applicantsUncheckedCreateWithoutJob_post_categoriesInput> | applicantsCreateWithoutJob_post_categoriesInput[] | applicantsUncheckedCreateWithoutJob_post_categoriesInput[]
+    connectOrCreate?: applicantsCreateOrConnectWithoutJob_post_categoriesInput | applicantsCreateOrConnectWithoutJob_post_categoriesInput[]
+    createMany?: applicantsCreateManyJob_post_categoriesInputEnvelope
+    connect?: applicantsWhereUniqueInput | applicantsWhereUniqueInput[]
+  }
+
+  export type job_categoriesCreateNestedOneWithoutJob_post_categoriesInput = {
+    create?: XOR<job_categoriesCreateWithoutJob_post_categoriesInput, job_categoriesUncheckedCreateWithoutJob_post_categoriesInput>
+    connectOrCreate?: job_categoriesCreateOrConnectWithoutJob_post_categoriesInput
+    connect?: job_categoriesWhereUniqueInput
+  }
+
+  export type job_postsCreateNestedOneWithoutJob_post_categoriesInput = {
+    create?: XOR<job_postsCreateWithoutJob_post_categoriesInput, job_postsUncheckedCreateWithoutJob_post_categoriesInput>
+    connectOrCreate?: job_postsCreateOrConnectWithoutJob_post_categoriesInput
+    connect?: job_postsWhereUniqueInput
+  }
+
+  export type selectionsCreateNestedManyWithoutJob_post_categoriesInput = {
+    create?: XOR<selectionsCreateWithoutJob_post_categoriesInput, selectionsUncheckedCreateWithoutJob_post_categoriesInput> | selectionsCreateWithoutJob_post_categoriesInput[] | selectionsUncheckedCreateWithoutJob_post_categoriesInput[]
+    connectOrCreate?: selectionsCreateOrConnectWithoutJob_post_categoriesInput | selectionsCreateOrConnectWithoutJob_post_categoriesInput[]
+    createMany?: selectionsCreateManyJob_post_categoriesInputEnvelope
+    connect?: selectionsWhereUniqueInput | selectionsWhereUniqueInput[]
+  }
+
+  export type applicantsUncheckedCreateNestedManyWithoutJob_post_categoriesInput = {
+    create?: XOR<applicantsCreateWithoutJob_post_categoriesInput, applicantsUncheckedCreateWithoutJob_post_categoriesInput> | applicantsCreateWithoutJob_post_categoriesInput[] | applicantsUncheckedCreateWithoutJob_post_categoriesInput[]
+    connectOrCreate?: applicantsCreateOrConnectWithoutJob_post_categoriesInput | applicantsCreateOrConnectWithoutJob_post_categoriesInput[]
+    createMany?: applicantsCreateManyJob_post_categoriesInputEnvelope
+    connect?: applicantsWhereUniqueInput | applicantsWhereUniqueInput[]
+  }
+
+  export type selectionsUncheckedCreateNestedManyWithoutJob_post_categoriesInput = {
+    create?: XOR<selectionsCreateWithoutJob_post_categoriesInput, selectionsUncheckedCreateWithoutJob_post_categoriesInput> | selectionsCreateWithoutJob_post_categoriesInput[] | selectionsUncheckedCreateWithoutJob_post_categoriesInput[]
+    connectOrCreate?: selectionsCreateOrConnectWithoutJob_post_categoriesInput | selectionsCreateOrConnectWithoutJob_post_categoriesInput[]
+    createMany?: selectionsCreateManyJob_post_categoriesInputEnvelope
+    connect?: selectionsWhereUniqueInput | selectionsWhereUniqueInput[]
+  }
+
+  export type Enumjob_post_categories_typeFieldUpdateOperationsInput = {
+    set?: $Enums.job_post_categories_type
+  }
+
+  export type applicantsUpdateManyWithoutJob_post_categoriesNestedInput = {
+    create?: XOR<applicantsCreateWithoutJob_post_categoriesInput, applicantsUncheckedCreateWithoutJob_post_categoriesInput> | applicantsCreateWithoutJob_post_categoriesInput[] | applicantsUncheckedCreateWithoutJob_post_categoriesInput[]
+    connectOrCreate?: applicantsCreateOrConnectWithoutJob_post_categoriesInput | applicantsCreateOrConnectWithoutJob_post_categoriesInput[]
+    upsert?: applicantsUpsertWithWhereUniqueWithoutJob_post_categoriesInput | applicantsUpsertWithWhereUniqueWithoutJob_post_categoriesInput[]
+    createMany?: applicantsCreateManyJob_post_categoriesInputEnvelope
+    set?: applicantsWhereUniqueInput | applicantsWhereUniqueInput[]
+    disconnect?: applicantsWhereUniqueInput | applicantsWhereUniqueInput[]
+    delete?: applicantsWhereUniqueInput | applicantsWhereUniqueInput[]
+    connect?: applicantsWhereUniqueInput | applicantsWhereUniqueInput[]
+    update?: applicantsUpdateWithWhereUniqueWithoutJob_post_categoriesInput | applicantsUpdateWithWhereUniqueWithoutJob_post_categoriesInput[]
+    updateMany?: applicantsUpdateManyWithWhereWithoutJob_post_categoriesInput | applicantsUpdateManyWithWhereWithoutJob_post_categoriesInput[]
+    deleteMany?: applicantsScalarWhereInput | applicantsScalarWhereInput[]
+  }
+
+  export type job_categoriesUpdateOneRequiredWithoutJob_post_categoriesNestedInput = {
+    create?: XOR<job_categoriesCreateWithoutJob_post_categoriesInput, job_categoriesUncheckedCreateWithoutJob_post_categoriesInput>
+    connectOrCreate?: job_categoriesCreateOrConnectWithoutJob_post_categoriesInput
+    upsert?: job_categoriesUpsertWithoutJob_post_categoriesInput
+    connect?: job_categoriesWhereUniqueInput
+    update?: XOR<XOR<job_categoriesUpdateToOneWithWhereWithoutJob_post_categoriesInput, job_categoriesUpdateWithoutJob_post_categoriesInput>, job_categoriesUncheckedUpdateWithoutJob_post_categoriesInput>
+  }
+
+  export type job_postsUpdateOneRequiredWithoutJob_post_categoriesNestedInput = {
+    create?: XOR<job_postsCreateWithoutJob_post_categoriesInput, job_postsUncheckedCreateWithoutJob_post_categoriesInput>
+    connectOrCreate?: job_postsCreateOrConnectWithoutJob_post_categoriesInput
+    upsert?: job_postsUpsertWithoutJob_post_categoriesInput
+    connect?: job_postsWhereUniqueInput
+    update?: XOR<XOR<job_postsUpdateToOneWithWhereWithoutJob_post_categoriesInput, job_postsUpdateWithoutJob_post_categoriesInput>, job_postsUncheckedUpdateWithoutJob_post_categoriesInput>
+  }
+
+  export type selectionsUpdateManyWithoutJob_post_categoriesNestedInput = {
+    create?: XOR<selectionsCreateWithoutJob_post_categoriesInput, selectionsUncheckedCreateWithoutJob_post_categoriesInput> | selectionsCreateWithoutJob_post_categoriesInput[] | selectionsUncheckedCreateWithoutJob_post_categoriesInput[]
+    connectOrCreate?: selectionsCreateOrConnectWithoutJob_post_categoriesInput | selectionsCreateOrConnectWithoutJob_post_categoriesInput[]
+    upsert?: selectionsUpsertWithWhereUniqueWithoutJob_post_categoriesInput | selectionsUpsertWithWhereUniqueWithoutJob_post_categoriesInput[]
+    createMany?: selectionsCreateManyJob_post_categoriesInputEnvelope
+    set?: selectionsWhereUniqueInput | selectionsWhereUniqueInput[]
+    disconnect?: selectionsWhereUniqueInput | selectionsWhereUniqueInput[]
+    delete?: selectionsWhereUniqueInput | selectionsWhereUniqueInput[]
+    connect?: selectionsWhereUniqueInput | selectionsWhereUniqueInput[]
+    update?: selectionsUpdateWithWhereUniqueWithoutJob_post_categoriesInput | selectionsUpdateWithWhereUniqueWithoutJob_post_categoriesInput[]
+    updateMany?: selectionsUpdateManyWithWhereWithoutJob_post_categoriesInput | selectionsUpdateManyWithWhereWithoutJob_post_categoriesInput[]
+    deleteMany?: selectionsScalarWhereInput | selectionsScalarWhereInput[]
+  }
+
+  export type applicantsUncheckedUpdateManyWithoutJob_post_categoriesNestedInput = {
+    create?: XOR<applicantsCreateWithoutJob_post_categoriesInput, applicantsUncheckedCreateWithoutJob_post_categoriesInput> | applicantsCreateWithoutJob_post_categoriesInput[] | applicantsUncheckedCreateWithoutJob_post_categoriesInput[]
+    connectOrCreate?: applicantsCreateOrConnectWithoutJob_post_categoriesInput | applicantsCreateOrConnectWithoutJob_post_categoriesInput[]
+    upsert?: applicantsUpsertWithWhereUniqueWithoutJob_post_categoriesInput | applicantsUpsertWithWhereUniqueWithoutJob_post_categoriesInput[]
+    createMany?: applicantsCreateManyJob_post_categoriesInputEnvelope
+    set?: applicantsWhereUniqueInput | applicantsWhereUniqueInput[]
+    disconnect?: applicantsWhereUniqueInput | applicantsWhereUniqueInput[]
+    delete?: applicantsWhereUniqueInput | applicantsWhereUniqueInput[]
+    connect?: applicantsWhereUniqueInput | applicantsWhereUniqueInput[]
+    update?: applicantsUpdateWithWhereUniqueWithoutJob_post_categoriesInput | applicantsUpdateWithWhereUniqueWithoutJob_post_categoriesInput[]
+    updateMany?: applicantsUpdateManyWithWhereWithoutJob_post_categoriesInput | applicantsUpdateManyWithWhereWithoutJob_post_categoriesInput[]
+    deleteMany?: applicantsScalarWhereInput | applicantsScalarWhereInput[]
+  }
+
+  export type selectionsUncheckedUpdateManyWithoutJob_post_categoriesNestedInput = {
+    create?: XOR<selectionsCreateWithoutJob_post_categoriesInput, selectionsUncheckedCreateWithoutJob_post_categoriesInput> | selectionsCreateWithoutJob_post_categoriesInput[] | selectionsUncheckedCreateWithoutJob_post_categoriesInput[]
+    connectOrCreate?: selectionsCreateOrConnectWithoutJob_post_categoriesInput | selectionsCreateOrConnectWithoutJob_post_categoriesInput[]
+    upsert?: selectionsUpsertWithWhereUniqueWithoutJob_post_categoriesInput | selectionsUpsertWithWhereUniqueWithoutJob_post_categoriesInput[]
+    createMany?: selectionsCreateManyJob_post_categoriesInputEnvelope
+    set?: selectionsWhereUniqueInput | selectionsWhereUniqueInput[]
+    disconnect?: selectionsWhereUniqueInput | selectionsWhereUniqueInput[]
+    delete?: selectionsWhereUniqueInput | selectionsWhereUniqueInput[]
+    connect?: selectionsWhereUniqueInput | selectionsWhereUniqueInput[]
+    update?: selectionsUpdateWithWhereUniqueWithoutJob_post_categoriesInput | selectionsUpdateWithWhereUniqueWithoutJob_post_categoriesInput[]
+    updateMany?: selectionsUpdateManyWithWhereWithoutJob_post_categoriesInput | selectionsUpdateManyWithWhereWithoutJob_post_categoriesInput[]
+    deleteMany?: selectionsScalarWhereInput | selectionsScalarWhereInput[]
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -19558,6 +19878,39 @@ export namespace Prisma {
     not?: NestedFloatFilter<$PrismaModel> | number
   }
 
+  export type NestedStringNullableFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | null
+    notIn?: string[] | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    search?: string
+    not?: NestedStringNullableFilter<$PrismaModel> | string | null
+  }
+
+  export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | null
+    notIn?: string[] | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    search?: string
+    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedStringNullableFilter<$PrismaModel>
+    _max?: NestedStringNullableFilter<$PrismaModel>
+  }
+
   export type NestedBigIntFilter<$PrismaModel = never> = {
     equals?: bigint | number | BigIntFieldRefInput<$PrismaModel>
     in?: bigint[] | number[]
@@ -19610,39 +19963,6 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
-  export type NestedStringNullableFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | null
-    notIn?: string[] | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    search?: string
-    not?: NestedStringNullableFilter<$PrismaModel> | string | null
-  }
-
-  export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | null
-    notIn?: string[] | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    search?: string
-    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedStringNullableFilter<$PrismaModel>
-    _max?: NestedStringNullableFilter<$PrismaModel>
-  }
-
   export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel> | null
     in?: number[] | null
@@ -19670,28 +19990,11 @@ export namespace Prisma {
     not?: NestedFloatNullableFilter<$PrismaModel> | number | null
   }
 
-  export type NestedEnumjob_posts_typeFilter<$PrismaModel = never> = {
-    equals?: $Enums.job_posts_type | Enumjob_posts_typeFieldRefInput<$PrismaModel>
-    in?: $Enums.job_posts_type[]
-    notIn?: $Enums.job_posts_type[]
-    not?: NestedEnumjob_posts_typeFilter<$PrismaModel> | $Enums.job_posts_type
-  }
-
   export type NestedEnumjob_posts_statusFilter<$PrismaModel = never> = {
     equals?: $Enums.job_posts_status | Enumjob_posts_statusFieldRefInput<$PrismaModel>
     in?: $Enums.job_posts_status[]
     notIn?: $Enums.job_posts_status[]
     not?: NestedEnumjob_posts_statusFilter<$PrismaModel> | $Enums.job_posts_status
-  }
-
-  export type NestedEnumjob_posts_typeWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.job_posts_type | Enumjob_posts_typeFieldRefInput<$PrismaModel>
-    in?: $Enums.job_posts_type[]
-    notIn?: $Enums.job_posts_type[]
-    not?: NestedEnumjob_posts_typeWithAggregatesFilter<$PrismaModel> | $Enums.job_posts_type
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumjob_posts_typeFilter<$PrismaModel>
-    _max?: NestedEnumjob_posts_typeFilter<$PrismaModel>
   }
 
   export type NestedEnumjob_posts_statusWithAggregatesFilter<$PrismaModel = never> = {
@@ -19755,41 +20058,56 @@ export namespace Prisma {
     _max?: NestedEnumusers_roleFilter<$PrismaModel>
   }
 
-  export type job_postsCreateWithoutApplicantsInput = {
+  export type NestedEnumjob_post_categories_typeFilter<$PrismaModel = never> = {
+    equals?: $Enums.job_post_categories_type | Enumjob_post_categories_typeFieldRefInput<$PrismaModel>
+    in?: $Enums.job_post_categories_type[]
+    notIn?: $Enums.job_post_categories_type[]
+    not?: NestedEnumjob_post_categories_typeFilter<$PrismaModel> | $Enums.job_post_categories_type
+  }
+
+  export type NestedEnumjob_post_categories_typeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.job_post_categories_type | Enumjob_post_categories_typeFieldRefInput<$PrismaModel>
+    in?: $Enums.job_post_categories_type[]
+    notIn?: $Enums.job_post_categories_type[]
+    not?: NestedEnumjob_post_categories_typeWithAggregatesFilter<$PrismaModel> | $Enums.job_post_categories_type
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumjob_post_categories_typeFilter<$PrismaModel>
+    _max?: NestedEnumjob_post_categories_typeFilter<$PrismaModel>
+  }
+
+  export type job_post_categoriesCreateWithoutApplicantsInput = {
     id: string
-    title: string
-    description: string
-    requirements: string
-    benefits: string
-    type: $Enums.job_posts_type
-    status?: $Enums.job_posts_status
+    type: $Enums.job_post_categories_type
+    required_count?: number
+    description?: string | null
+    requirements?: string | null
+    benefits?: string | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     deleted_at?: Date | string | null
-    job_categories_job_posts?: job_categories_job_postsCreateNestedManyWithoutJob_postsInput
-    companies: companiesCreateNestedOneWithoutJob_postsInput
-    selections?: selectionsCreateNestedManyWithoutJob_postsInput
+    job_categories: job_categoriesCreateNestedOneWithoutJob_post_categoriesInput
+    job_posts: job_postsCreateNestedOneWithoutJob_post_categoriesInput
+    selections?: selectionsCreateNestedManyWithoutJob_post_categoriesInput
   }
 
-  export type job_postsUncheckedCreateWithoutApplicantsInput = {
+  export type job_post_categoriesUncheckedCreateWithoutApplicantsInput = {
     id: string
-    company_id: string
-    title: string
-    description: string
-    requirements: string
-    benefits: string
-    type: $Enums.job_posts_type
-    status?: $Enums.job_posts_status
+    job_category_id: string
+    job_post_id: string
+    type: $Enums.job_post_categories_type
+    required_count?: number
+    description?: string | null
+    requirements?: string | null
+    benefits?: string | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     deleted_at?: Date | string | null
-    job_categories_job_posts?: job_categories_job_postsUncheckedCreateNestedManyWithoutJob_postsInput
-    selections?: selectionsUncheckedCreateNestedManyWithoutJob_postsInput
+    selections?: selectionsUncheckedCreateNestedManyWithoutJob_post_categoriesInput
   }
 
-  export type job_postsCreateOrConnectWithoutApplicantsInput = {
-    where: job_postsWhereUniqueInput
-    create: XOR<job_postsCreateWithoutApplicantsInput, job_postsUncheckedCreateWithoutApplicantsInput>
+  export type job_post_categoriesCreateOrConnectWithoutApplicantsInput = {
+    where: job_post_categoriesWhereUniqueInput
+    create: XOR<job_post_categoriesCreateWithoutApplicantsInput, job_post_categoriesUncheckedCreateWithoutApplicantsInput>
   }
 
   export type usersCreateWithoutApplicantsInput = {
@@ -19803,6 +20121,7 @@ export namespace Prisma {
     password: string
     role?: $Enums.users_role
     verified_at?: Date | string | null
+    remember_token?: string | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     deleted_at?: Date | string | null
@@ -19819,6 +20138,7 @@ export namespace Prisma {
     password: string
     role?: $Enums.users_role
     verified_at?: Date | string | null
+    remember_token?: string | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     deleted_at?: Date | string | null
@@ -19837,12 +20157,12 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     deleted_at?: Date | string | null
-    job_posts: job_postsCreateNestedOneWithoutSelectionsInput
+    job_post_categories: job_post_categoriesCreateNestedOneWithoutSelectionsInput
   }
 
   export type selectionsUncheckedCreateWithoutApplicantsInput = {
     id: string
-    job_id: string
+    job_post_category_id: string
     stage: $Enums.selections_stage
     status?: $Enums.selections_status
     attachment?: string | null
@@ -19861,47 +20181,45 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type job_postsUpsertWithoutApplicantsInput = {
-    update: XOR<job_postsUpdateWithoutApplicantsInput, job_postsUncheckedUpdateWithoutApplicantsInput>
-    create: XOR<job_postsCreateWithoutApplicantsInput, job_postsUncheckedCreateWithoutApplicantsInput>
-    where?: job_postsWhereInput
+  export type job_post_categoriesUpsertWithoutApplicantsInput = {
+    update: XOR<job_post_categoriesUpdateWithoutApplicantsInput, job_post_categoriesUncheckedUpdateWithoutApplicantsInput>
+    create: XOR<job_post_categoriesCreateWithoutApplicantsInput, job_post_categoriesUncheckedCreateWithoutApplicantsInput>
+    where?: job_post_categoriesWhereInput
   }
 
-  export type job_postsUpdateToOneWithWhereWithoutApplicantsInput = {
-    where?: job_postsWhereInput
-    data: XOR<job_postsUpdateWithoutApplicantsInput, job_postsUncheckedUpdateWithoutApplicantsInput>
+  export type job_post_categoriesUpdateToOneWithWhereWithoutApplicantsInput = {
+    where?: job_post_categoriesWhereInput
+    data: XOR<job_post_categoriesUpdateWithoutApplicantsInput, job_post_categoriesUncheckedUpdateWithoutApplicantsInput>
   }
 
-  export type job_postsUpdateWithoutApplicantsInput = {
+  export type job_post_categoriesUpdateWithoutApplicantsInput = {
     id?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
-    description?: StringFieldUpdateOperationsInput | string
-    requirements?: StringFieldUpdateOperationsInput | string
-    benefits?: StringFieldUpdateOperationsInput | string
-    type?: Enumjob_posts_typeFieldUpdateOperationsInput | $Enums.job_posts_type
-    status?: Enumjob_posts_statusFieldUpdateOperationsInput | $Enums.job_posts_status
+    type?: Enumjob_post_categories_typeFieldUpdateOperationsInput | $Enums.job_post_categories_type
+    required_count?: IntFieldUpdateOperationsInput | number
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    requirements?: NullableStringFieldUpdateOperationsInput | string | null
+    benefits?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    job_categories_job_posts?: job_categories_job_postsUpdateManyWithoutJob_postsNestedInput
-    companies?: companiesUpdateOneRequiredWithoutJob_postsNestedInput
-    selections?: selectionsUpdateManyWithoutJob_postsNestedInput
+    job_categories?: job_categoriesUpdateOneRequiredWithoutJob_post_categoriesNestedInput
+    job_posts?: job_postsUpdateOneRequiredWithoutJob_post_categoriesNestedInput
+    selections?: selectionsUpdateManyWithoutJob_post_categoriesNestedInput
   }
 
-  export type job_postsUncheckedUpdateWithoutApplicantsInput = {
+  export type job_post_categoriesUncheckedUpdateWithoutApplicantsInput = {
     id?: StringFieldUpdateOperationsInput | string
-    company_id?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
-    description?: StringFieldUpdateOperationsInput | string
-    requirements?: StringFieldUpdateOperationsInput | string
-    benefits?: StringFieldUpdateOperationsInput | string
-    type?: Enumjob_posts_typeFieldUpdateOperationsInput | $Enums.job_posts_type
-    status?: Enumjob_posts_statusFieldUpdateOperationsInput | $Enums.job_posts_status
+    job_category_id?: StringFieldUpdateOperationsInput | string
+    job_post_id?: StringFieldUpdateOperationsInput | string
+    type?: Enumjob_post_categories_typeFieldUpdateOperationsInput | $Enums.job_post_categories_type
+    required_count?: IntFieldUpdateOperationsInput | number
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    requirements?: NullableStringFieldUpdateOperationsInput | string | null
+    benefits?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    job_categories_job_posts?: job_categories_job_postsUncheckedUpdateManyWithoutJob_postsNestedInput
-    selections?: selectionsUncheckedUpdateManyWithoutJob_postsNestedInput
+    selections?: selectionsUncheckedUpdateManyWithoutJob_post_categoriesNestedInput
   }
 
   export type usersUpsertWithoutApplicantsInput = {
@@ -19926,6 +20244,7 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     role?: Enumusers_roleFieldUpdateOperationsInput | $Enums.users_role
     verified_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    remember_token?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -19942,6 +20261,7 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     role?: Enumusers_roleFieldUpdateOperationsInput | $Enums.users_role
     verified_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    remember_token?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -19969,7 +20289,7 @@ export namespace Prisma {
     NOT?: selectionsScalarWhereInput | selectionsScalarWhereInput[]
     id?: StringFilter<"selections"> | string
     applicant_id?: StringFilter<"selections"> | string
-    job_id?: StringFilter<"selections"> | string
+    job_post_category_id?: StringFilter<"selections"> | string
     stage?: Enumselections_stageFilter<"selections"> | $Enums.selections_stage
     status?: Enumselections_statusFilter<"selections"> | $Enums.selections_status
     attachment?: StringNullableFilter<"selections"> | string | null
@@ -19981,33 +20301,23 @@ export namespace Prisma {
   export type job_postsCreateWithoutCompaniesInput = {
     id: string
     title: string
-    description: string
-    requirements: string
-    benefits: string
-    type: $Enums.job_posts_type
+    thumbnail: string
     status?: $Enums.job_posts_status
     created_at?: Date | string | null
     updated_at?: Date | string | null
     deleted_at?: Date | string | null
-    applicants?: applicantsCreateNestedManyWithoutJob_postsInput
-    job_categories_job_posts?: job_categories_job_postsCreateNestedManyWithoutJob_postsInput
-    selections?: selectionsCreateNestedManyWithoutJob_postsInput
+    job_post_categories?: job_post_categoriesCreateNestedManyWithoutJob_postsInput
   }
 
   export type job_postsUncheckedCreateWithoutCompaniesInput = {
     id: string
     title: string
-    description: string
-    requirements: string
-    benefits: string
-    type: $Enums.job_posts_type
+    thumbnail: string
     status?: $Enums.job_posts_status
     created_at?: Date | string | null
     updated_at?: Date | string | null
     deleted_at?: Date | string | null
-    applicants?: applicantsUncheckedCreateNestedManyWithoutJob_postsInput
-    job_categories_job_posts?: job_categories_job_postsUncheckedCreateNestedManyWithoutJob_postsInput
-    selections?: selectionsUncheckedCreateNestedManyWithoutJob_postsInput
+    job_post_categories?: job_post_categoriesUncheckedCreateNestedManyWithoutJob_postsInput
   }
 
   export type job_postsCreateOrConnectWithoutCompaniesInput = {
@@ -20043,235 +20353,123 @@ export namespace Prisma {
     id?: StringFilter<"job_posts"> | string
     company_id?: StringFilter<"job_posts"> | string
     title?: StringFilter<"job_posts"> | string
-    description?: StringFilter<"job_posts"> | string
-    requirements?: StringFilter<"job_posts"> | string
-    benefits?: StringFilter<"job_posts"> | string
-    type?: Enumjob_posts_typeFilter<"job_posts"> | $Enums.job_posts_type
+    thumbnail?: StringFilter<"job_posts"> | string
     status?: Enumjob_posts_statusFilter<"job_posts"> | $Enums.job_posts_status
     created_at?: DateTimeNullableFilter<"job_posts"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"job_posts"> | Date | string | null
     deleted_at?: DateTimeNullableFilter<"job_posts"> | Date | string | null
   }
 
-  export type job_categories_job_postsCreateWithoutJob_categoriesInput = {
-    job_posts: job_postsCreateNestedOneWithoutJob_categories_job_postsInput
+  export type job_post_categoriesCreateWithoutJob_categoriesInput = {
+    id: string
+    type: $Enums.job_post_categories_type
+    required_count?: number
+    description?: string | null
+    requirements?: string | null
+    benefits?: string | null
+    created_at?: Date | string | null
+    updated_at?: Date | string | null
+    deleted_at?: Date | string | null
+    applicants?: applicantsCreateNestedManyWithoutJob_post_categoriesInput
+    job_posts: job_postsCreateNestedOneWithoutJob_post_categoriesInput
+    selections?: selectionsCreateNestedManyWithoutJob_post_categoriesInput
   }
 
-  export type job_categories_job_postsUncheckedCreateWithoutJob_categoriesInput = {
+  export type job_post_categoriesUncheckedCreateWithoutJob_categoriesInput = {
+    id: string
     job_post_id: string
+    type: $Enums.job_post_categories_type
+    required_count?: number
+    description?: string | null
+    requirements?: string | null
+    benefits?: string | null
+    created_at?: Date | string | null
+    updated_at?: Date | string | null
+    deleted_at?: Date | string | null
+    applicants?: applicantsUncheckedCreateNestedManyWithoutJob_post_categoriesInput
+    selections?: selectionsUncheckedCreateNestedManyWithoutJob_post_categoriesInput
   }
 
-  export type job_categories_job_postsCreateOrConnectWithoutJob_categoriesInput = {
-    where: job_categories_job_postsWhereUniqueInput
-    create: XOR<job_categories_job_postsCreateWithoutJob_categoriesInput, job_categories_job_postsUncheckedCreateWithoutJob_categoriesInput>
+  export type job_post_categoriesCreateOrConnectWithoutJob_categoriesInput = {
+    where: job_post_categoriesWhereUniqueInput
+    create: XOR<job_post_categoriesCreateWithoutJob_categoriesInput, job_post_categoriesUncheckedCreateWithoutJob_categoriesInput>
   }
 
-  export type job_categories_job_postsCreateManyJob_categoriesInputEnvelope = {
-    data: job_categories_job_postsCreateManyJob_categoriesInput | job_categories_job_postsCreateManyJob_categoriesInput[]
+  export type job_post_categoriesCreateManyJob_categoriesInputEnvelope = {
+    data: job_post_categoriesCreateManyJob_categoriesInput | job_post_categoriesCreateManyJob_categoriesInput[]
     skipDuplicates?: boolean
   }
 
-  export type job_categories_job_postsUpsertWithWhereUniqueWithoutJob_categoriesInput = {
-    where: job_categories_job_postsWhereUniqueInput
-    update: XOR<job_categories_job_postsUpdateWithoutJob_categoriesInput, job_categories_job_postsUncheckedUpdateWithoutJob_categoriesInput>
-    create: XOR<job_categories_job_postsCreateWithoutJob_categoriesInput, job_categories_job_postsUncheckedCreateWithoutJob_categoriesInput>
+  export type job_post_categoriesUpsertWithWhereUniqueWithoutJob_categoriesInput = {
+    where: job_post_categoriesWhereUniqueInput
+    update: XOR<job_post_categoriesUpdateWithoutJob_categoriesInput, job_post_categoriesUncheckedUpdateWithoutJob_categoriesInput>
+    create: XOR<job_post_categoriesCreateWithoutJob_categoriesInput, job_post_categoriesUncheckedCreateWithoutJob_categoriesInput>
   }
 
-  export type job_categories_job_postsUpdateWithWhereUniqueWithoutJob_categoriesInput = {
-    where: job_categories_job_postsWhereUniqueInput
-    data: XOR<job_categories_job_postsUpdateWithoutJob_categoriesInput, job_categories_job_postsUncheckedUpdateWithoutJob_categoriesInput>
+  export type job_post_categoriesUpdateWithWhereUniqueWithoutJob_categoriesInput = {
+    where: job_post_categoriesWhereUniqueInput
+    data: XOR<job_post_categoriesUpdateWithoutJob_categoriesInput, job_post_categoriesUncheckedUpdateWithoutJob_categoriesInput>
   }
 
-  export type job_categories_job_postsUpdateManyWithWhereWithoutJob_categoriesInput = {
-    where: job_categories_job_postsScalarWhereInput
-    data: XOR<job_categories_job_postsUpdateManyMutationInput, job_categories_job_postsUncheckedUpdateManyWithoutJob_categoriesInput>
+  export type job_post_categoriesUpdateManyWithWhereWithoutJob_categoriesInput = {
+    where: job_post_categoriesScalarWhereInput
+    data: XOR<job_post_categoriesUpdateManyMutationInput, job_post_categoriesUncheckedUpdateManyWithoutJob_categoriesInput>
   }
 
-  export type job_categories_job_postsScalarWhereInput = {
-    AND?: job_categories_job_postsScalarWhereInput | job_categories_job_postsScalarWhereInput[]
-    OR?: job_categories_job_postsScalarWhereInput[]
-    NOT?: job_categories_job_postsScalarWhereInput | job_categories_job_postsScalarWhereInput[]
-    job_category_id?: StringFilter<"job_categories_job_posts"> | string
-    job_post_id?: StringFilter<"job_categories_job_posts"> | string
+  export type job_post_categoriesScalarWhereInput = {
+    AND?: job_post_categoriesScalarWhereInput | job_post_categoriesScalarWhereInput[]
+    OR?: job_post_categoriesScalarWhereInput[]
+    NOT?: job_post_categoriesScalarWhereInput | job_post_categoriesScalarWhereInput[]
+    id?: StringFilter<"job_post_categories"> | string
+    job_category_id?: StringFilter<"job_post_categories"> | string
+    job_post_id?: StringFilter<"job_post_categories"> | string
+    type?: Enumjob_post_categories_typeFilter<"job_post_categories"> | $Enums.job_post_categories_type
+    required_count?: IntFilter<"job_post_categories"> | number
+    description?: StringNullableFilter<"job_post_categories"> | string | null
+    requirements?: StringNullableFilter<"job_post_categories"> | string | null
+    benefits?: StringNullableFilter<"job_post_categories"> | string | null
+    created_at?: DateTimeNullableFilter<"job_post_categories"> | Date | string | null
+    updated_at?: DateTimeNullableFilter<"job_post_categories"> | Date | string | null
+    deleted_at?: DateTimeNullableFilter<"job_post_categories"> | Date | string | null
   }
 
-  export type job_categoriesCreateWithoutJob_categories_job_postsInput = {
+  export type job_post_categoriesCreateWithoutJob_postsInput = {
     id: string
-    name: string
+    type: $Enums.job_post_categories_type
+    required_count?: number
+    description?: string | null
+    requirements?: string | null
+    benefits?: string | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     deleted_at?: Date | string | null
+    applicants?: applicantsCreateNestedManyWithoutJob_post_categoriesInput
+    job_categories: job_categoriesCreateNestedOneWithoutJob_post_categoriesInput
+    selections?: selectionsCreateNestedManyWithoutJob_post_categoriesInput
   }
 
-  export type job_categoriesUncheckedCreateWithoutJob_categories_job_postsInput = {
+  export type job_post_categoriesUncheckedCreateWithoutJob_postsInput = {
     id: string
-    name: string
-    created_at?: Date | string | null
-    updated_at?: Date | string | null
-    deleted_at?: Date | string | null
-  }
-
-  export type job_categoriesCreateOrConnectWithoutJob_categories_job_postsInput = {
-    where: job_categoriesWhereUniqueInput
-    create: XOR<job_categoriesCreateWithoutJob_categories_job_postsInput, job_categoriesUncheckedCreateWithoutJob_categories_job_postsInput>
-  }
-
-  export type job_postsCreateWithoutJob_categories_job_postsInput = {
-    id: string
-    title: string
-    description: string
-    requirements: string
-    benefits: string
-    type: $Enums.job_posts_type
-    status?: $Enums.job_posts_status
-    created_at?: Date | string | null
-    updated_at?: Date | string | null
-    deleted_at?: Date | string | null
-    applicants?: applicantsCreateNestedManyWithoutJob_postsInput
-    companies: companiesCreateNestedOneWithoutJob_postsInput
-    selections?: selectionsCreateNestedManyWithoutJob_postsInput
-  }
-
-  export type job_postsUncheckedCreateWithoutJob_categories_job_postsInput = {
-    id: string
-    company_id: string
-    title: string
-    description: string
-    requirements: string
-    benefits: string
-    type: $Enums.job_posts_type
-    status?: $Enums.job_posts_status
-    created_at?: Date | string | null
-    updated_at?: Date | string | null
-    deleted_at?: Date | string | null
-    applicants?: applicantsUncheckedCreateNestedManyWithoutJob_postsInput
-    selections?: selectionsUncheckedCreateNestedManyWithoutJob_postsInput
-  }
-
-  export type job_postsCreateOrConnectWithoutJob_categories_job_postsInput = {
-    where: job_postsWhereUniqueInput
-    create: XOR<job_postsCreateWithoutJob_categories_job_postsInput, job_postsUncheckedCreateWithoutJob_categories_job_postsInput>
-  }
-
-  export type job_categoriesUpsertWithoutJob_categories_job_postsInput = {
-    update: XOR<job_categoriesUpdateWithoutJob_categories_job_postsInput, job_categoriesUncheckedUpdateWithoutJob_categories_job_postsInput>
-    create: XOR<job_categoriesCreateWithoutJob_categories_job_postsInput, job_categoriesUncheckedCreateWithoutJob_categories_job_postsInput>
-    where?: job_categoriesWhereInput
-  }
-
-  export type job_categoriesUpdateToOneWithWhereWithoutJob_categories_job_postsInput = {
-    where?: job_categoriesWhereInput
-    data: XOR<job_categoriesUpdateWithoutJob_categories_job_postsInput, job_categoriesUncheckedUpdateWithoutJob_categories_job_postsInput>
-  }
-
-  export type job_categoriesUpdateWithoutJob_categories_job_postsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  }
-
-  export type job_categoriesUncheckedUpdateWithoutJob_categories_job_postsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  }
-
-  export type job_postsUpsertWithoutJob_categories_job_postsInput = {
-    update: XOR<job_postsUpdateWithoutJob_categories_job_postsInput, job_postsUncheckedUpdateWithoutJob_categories_job_postsInput>
-    create: XOR<job_postsCreateWithoutJob_categories_job_postsInput, job_postsUncheckedCreateWithoutJob_categories_job_postsInput>
-    where?: job_postsWhereInput
-  }
-
-  export type job_postsUpdateToOneWithWhereWithoutJob_categories_job_postsInput = {
-    where?: job_postsWhereInput
-    data: XOR<job_postsUpdateWithoutJob_categories_job_postsInput, job_postsUncheckedUpdateWithoutJob_categories_job_postsInput>
-  }
-
-  export type job_postsUpdateWithoutJob_categories_job_postsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
-    description?: StringFieldUpdateOperationsInput | string
-    requirements?: StringFieldUpdateOperationsInput | string
-    benefits?: StringFieldUpdateOperationsInput | string
-    type?: Enumjob_posts_typeFieldUpdateOperationsInput | $Enums.job_posts_type
-    status?: Enumjob_posts_statusFieldUpdateOperationsInput | $Enums.job_posts_status
-    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    applicants?: applicantsUpdateManyWithoutJob_postsNestedInput
-    companies?: companiesUpdateOneRequiredWithoutJob_postsNestedInput
-    selections?: selectionsUpdateManyWithoutJob_postsNestedInput
-  }
-
-  export type job_postsUncheckedUpdateWithoutJob_categories_job_postsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    company_id?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
-    description?: StringFieldUpdateOperationsInput | string
-    requirements?: StringFieldUpdateOperationsInput | string
-    benefits?: StringFieldUpdateOperationsInput | string
-    type?: Enumjob_posts_typeFieldUpdateOperationsInput | $Enums.job_posts_type
-    status?: Enumjob_posts_statusFieldUpdateOperationsInput | $Enums.job_posts_status
-    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    applicants?: applicantsUncheckedUpdateManyWithoutJob_postsNestedInput
-    selections?: selectionsUncheckedUpdateManyWithoutJob_postsNestedInput
-  }
-
-  export type applicantsCreateWithoutJob_postsInput = {
-    id: string
-    status?: $Enums.applicants_status
-    cv: string
-    national_identity_card: string
-    created_at?: Date | string | null
-    updated_at?: Date | string | null
-    deleted_at?: Date | string | null
-    users: usersCreateNestedOneWithoutApplicantsInput
-    selections?: selectionsCreateNestedManyWithoutApplicantsInput
-  }
-
-  export type applicantsUncheckedCreateWithoutJob_postsInput = {
-    id: string
-    user_id: string
-    status?: $Enums.applicants_status
-    cv: string
-    national_identity_card: string
-    created_at?: Date | string | null
-    updated_at?: Date | string | null
-    deleted_at?: Date | string | null
-    selections?: selectionsUncheckedCreateNestedManyWithoutApplicantsInput
-  }
-
-  export type applicantsCreateOrConnectWithoutJob_postsInput = {
-    where: applicantsWhereUniqueInput
-    create: XOR<applicantsCreateWithoutJob_postsInput, applicantsUncheckedCreateWithoutJob_postsInput>
-  }
-
-  export type applicantsCreateManyJob_postsInputEnvelope = {
-    data: applicantsCreateManyJob_postsInput | applicantsCreateManyJob_postsInput[]
-    skipDuplicates?: boolean
-  }
-
-  export type job_categories_job_postsCreateWithoutJob_postsInput = {
-    job_categories: job_categoriesCreateNestedOneWithoutJob_categories_job_postsInput
-  }
-
-  export type job_categories_job_postsUncheckedCreateWithoutJob_postsInput = {
     job_category_id: string
+    type: $Enums.job_post_categories_type
+    required_count?: number
+    description?: string | null
+    requirements?: string | null
+    benefits?: string | null
+    created_at?: Date | string | null
+    updated_at?: Date | string | null
+    deleted_at?: Date | string | null
+    applicants?: applicantsUncheckedCreateNestedManyWithoutJob_post_categoriesInput
+    selections?: selectionsUncheckedCreateNestedManyWithoutJob_post_categoriesInput
   }
 
-  export type job_categories_job_postsCreateOrConnectWithoutJob_postsInput = {
-    where: job_categories_job_postsWhereUniqueInput
-    create: XOR<job_categories_job_postsCreateWithoutJob_postsInput, job_categories_job_postsUncheckedCreateWithoutJob_postsInput>
+  export type job_post_categoriesCreateOrConnectWithoutJob_postsInput = {
+    where: job_post_categoriesWhereUniqueInput
+    create: XOR<job_post_categoriesCreateWithoutJob_postsInput, job_post_categoriesUncheckedCreateWithoutJob_postsInput>
   }
 
-  export type job_categories_job_postsCreateManyJob_postsInputEnvelope = {
-    data: job_categories_job_postsCreateManyJob_postsInput | job_categories_job_postsCreateManyJob_postsInput[]
+  export type job_post_categoriesCreateManyJob_postsInputEnvelope = {
+    data: job_post_categoriesCreateManyJob_postsInput | job_post_categoriesCreateManyJob_postsInput[]
     skipDuplicates?: boolean
   }
 
@@ -20280,8 +20478,10 @@ export namespace Prisma {
     name: string
     email: string
     phone: string
-    website: string
-    address: string
+    website?: string | null
+    logo?: string | null
+    location: string
+    description?: string | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     deleted_at?: Date | string | null
@@ -20292,8 +20492,10 @@ export namespace Prisma {
     name: string
     email: string
     phone: string
-    website: string
-    address: string
+    website?: string | null
+    logo?: string | null
+    location: string
+    description?: string | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     deleted_at?: Date | string | null
@@ -20304,83 +20506,20 @@ export namespace Prisma {
     create: XOR<companiesCreateWithoutJob_postsInput, companiesUncheckedCreateWithoutJob_postsInput>
   }
 
-  export type selectionsCreateWithoutJob_postsInput = {
-    id: string
-    stage: $Enums.selections_stage
-    status?: $Enums.selections_status
-    attachment?: string | null
-    created_at?: Date | string | null
-    updated_at?: Date | string | null
-    deleted_at?: Date | string | null
-    applicants: applicantsCreateNestedOneWithoutSelectionsInput
+  export type job_post_categoriesUpsertWithWhereUniqueWithoutJob_postsInput = {
+    where: job_post_categoriesWhereUniqueInput
+    update: XOR<job_post_categoriesUpdateWithoutJob_postsInput, job_post_categoriesUncheckedUpdateWithoutJob_postsInput>
+    create: XOR<job_post_categoriesCreateWithoutJob_postsInput, job_post_categoriesUncheckedCreateWithoutJob_postsInput>
   }
 
-  export type selectionsUncheckedCreateWithoutJob_postsInput = {
-    id: string
-    applicant_id: string
-    stage: $Enums.selections_stage
-    status?: $Enums.selections_status
-    attachment?: string | null
-    created_at?: Date | string | null
-    updated_at?: Date | string | null
-    deleted_at?: Date | string | null
+  export type job_post_categoriesUpdateWithWhereUniqueWithoutJob_postsInput = {
+    where: job_post_categoriesWhereUniqueInput
+    data: XOR<job_post_categoriesUpdateWithoutJob_postsInput, job_post_categoriesUncheckedUpdateWithoutJob_postsInput>
   }
 
-  export type selectionsCreateOrConnectWithoutJob_postsInput = {
-    where: selectionsWhereUniqueInput
-    create: XOR<selectionsCreateWithoutJob_postsInput, selectionsUncheckedCreateWithoutJob_postsInput>
-  }
-
-  export type selectionsCreateManyJob_postsInputEnvelope = {
-    data: selectionsCreateManyJob_postsInput | selectionsCreateManyJob_postsInput[]
-    skipDuplicates?: boolean
-  }
-
-  export type applicantsUpsertWithWhereUniqueWithoutJob_postsInput = {
-    where: applicantsWhereUniqueInput
-    update: XOR<applicantsUpdateWithoutJob_postsInput, applicantsUncheckedUpdateWithoutJob_postsInput>
-    create: XOR<applicantsCreateWithoutJob_postsInput, applicantsUncheckedCreateWithoutJob_postsInput>
-  }
-
-  export type applicantsUpdateWithWhereUniqueWithoutJob_postsInput = {
-    where: applicantsWhereUniqueInput
-    data: XOR<applicantsUpdateWithoutJob_postsInput, applicantsUncheckedUpdateWithoutJob_postsInput>
-  }
-
-  export type applicantsUpdateManyWithWhereWithoutJob_postsInput = {
-    where: applicantsScalarWhereInput
-    data: XOR<applicantsUpdateManyMutationInput, applicantsUncheckedUpdateManyWithoutJob_postsInput>
-  }
-
-  export type applicantsScalarWhereInput = {
-    AND?: applicantsScalarWhereInput | applicantsScalarWhereInput[]
-    OR?: applicantsScalarWhereInput[]
-    NOT?: applicantsScalarWhereInput | applicantsScalarWhereInput[]
-    id?: StringFilter<"applicants"> | string
-    user_id?: StringFilter<"applicants"> | string
-    job_id?: StringFilter<"applicants"> | string
-    status?: Enumapplicants_statusFilter<"applicants"> | $Enums.applicants_status
-    cv?: StringFilter<"applicants"> | string
-    national_identity_card?: StringFilter<"applicants"> | string
-    created_at?: DateTimeNullableFilter<"applicants"> | Date | string | null
-    updated_at?: DateTimeNullableFilter<"applicants"> | Date | string | null
-    deleted_at?: DateTimeNullableFilter<"applicants"> | Date | string | null
-  }
-
-  export type job_categories_job_postsUpsertWithWhereUniqueWithoutJob_postsInput = {
-    where: job_categories_job_postsWhereUniqueInput
-    update: XOR<job_categories_job_postsUpdateWithoutJob_postsInput, job_categories_job_postsUncheckedUpdateWithoutJob_postsInput>
-    create: XOR<job_categories_job_postsCreateWithoutJob_postsInput, job_categories_job_postsUncheckedCreateWithoutJob_postsInput>
-  }
-
-  export type job_categories_job_postsUpdateWithWhereUniqueWithoutJob_postsInput = {
-    where: job_categories_job_postsWhereUniqueInput
-    data: XOR<job_categories_job_postsUpdateWithoutJob_postsInput, job_categories_job_postsUncheckedUpdateWithoutJob_postsInput>
-  }
-
-  export type job_categories_job_postsUpdateManyWithWhereWithoutJob_postsInput = {
-    where: job_categories_job_postsScalarWhereInput
-    data: XOR<job_categories_job_postsUpdateManyMutationInput, job_categories_job_postsUncheckedUpdateManyWithoutJob_postsInput>
+  export type job_post_categoriesUpdateManyWithWhereWithoutJob_postsInput = {
+    where: job_post_categoriesScalarWhereInput
+    data: XOR<job_post_categoriesUpdateManyMutationInput, job_post_categoriesUncheckedUpdateManyWithoutJob_postsInput>
   }
 
   export type companiesUpsertWithoutJob_postsInput = {
@@ -20399,8 +20538,10 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
-    website?: StringFieldUpdateOperationsInput | string
-    address?: StringFieldUpdateOperationsInput | string
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -20411,27 +20552,13 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
-    website?: StringFieldUpdateOperationsInput | string
-    address?: StringFieldUpdateOperationsInput | string
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  }
-
-  export type selectionsUpsertWithWhereUniqueWithoutJob_postsInput = {
-    where: selectionsWhereUniqueInput
-    update: XOR<selectionsUpdateWithoutJob_postsInput, selectionsUncheckedUpdateWithoutJob_postsInput>
-    create: XOR<selectionsCreateWithoutJob_postsInput, selectionsUncheckedCreateWithoutJob_postsInput>
-  }
-
-  export type selectionsUpdateWithWhereUniqueWithoutJob_postsInput = {
-    where: selectionsWhereUniqueInput
-    data: XOR<selectionsUpdateWithoutJob_postsInput, selectionsUncheckedUpdateWithoutJob_postsInput>
-  }
-
-  export type selectionsUpdateManyWithWhereWithoutJob_postsInput = {
-    where: selectionsScalarWhereInput
-    data: XOR<selectionsUpdateManyMutationInput, selectionsUncheckedUpdateManyWithoutJob_postsInput>
   }
 
   export type applicantsCreateWithoutSelectionsInput = {
@@ -20442,14 +20569,14 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     deleted_at?: Date | string | null
-    job_posts: job_postsCreateNestedOneWithoutApplicantsInput
+    job_post_categories: job_post_categoriesCreateNestedOneWithoutApplicantsInput
     users: usersCreateNestedOneWithoutApplicantsInput
   }
 
   export type applicantsUncheckedCreateWithoutSelectionsInput = {
     id: string
     user_id: string
-    job_id: string
+    job_post_category_id: string
     status?: $Enums.applicants_status
     cv: string
     national_identity_card: string
@@ -20463,41 +20590,39 @@ export namespace Prisma {
     create: XOR<applicantsCreateWithoutSelectionsInput, applicantsUncheckedCreateWithoutSelectionsInput>
   }
 
-  export type job_postsCreateWithoutSelectionsInput = {
+  export type job_post_categoriesCreateWithoutSelectionsInput = {
     id: string
-    title: string
-    description: string
-    requirements: string
-    benefits: string
-    type: $Enums.job_posts_type
-    status?: $Enums.job_posts_status
+    type: $Enums.job_post_categories_type
+    required_count?: number
+    description?: string | null
+    requirements?: string | null
+    benefits?: string | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     deleted_at?: Date | string | null
-    applicants?: applicantsCreateNestedManyWithoutJob_postsInput
-    job_categories_job_posts?: job_categories_job_postsCreateNestedManyWithoutJob_postsInput
-    companies: companiesCreateNestedOneWithoutJob_postsInput
+    applicants?: applicantsCreateNestedManyWithoutJob_post_categoriesInput
+    job_categories: job_categoriesCreateNestedOneWithoutJob_post_categoriesInput
+    job_posts: job_postsCreateNestedOneWithoutJob_post_categoriesInput
   }
 
-  export type job_postsUncheckedCreateWithoutSelectionsInput = {
+  export type job_post_categoriesUncheckedCreateWithoutSelectionsInput = {
     id: string
-    company_id: string
-    title: string
-    description: string
-    requirements: string
-    benefits: string
-    type: $Enums.job_posts_type
-    status?: $Enums.job_posts_status
+    job_category_id: string
+    job_post_id: string
+    type: $Enums.job_post_categories_type
+    required_count?: number
+    description?: string | null
+    requirements?: string | null
+    benefits?: string | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     deleted_at?: Date | string | null
-    applicants?: applicantsUncheckedCreateNestedManyWithoutJob_postsInput
-    job_categories_job_posts?: job_categories_job_postsUncheckedCreateNestedManyWithoutJob_postsInput
+    applicants?: applicantsUncheckedCreateNestedManyWithoutJob_post_categoriesInput
   }
 
-  export type job_postsCreateOrConnectWithoutSelectionsInput = {
-    where: job_postsWhereUniqueInput
-    create: XOR<job_postsCreateWithoutSelectionsInput, job_postsUncheckedCreateWithoutSelectionsInput>
+  export type job_post_categoriesCreateOrConnectWithoutSelectionsInput = {
+    where: job_post_categoriesWhereUniqueInput
+    create: XOR<job_post_categoriesCreateWithoutSelectionsInput, job_post_categoriesUncheckedCreateWithoutSelectionsInput>
   }
 
   export type applicantsUpsertWithoutSelectionsInput = {
@@ -20519,14 +20644,14 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    job_posts?: job_postsUpdateOneRequiredWithoutApplicantsNestedInput
+    job_post_categories?: job_post_categoriesUpdateOneRequiredWithoutApplicantsNestedInput
     users?: usersUpdateOneRequiredWithoutApplicantsNestedInput
   }
 
   export type applicantsUncheckedUpdateWithoutSelectionsInput = {
     id?: StringFieldUpdateOperationsInput | string
     user_id?: StringFieldUpdateOperationsInput | string
-    job_id?: StringFieldUpdateOperationsInput | string
+    job_post_category_id?: StringFieldUpdateOperationsInput | string
     status?: Enumapplicants_statusFieldUpdateOperationsInput | $Enums.applicants_status
     cv?: StringFieldUpdateOperationsInput | string
     national_identity_card?: StringFieldUpdateOperationsInput | string
@@ -20535,47 +20660,45 @@ export namespace Prisma {
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
-  export type job_postsUpsertWithoutSelectionsInput = {
-    update: XOR<job_postsUpdateWithoutSelectionsInput, job_postsUncheckedUpdateWithoutSelectionsInput>
-    create: XOR<job_postsCreateWithoutSelectionsInput, job_postsUncheckedCreateWithoutSelectionsInput>
-    where?: job_postsWhereInput
+  export type job_post_categoriesUpsertWithoutSelectionsInput = {
+    update: XOR<job_post_categoriesUpdateWithoutSelectionsInput, job_post_categoriesUncheckedUpdateWithoutSelectionsInput>
+    create: XOR<job_post_categoriesCreateWithoutSelectionsInput, job_post_categoriesUncheckedCreateWithoutSelectionsInput>
+    where?: job_post_categoriesWhereInput
   }
 
-  export type job_postsUpdateToOneWithWhereWithoutSelectionsInput = {
-    where?: job_postsWhereInput
-    data: XOR<job_postsUpdateWithoutSelectionsInput, job_postsUncheckedUpdateWithoutSelectionsInput>
+  export type job_post_categoriesUpdateToOneWithWhereWithoutSelectionsInput = {
+    where?: job_post_categoriesWhereInput
+    data: XOR<job_post_categoriesUpdateWithoutSelectionsInput, job_post_categoriesUncheckedUpdateWithoutSelectionsInput>
   }
 
-  export type job_postsUpdateWithoutSelectionsInput = {
+  export type job_post_categoriesUpdateWithoutSelectionsInput = {
     id?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
-    description?: StringFieldUpdateOperationsInput | string
-    requirements?: StringFieldUpdateOperationsInput | string
-    benefits?: StringFieldUpdateOperationsInput | string
-    type?: Enumjob_posts_typeFieldUpdateOperationsInput | $Enums.job_posts_type
-    status?: Enumjob_posts_statusFieldUpdateOperationsInput | $Enums.job_posts_status
+    type?: Enumjob_post_categories_typeFieldUpdateOperationsInput | $Enums.job_post_categories_type
+    required_count?: IntFieldUpdateOperationsInput | number
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    requirements?: NullableStringFieldUpdateOperationsInput | string | null
+    benefits?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    applicants?: applicantsUpdateManyWithoutJob_postsNestedInput
-    job_categories_job_posts?: job_categories_job_postsUpdateManyWithoutJob_postsNestedInput
-    companies?: companiesUpdateOneRequiredWithoutJob_postsNestedInput
+    applicants?: applicantsUpdateManyWithoutJob_post_categoriesNestedInput
+    job_categories?: job_categoriesUpdateOneRequiredWithoutJob_post_categoriesNestedInput
+    job_posts?: job_postsUpdateOneRequiredWithoutJob_post_categoriesNestedInput
   }
 
-  export type job_postsUncheckedUpdateWithoutSelectionsInput = {
+  export type job_post_categoriesUncheckedUpdateWithoutSelectionsInput = {
     id?: StringFieldUpdateOperationsInput | string
-    company_id?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
-    description?: StringFieldUpdateOperationsInput | string
-    requirements?: StringFieldUpdateOperationsInput | string
-    benefits?: StringFieldUpdateOperationsInput | string
-    type?: Enumjob_posts_typeFieldUpdateOperationsInput | $Enums.job_posts_type
-    status?: Enumjob_posts_statusFieldUpdateOperationsInput | $Enums.job_posts_status
+    job_category_id?: StringFieldUpdateOperationsInput | string
+    job_post_id?: StringFieldUpdateOperationsInput | string
+    type?: Enumjob_post_categories_typeFieldUpdateOperationsInput | $Enums.job_post_categories_type
+    required_count?: IntFieldUpdateOperationsInput | number
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    requirements?: NullableStringFieldUpdateOperationsInput | string | null
+    benefits?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    applicants?: applicantsUncheckedUpdateManyWithoutJob_postsNestedInput
-    job_categories_job_posts?: job_categories_job_postsUncheckedUpdateManyWithoutJob_postsNestedInput
+    applicants?: applicantsUncheckedUpdateManyWithoutJob_post_categoriesNestedInput
   }
 
   export type applicantsCreateWithoutUsersInput = {
@@ -20586,13 +20709,13 @@ export namespace Prisma {
     created_at?: Date | string | null
     updated_at?: Date | string | null
     deleted_at?: Date | string | null
-    job_posts: job_postsCreateNestedOneWithoutApplicantsInput
+    job_post_categories: job_post_categoriesCreateNestedOneWithoutApplicantsInput
     selections?: selectionsCreateNestedManyWithoutApplicantsInput
   }
 
   export type applicantsUncheckedCreateWithoutUsersInput = {
     id: string
-    job_id: string
+    job_post_category_id: string
     status?: $Enums.applicants_status
     cv: string
     national_identity_card: string
@@ -20628,9 +20751,230 @@ export namespace Prisma {
     data: XOR<applicantsUpdateManyMutationInput, applicantsUncheckedUpdateManyWithoutUsersInput>
   }
 
+  export type applicantsScalarWhereInput = {
+    AND?: applicantsScalarWhereInput | applicantsScalarWhereInput[]
+    OR?: applicantsScalarWhereInput[]
+    NOT?: applicantsScalarWhereInput | applicantsScalarWhereInput[]
+    id?: StringFilter<"applicants"> | string
+    user_id?: StringFilter<"applicants"> | string
+    job_post_category_id?: StringFilter<"applicants"> | string
+    status?: Enumapplicants_statusFilter<"applicants"> | $Enums.applicants_status
+    cv?: StringFilter<"applicants"> | string
+    national_identity_card?: StringFilter<"applicants"> | string
+    created_at?: DateTimeNullableFilter<"applicants"> | Date | string | null
+    updated_at?: DateTimeNullableFilter<"applicants"> | Date | string | null
+    deleted_at?: DateTimeNullableFilter<"applicants"> | Date | string | null
+  }
+
+  export type applicantsCreateWithoutJob_post_categoriesInput = {
+    id: string
+    status?: $Enums.applicants_status
+    cv: string
+    national_identity_card: string
+    created_at?: Date | string | null
+    updated_at?: Date | string | null
+    deleted_at?: Date | string | null
+    users: usersCreateNestedOneWithoutApplicantsInput
+    selections?: selectionsCreateNestedManyWithoutApplicantsInput
+  }
+
+  export type applicantsUncheckedCreateWithoutJob_post_categoriesInput = {
+    id: string
+    user_id: string
+    status?: $Enums.applicants_status
+    cv: string
+    national_identity_card: string
+    created_at?: Date | string | null
+    updated_at?: Date | string | null
+    deleted_at?: Date | string | null
+    selections?: selectionsUncheckedCreateNestedManyWithoutApplicantsInput
+  }
+
+  export type applicantsCreateOrConnectWithoutJob_post_categoriesInput = {
+    where: applicantsWhereUniqueInput
+    create: XOR<applicantsCreateWithoutJob_post_categoriesInput, applicantsUncheckedCreateWithoutJob_post_categoriesInput>
+  }
+
+  export type applicantsCreateManyJob_post_categoriesInputEnvelope = {
+    data: applicantsCreateManyJob_post_categoriesInput | applicantsCreateManyJob_post_categoriesInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type job_categoriesCreateWithoutJob_post_categoriesInput = {
+    id: string
+    name: string
+    created_at?: Date | string | null
+    updated_at?: Date | string | null
+    deleted_at?: Date | string | null
+  }
+
+  export type job_categoriesUncheckedCreateWithoutJob_post_categoriesInput = {
+    id: string
+    name: string
+    created_at?: Date | string | null
+    updated_at?: Date | string | null
+    deleted_at?: Date | string | null
+  }
+
+  export type job_categoriesCreateOrConnectWithoutJob_post_categoriesInput = {
+    where: job_categoriesWhereUniqueInput
+    create: XOR<job_categoriesCreateWithoutJob_post_categoriesInput, job_categoriesUncheckedCreateWithoutJob_post_categoriesInput>
+  }
+
+  export type job_postsCreateWithoutJob_post_categoriesInput = {
+    id: string
+    title: string
+    thumbnail: string
+    status?: $Enums.job_posts_status
+    created_at?: Date | string | null
+    updated_at?: Date | string | null
+    deleted_at?: Date | string | null
+    companies: companiesCreateNestedOneWithoutJob_postsInput
+  }
+
+  export type job_postsUncheckedCreateWithoutJob_post_categoriesInput = {
+    id: string
+    company_id: string
+    title: string
+    thumbnail: string
+    status?: $Enums.job_posts_status
+    created_at?: Date | string | null
+    updated_at?: Date | string | null
+    deleted_at?: Date | string | null
+  }
+
+  export type job_postsCreateOrConnectWithoutJob_post_categoriesInput = {
+    where: job_postsWhereUniqueInput
+    create: XOR<job_postsCreateWithoutJob_post_categoriesInput, job_postsUncheckedCreateWithoutJob_post_categoriesInput>
+  }
+
+  export type selectionsCreateWithoutJob_post_categoriesInput = {
+    id: string
+    stage: $Enums.selections_stage
+    status?: $Enums.selections_status
+    attachment?: string | null
+    created_at?: Date | string | null
+    updated_at?: Date | string | null
+    deleted_at?: Date | string | null
+    applicants: applicantsCreateNestedOneWithoutSelectionsInput
+  }
+
+  export type selectionsUncheckedCreateWithoutJob_post_categoriesInput = {
+    id: string
+    applicant_id: string
+    stage: $Enums.selections_stage
+    status?: $Enums.selections_status
+    attachment?: string | null
+    created_at?: Date | string | null
+    updated_at?: Date | string | null
+    deleted_at?: Date | string | null
+  }
+
+  export type selectionsCreateOrConnectWithoutJob_post_categoriesInput = {
+    where: selectionsWhereUniqueInput
+    create: XOR<selectionsCreateWithoutJob_post_categoriesInput, selectionsUncheckedCreateWithoutJob_post_categoriesInput>
+  }
+
+  export type selectionsCreateManyJob_post_categoriesInputEnvelope = {
+    data: selectionsCreateManyJob_post_categoriesInput | selectionsCreateManyJob_post_categoriesInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type applicantsUpsertWithWhereUniqueWithoutJob_post_categoriesInput = {
+    where: applicantsWhereUniqueInput
+    update: XOR<applicantsUpdateWithoutJob_post_categoriesInput, applicantsUncheckedUpdateWithoutJob_post_categoriesInput>
+    create: XOR<applicantsCreateWithoutJob_post_categoriesInput, applicantsUncheckedCreateWithoutJob_post_categoriesInput>
+  }
+
+  export type applicantsUpdateWithWhereUniqueWithoutJob_post_categoriesInput = {
+    where: applicantsWhereUniqueInput
+    data: XOR<applicantsUpdateWithoutJob_post_categoriesInput, applicantsUncheckedUpdateWithoutJob_post_categoriesInput>
+  }
+
+  export type applicantsUpdateManyWithWhereWithoutJob_post_categoriesInput = {
+    where: applicantsScalarWhereInput
+    data: XOR<applicantsUpdateManyMutationInput, applicantsUncheckedUpdateManyWithoutJob_post_categoriesInput>
+  }
+
+  export type job_categoriesUpsertWithoutJob_post_categoriesInput = {
+    update: XOR<job_categoriesUpdateWithoutJob_post_categoriesInput, job_categoriesUncheckedUpdateWithoutJob_post_categoriesInput>
+    create: XOR<job_categoriesCreateWithoutJob_post_categoriesInput, job_categoriesUncheckedCreateWithoutJob_post_categoriesInput>
+    where?: job_categoriesWhereInput
+  }
+
+  export type job_categoriesUpdateToOneWithWhereWithoutJob_post_categoriesInput = {
+    where?: job_categoriesWhereInput
+    data: XOR<job_categoriesUpdateWithoutJob_post_categoriesInput, job_categoriesUncheckedUpdateWithoutJob_post_categoriesInput>
+  }
+
+  export type job_categoriesUpdateWithoutJob_post_categoriesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type job_categoriesUncheckedUpdateWithoutJob_post_categoriesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type job_postsUpsertWithoutJob_post_categoriesInput = {
+    update: XOR<job_postsUpdateWithoutJob_post_categoriesInput, job_postsUncheckedUpdateWithoutJob_post_categoriesInput>
+    create: XOR<job_postsCreateWithoutJob_post_categoriesInput, job_postsUncheckedCreateWithoutJob_post_categoriesInput>
+    where?: job_postsWhereInput
+  }
+
+  export type job_postsUpdateToOneWithWhereWithoutJob_post_categoriesInput = {
+    where?: job_postsWhereInput
+    data: XOR<job_postsUpdateWithoutJob_post_categoriesInput, job_postsUncheckedUpdateWithoutJob_post_categoriesInput>
+  }
+
+  export type job_postsUpdateWithoutJob_post_categoriesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    thumbnail?: StringFieldUpdateOperationsInput | string
+    status?: Enumjob_posts_statusFieldUpdateOperationsInput | $Enums.job_posts_status
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    companies?: companiesUpdateOneRequiredWithoutJob_postsNestedInput
+  }
+
+  export type job_postsUncheckedUpdateWithoutJob_post_categoriesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    company_id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    thumbnail?: StringFieldUpdateOperationsInput | string
+    status?: Enumjob_posts_statusFieldUpdateOperationsInput | $Enums.job_posts_status
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type selectionsUpsertWithWhereUniqueWithoutJob_post_categoriesInput = {
+    where: selectionsWhereUniqueInput
+    update: XOR<selectionsUpdateWithoutJob_post_categoriesInput, selectionsUncheckedUpdateWithoutJob_post_categoriesInput>
+    create: XOR<selectionsCreateWithoutJob_post_categoriesInput, selectionsUncheckedCreateWithoutJob_post_categoriesInput>
+  }
+
+  export type selectionsUpdateWithWhereUniqueWithoutJob_post_categoriesInput = {
+    where: selectionsWhereUniqueInput
+    data: XOR<selectionsUpdateWithoutJob_post_categoriesInput, selectionsUncheckedUpdateWithoutJob_post_categoriesInput>
+  }
+
+  export type selectionsUpdateManyWithWhereWithoutJob_post_categoriesInput = {
+    where: selectionsScalarWhereInput
+    data: XOR<selectionsUpdateManyMutationInput, selectionsUncheckedUpdateManyWithoutJob_post_categoriesInput>
+  }
+
   export type selectionsCreateManyApplicantsInput = {
     id: string
-    job_id: string
+    job_post_category_id: string
     stage: $Enums.selections_stage
     status?: $Enums.selections_status
     attachment?: string | null
@@ -20647,12 +20991,12 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    job_posts?: job_postsUpdateOneRequiredWithoutSelectionsNestedInput
+    job_post_categories?: job_post_categoriesUpdateOneRequiredWithoutSelectionsNestedInput
   }
 
   export type selectionsUncheckedUpdateWithoutApplicantsInput = {
     id?: StringFieldUpdateOperationsInput | string
-    job_id?: StringFieldUpdateOperationsInput | string
+    job_post_category_id?: StringFieldUpdateOperationsInput | string
     stage?: Enumselections_stageFieldUpdateOperationsInput | $Enums.selections_stage
     status?: Enumselections_statusFieldUpdateOperationsInput | $Enums.selections_status
     attachment?: NullableStringFieldUpdateOperationsInput | string | null
@@ -20663,7 +21007,7 @@ export namespace Prisma {
 
   export type selectionsUncheckedUpdateManyWithoutApplicantsInput = {
     id?: StringFieldUpdateOperationsInput | string
-    job_id?: StringFieldUpdateOperationsInput | string
+    job_post_category_id?: StringFieldUpdateOperationsInput | string
     stage?: Enumselections_stageFieldUpdateOperationsInput | $Enums.selections_stage
     status?: Enumselections_statusFieldUpdateOperationsInput | $Enums.selections_status
     attachment?: NullableStringFieldUpdateOperationsInput | string | null
@@ -20675,10 +21019,7 @@ export namespace Prisma {
   export type job_postsCreateManyCompaniesInput = {
     id: string
     title: string
-    description: string
-    requirements: string
-    benefits: string
-    type: $Enums.job_posts_type
+    thumbnail: string
     status?: $Enums.job_posts_status
     created_at?: Date | string | null
     updated_at?: Date | string | null
@@ -20688,165 +21029,142 @@ export namespace Prisma {
   export type job_postsUpdateWithoutCompaniesInput = {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
-    description?: StringFieldUpdateOperationsInput | string
-    requirements?: StringFieldUpdateOperationsInput | string
-    benefits?: StringFieldUpdateOperationsInput | string
-    type?: Enumjob_posts_typeFieldUpdateOperationsInput | $Enums.job_posts_type
+    thumbnail?: StringFieldUpdateOperationsInput | string
     status?: Enumjob_posts_statusFieldUpdateOperationsInput | $Enums.job_posts_status
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    applicants?: applicantsUpdateManyWithoutJob_postsNestedInput
-    job_categories_job_posts?: job_categories_job_postsUpdateManyWithoutJob_postsNestedInput
-    selections?: selectionsUpdateManyWithoutJob_postsNestedInput
+    job_post_categories?: job_post_categoriesUpdateManyWithoutJob_postsNestedInput
   }
 
   export type job_postsUncheckedUpdateWithoutCompaniesInput = {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
-    description?: StringFieldUpdateOperationsInput | string
-    requirements?: StringFieldUpdateOperationsInput | string
-    benefits?: StringFieldUpdateOperationsInput | string
-    type?: Enumjob_posts_typeFieldUpdateOperationsInput | $Enums.job_posts_type
+    thumbnail?: StringFieldUpdateOperationsInput | string
     status?: Enumjob_posts_statusFieldUpdateOperationsInput | $Enums.job_posts_status
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    applicants?: applicantsUncheckedUpdateManyWithoutJob_postsNestedInput
-    job_categories_job_posts?: job_categories_job_postsUncheckedUpdateManyWithoutJob_postsNestedInput
-    selections?: selectionsUncheckedUpdateManyWithoutJob_postsNestedInput
+    job_post_categories?: job_post_categoriesUncheckedUpdateManyWithoutJob_postsNestedInput
   }
 
   export type job_postsUncheckedUpdateManyWithoutCompaniesInput = {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
-    description?: StringFieldUpdateOperationsInput | string
-    requirements?: StringFieldUpdateOperationsInput | string
-    benefits?: StringFieldUpdateOperationsInput | string
-    type?: Enumjob_posts_typeFieldUpdateOperationsInput | $Enums.job_posts_type
+    thumbnail?: StringFieldUpdateOperationsInput | string
     status?: Enumjob_posts_statusFieldUpdateOperationsInput | $Enums.job_posts_status
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
-  export type job_categories_job_postsCreateManyJob_categoriesInput = {
+  export type job_post_categoriesCreateManyJob_categoriesInput = {
+    id: string
     job_post_id: string
-  }
-
-  export type job_categories_job_postsUpdateWithoutJob_categoriesInput = {
-    job_posts?: job_postsUpdateOneRequiredWithoutJob_categories_job_postsNestedInput
-  }
-
-  export type job_categories_job_postsUncheckedUpdateWithoutJob_categoriesInput = {
-    job_post_id?: StringFieldUpdateOperationsInput | string
-  }
-
-  export type job_categories_job_postsUncheckedUpdateManyWithoutJob_categoriesInput = {
-    job_post_id?: StringFieldUpdateOperationsInput | string
-  }
-
-  export type applicantsCreateManyJob_postsInput = {
-    id: string
-    user_id: string
-    status?: $Enums.applicants_status
-    cv: string
-    national_identity_card: string
+    type: $Enums.job_post_categories_type
+    required_count?: number
+    description?: string | null
+    requirements?: string | null
+    benefits?: string | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     deleted_at?: Date | string | null
   }
 
-  export type job_categories_job_postsCreateManyJob_postsInput = {
+  export type job_post_categoriesUpdateWithoutJob_categoriesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: Enumjob_post_categories_typeFieldUpdateOperationsInput | $Enums.job_post_categories_type
+    required_count?: IntFieldUpdateOperationsInput | number
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    requirements?: NullableStringFieldUpdateOperationsInput | string | null
+    benefits?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    applicants?: applicantsUpdateManyWithoutJob_post_categoriesNestedInput
+    job_posts?: job_postsUpdateOneRequiredWithoutJob_post_categoriesNestedInput
+    selections?: selectionsUpdateManyWithoutJob_post_categoriesNestedInput
+  }
+
+  export type job_post_categoriesUncheckedUpdateWithoutJob_categoriesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    job_post_id?: StringFieldUpdateOperationsInput | string
+    type?: Enumjob_post_categories_typeFieldUpdateOperationsInput | $Enums.job_post_categories_type
+    required_count?: IntFieldUpdateOperationsInput | number
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    requirements?: NullableStringFieldUpdateOperationsInput | string | null
+    benefits?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    applicants?: applicantsUncheckedUpdateManyWithoutJob_post_categoriesNestedInput
+    selections?: selectionsUncheckedUpdateManyWithoutJob_post_categoriesNestedInput
+  }
+
+  export type job_post_categoriesUncheckedUpdateManyWithoutJob_categoriesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    job_post_id?: StringFieldUpdateOperationsInput | string
+    type?: Enumjob_post_categories_typeFieldUpdateOperationsInput | $Enums.job_post_categories_type
+    required_count?: IntFieldUpdateOperationsInput | number
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    requirements?: NullableStringFieldUpdateOperationsInput | string | null
+    benefits?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type job_post_categoriesCreateManyJob_postsInput = {
+    id: string
     job_category_id: string
-  }
-
-  export type selectionsCreateManyJob_postsInput = {
-    id: string
-    applicant_id: string
-    stage: $Enums.selections_stage
-    status?: $Enums.selections_status
-    attachment?: string | null
+    type: $Enums.job_post_categories_type
+    required_count?: number
+    description?: string | null
+    requirements?: string | null
+    benefits?: string | null
     created_at?: Date | string | null
     updated_at?: Date | string | null
     deleted_at?: Date | string | null
   }
 
-  export type applicantsUpdateWithoutJob_postsInput = {
+  export type job_post_categoriesUpdateWithoutJob_postsInput = {
     id?: StringFieldUpdateOperationsInput | string
-    status?: Enumapplicants_statusFieldUpdateOperationsInput | $Enums.applicants_status
-    cv?: StringFieldUpdateOperationsInput | string
-    national_identity_card?: StringFieldUpdateOperationsInput | string
+    type?: Enumjob_post_categories_typeFieldUpdateOperationsInput | $Enums.job_post_categories_type
+    required_count?: IntFieldUpdateOperationsInput | number
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    requirements?: NullableStringFieldUpdateOperationsInput | string | null
+    benefits?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    users?: usersUpdateOneRequiredWithoutApplicantsNestedInput
-    selections?: selectionsUpdateManyWithoutApplicantsNestedInput
+    applicants?: applicantsUpdateManyWithoutJob_post_categoriesNestedInput
+    job_categories?: job_categoriesUpdateOneRequiredWithoutJob_post_categoriesNestedInput
+    selections?: selectionsUpdateManyWithoutJob_post_categoriesNestedInput
   }
 
-  export type applicantsUncheckedUpdateWithoutJob_postsInput = {
+  export type job_post_categoriesUncheckedUpdateWithoutJob_postsInput = {
     id?: StringFieldUpdateOperationsInput | string
-    user_id?: StringFieldUpdateOperationsInput | string
-    status?: Enumapplicants_statusFieldUpdateOperationsInput | $Enums.applicants_status
-    cv?: StringFieldUpdateOperationsInput | string
-    national_identity_card?: StringFieldUpdateOperationsInput | string
-    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    selections?: selectionsUncheckedUpdateManyWithoutApplicantsNestedInput
-  }
-
-  export type applicantsUncheckedUpdateManyWithoutJob_postsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    user_id?: StringFieldUpdateOperationsInput | string
-    status?: Enumapplicants_statusFieldUpdateOperationsInput | $Enums.applicants_status
-    cv?: StringFieldUpdateOperationsInput | string
-    national_identity_card?: StringFieldUpdateOperationsInput | string
-    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  }
-
-  export type job_categories_job_postsUpdateWithoutJob_postsInput = {
-    job_categories?: job_categoriesUpdateOneRequiredWithoutJob_categories_job_postsNestedInput
-  }
-
-  export type job_categories_job_postsUncheckedUpdateWithoutJob_postsInput = {
     job_category_id?: StringFieldUpdateOperationsInput | string
+    type?: Enumjob_post_categories_typeFieldUpdateOperationsInput | $Enums.job_post_categories_type
+    required_count?: IntFieldUpdateOperationsInput | number
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    requirements?: NullableStringFieldUpdateOperationsInput | string | null
+    benefits?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    applicants?: applicantsUncheckedUpdateManyWithoutJob_post_categoriesNestedInput
+    selections?: selectionsUncheckedUpdateManyWithoutJob_post_categoriesNestedInput
   }
 
-  export type job_categories_job_postsUncheckedUpdateManyWithoutJob_postsInput = {
+  export type job_post_categoriesUncheckedUpdateManyWithoutJob_postsInput = {
+    id?: StringFieldUpdateOperationsInput | string
     job_category_id?: StringFieldUpdateOperationsInput | string
-  }
-
-  export type selectionsUpdateWithoutJob_postsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    stage?: Enumselections_stageFieldUpdateOperationsInput | $Enums.selections_stage
-    status?: Enumselections_statusFieldUpdateOperationsInput | $Enums.selections_status
-    attachment?: NullableStringFieldUpdateOperationsInput | string | null
-    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    applicants?: applicantsUpdateOneRequiredWithoutSelectionsNestedInput
-  }
-
-  export type selectionsUncheckedUpdateWithoutJob_postsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    applicant_id?: StringFieldUpdateOperationsInput | string
-    stage?: Enumselections_stageFieldUpdateOperationsInput | $Enums.selections_stage
-    status?: Enumselections_statusFieldUpdateOperationsInput | $Enums.selections_status
-    attachment?: NullableStringFieldUpdateOperationsInput | string | null
-    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  }
-
-  export type selectionsUncheckedUpdateManyWithoutJob_postsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    applicant_id?: StringFieldUpdateOperationsInput | string
-    stage?: Enumselections_stageFieldUpdateOperationsInput | $Enums.selections_stage
-    status?: Enumselections_statusFieldUpdateOperationsInput | $Enums.selections_status
-    attachment?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: Enumjob_post_categories_typeFieldUpdateOperationsInput | $Enums.job_post_categories_type
+    required_count?: IntFieldUpdateOperationsInput | number
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    requirements?: NullableStringFieldUpdateOperationsInput | string | null
+    benefits?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -20854,7 +21172,7 @@ export namespace Prisma {
 
   export type applicantsCreateManyUsersInput = {
     id: string
-    job_id: string
+    job_post_category_id: string
     status?: $Enums.applicants_status
     cv: string
     national_identity_card: string
@@ -20871,13 +21189,13 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    job_posts?: job_postsUpdateOneRequiredWithoutApplicantsNestedInput
+    job_post_categories?: job_post_categoriesUpdateOneRequiredWithoutApplicantsNestedInput
     selections?: selectionsUpdateManyWithoutApplicantsNestedInput
   }
 
   export type applicantsUncheckedUpdateWithoutUsersInput = {
     id?: StringFieldUpdateOperationsInput | string
-    job_id?: StringFieldUpdateOperationsInput | string
+    job_post_category_id?: StringFieldUpdateOperationsInput | string
     status?: Enumapplicants_statusFieldUpdateOperationsInput | $Enums.applicants_status
     cv?: StringFieldUpdateOperationsInput | string
     national_identity_card?: StringFieldUpdateOperationsInput | string
@@ -20889,10 +21207,100 @@ export namespace Prisma {
 
   export type applicantsUncheckedUpdateManyWithoutUsersInput = {
     id?: StringFieldUpdateOperationsInput | string
-    job_id?: StringFieldUpdateOperationsInput | string
+    job_post_category_id?: StringFieldUpdateOperationsInput | string
     status?: Enumapplicants_statusFieldUpdateOperationsInput | $Enums.applicants_status
     cv?: StringFieldUpdateOperationsInput | string
     national_identity_card?: StringFieldUpdateOperationsInput | string
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type applicantsCreateManyJob_post_categoriesInput = {
+    id: string
+    user_id: string
+    status?: $Enums.applicants_status
+    cv: string
+    national_identity_card: string
+    created_at?: Date | string | null
+    updated_at?: Date | string | null
+    deleted_at?: Date | string | null
+  }
+
+  export type selectionsCreateManyJob_post_categoriesInput = {
+    id: string
+    applicant_id: string
+    stage: $Enums.selections_stage
+    status?: $Enums.selections_status
+    attachment?: string | null
+    created_at?: Date | string | null
+    updated_at?: Date | string | null
+    deleted_at?: Date | string | null
+  }
+
+  export type applicantsUpdateWithoutJob_post_categoriesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: Enumapplicants_statusFieldUpdateOperationsInput | $Enums.applicants_status
+    cv?: StringFieldUpdateOperationsInput | string
+    national_identity_card?: StringFieldUpdateOperationsInput | string
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    users?: usersUpdateOneRequiredWithoutApplicantsNestedInput
+    selections?: selectionsUpdateManyWithoutApplicantsNestedInput
+  }
+
+  export type applicantsUncheckedUpdateWithoutJob_post_categoriesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    user_id?: StringFieldUpdateOperationsInput | string
+    status?: Enumapplicants_statusFieldUpdateOperationsInput | $Enums.applicants_status
+    cv?: StringFieldUpdateOperationsInput | string
+    national_identity_card?: StringFieldUpdateOperationsInput | string
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    selections?: selectionsUncheckedUpdateManyWithoutApplicantsNestedInput
+  }
+
+  export type applicantsUncheckedUpdateManyWithoutJob_post_categoriesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    user_id?: StringFieldUpdateOperationsInput | string
+    status?: Enumapplicants_statusFieldUpdateOperationsInput | $Enums.applicants_status
+    cv?: StringFieldUpdateOperationsInput | string
+    national_identity_card?: StringFieldUpdateOperationsInput | string
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type selectionsUpdateWithoutJob_post_categoriesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    stage?: Enumselections_stageFieldUpdateOperationsInput | $Enums.selections_stage
+    status?: Enumselections_statusFieldUpdateOperationsInput | $Enums.selections_status
+    attachment?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    applicants?: applicantsUpdateOneRequiredWithoutSelectionsNestedInput
+  }
+
+  export type selectionsUncheckedUpdateWithoutJob_post_categoriesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    applicant_id?: StringFieldUpdateOperationsInput | string
+    stage?: Enumselections_stageFieldUpdateOperationsInput | $Enums.selections_stage
+    status?: Enumselections_statusFieldUpdateOperationsInput | $Enums.selections_status
+    attachment?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type selectionsUncheckedUpdateManyWithoutJob_post_categoriesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    applicant_id?: StringFieldUpdateOperationsInput | string
+    stage?: Enumselections_stageFieldUpdateOperationsInput | $Enums.selections_stage
+    status?: Enumselections_statusFieldUpdateOperationsInput | $Enums.selections_status
+    attachment?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null

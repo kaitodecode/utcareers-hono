@@ -6,18 +6,25 @@ import { Response } from "../../../libs/response"
 import * as bcrypt from "bcrypt"
 
 async function compareLaravelHash(plainPassword: string, laravelHash: string): Promise<boolean> {
-  // Ubah prefix $2y$ → $2a$ agar kompatibel di Node.js
-  const normalizedHash = laravelHash.replace(/^\$2y/, '$2a');
+  // Ubah prefix $2y$ atau $2b$ → $2a$ agar kompatibel di Node.js
+  const normalizedHash = laravelHash.replace(/^\$(2y|2b)/, '$2a');
   return await bcrypt.compare(plainPassword, normalizedHash);
 }
 
 export const LoginService = async (c: Context) => {
-    const { phone, password } = c.req.valid("json" as never)
+    const { identifier, password } = c.req.valid("json" as never)
+    
+    // Cek apakah identifier adalah email atau phone
+    const isEmail = (identifier as string).includes('@')
+    
     const user = await prisma.users.findFirst({
-        where: {
-            phone,
+        where: isEmail ? {
+            email: identifier
+        } : {
+            phone: identifier
         }
     })
+    
     if (!user) {
         return Response(c, null, "User not found", 404)
     }

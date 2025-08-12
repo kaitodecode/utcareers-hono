@@ -24,7 +24,16 @@ export const GetHistoryService = async (c: Context) => {
                 user_id: user.id
             },
             include: {
-                job_posts: true
+                job_post_categories: {
+                    include: {
+                        job_categories: true,
+                        job_posts: {
+                            include: {
+                                companies: true
+                            }
+                        }
+                    }
+                }
             },
             skip,
             take: perPage,
@@ -64,21 +73,32 @@ export const ApprovalJobService = async (c: Context) => {
         const { id } = c.req.param();
         const { status } = c.req.valid("json" as never);
        
-        const job = await prisma.applicants.findUnique({
+        const applicant = await prisma.applicants.findUnique({
             where: { id },
             include: {
-                job_posts: true
+                job_post_categories: {
+                    include: {
+                        job_categories: true,
+                        job_posts: true
+                    }
+                }
             }
         });
 
-        if (!job) {
-            return Response(c, null, "Job not found", 404);
+        if (!applicant) {
+            return Response(c, null, "Applicant not found", 404);
         }
 
-        if (job.job_posts.status === "inactive") {
+        // Check if the job post is still active
+        if (applicant.job_post_categories.job_posts.status === "closed") {
             return Response(c, null, "Job is closed", 400);
         }
 
+        // Validate status transition
+        const validStatuses = ["pending", "selection", "accepted", "rejected"];
+        if (!validStatuses.includes(status)) {
+            return Response(c, null, "Invalid status", 400);
+        }
 
         await prisma.applicants.update({
             where: { id },
@@ -87,9 +107,9 @@ export const ApprovalJobService = async (c: Context) => {
             }
         });
 
-        return Response(c, null, "Success", 200);
+        return Response(c, null, "Applicant status updated successfully", 200);
     } catch (error) {
-        return Response(c, null, error instanceof Error ? error.message : "Failed to approval job", 400);
+        return Response(c, null, error instanceof Error ? error.message : "Failed to update applicant status", 400);
     }
 }
 
@@ -123,11 +143,25 @@ export const GetApplicantsService = async (c: Context) => {
                         photo: true
                     }
                 },
-                job_posts: {
-                    select: {
-                        id: true,
-                        title: true,
-                        company_id: true
+                job_post_categories: {
+                    include: {
+                        job_categories: true,
+                        job_posts: {
+                            select: {
+                                id: true,
+                                title: true,
+                                company_id: true
+                            },
+                            include: {
+                                companies: {
+                                    select: {
+                                        id: true,
+                                        name: true,
+                                        logo: true
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             },

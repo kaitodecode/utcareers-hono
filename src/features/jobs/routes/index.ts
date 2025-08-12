@@ -9,9 +9,11 @@ import { ApprovalJobService } from "../services/history";
 import { GetHistoryService } from "../services/history";
 import { GetApplicantsService } from "../services/history";
 import { ApprovalJobScheme } from "../schemas/history";
+import { listCompanies } from "../services/list_companies";
 
 export const JobRoutes = new Hono()
 JobRoutes.get("/", GetJobsService)
+JobRoutes.get("/companies", listCompanies)
 JobRoutes.get("/history", AuthMiddleware, GetHistoryService)
 JobRoutes.get("/:id", ShowJobService)
 JobRoutes.post("/:id/apply", AuthMiddleware, Validate("form", ApplyJobScheme), ApplyJobService)

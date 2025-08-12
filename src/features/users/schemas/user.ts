@@ -5,8 +5,6 @@ export const CreateUserScheme = z.object({
   name: z.string().min(1, "Name is required"),
   phone: z.string().min(1, "Phone is required"),
   email: z.string().email("Invalid email format"),
-  address: z.string().nullable().optional(),
-  description: z.string().nullable().optional(),
   password: z.string().min(8, "Password must be at least 8 characters"),
   role: z.enum(["pelamar", "admin"]).default("pelamar"),
 });
