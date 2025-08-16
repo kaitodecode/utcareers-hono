@@ -414,7 +414,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "C:\\Users\\IT CLASS\\Documents\\Projects\\ujikom\\nodejs-utcareers\\src\\libs\\prisma\\dist",
+      "value": "C:\\Users\\noteb\\OneDrive\\Documents\\utcareers-hono\\src\\libs\\prisma\\dist",
       "fromEnvVar": null
     },
     "config": {
@@ -428,7 +428,7 @@ const config = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "C:\\Users\\IT CLASS\\Documents\\Projects\\ujikom\\nodejs-utcareers\\prisma\\schema.prisma",
+    "sourceFilePath": "C:\\Users\\noteb\\OneDrive\\Documents\\utcareers-hono\\prisma\\schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {

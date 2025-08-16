@@ -1,4 +1,4 @@
-import { Hono } from "hono";
+import { Context, Hono } from "hono";
 import { GetJobsService } from "../services";
 import { ShowJobService } from "../services/show";
 import { ApplyJobService } from "../services/apply";
@@ -10,13 +10,146 @@ import { GetHistoryService } from "../services/history";
 import { GetApplicantsService } from "../services/history";
 import { ApprovalJobScheme } from "../schemas/history";
 import { listCompanies } from "../services/list_companies";
+import { Response } from "../../../libs/response";
+import z from "zod";
+import prisma from "../../../libs/prisma";
+import { uploadFile } from "../../../libs/s3";
 
 export const JobRoutes = new Hono()
 JobRoutes.get("/", GetJobsService)
+
+
+export const ApplyJob = z.object({
+    job_category_id: z.uuid(),
+    cv: z.instanceof(File, { message: "CV file is required" }),
+    national_identity_card: z.instanceof(File, { message: "National Identity Card file is required" })
+});
+
+JobRoutes.post("/apply", AuthMiddleware, Validate("form", ApplyJob), async function (c: Context) {
+    try {
+        // Get user id from request header
+        const { job_category_id } = c.req.valid("form" as never);
+
+
+        const user = c.get("user") as { id: string };
+
+        // Check if job post category exists and get related job post info
+        const jobPostCategory = await prisma.job_post_categories.findUnique({
+            where: { id: job_category_id },
+
+            include: {
+                job_categories: true,
+                job_posts: {
+                    include: {
+                        companies: true
+                    }
+                },
+                applicants: {
+                    where: {
+                        user_id: user.id
+                    }
+                }
+            }
+        });
+
+        if (!jobPostCategory) {
+            return Response(c, null, "Job position not found", 404);
+        }
+
+        // Check if job post is still active
+        if (jobPostCategory.job_posts.status === "closed") {
+            return Response(c, null, "Job is no longer accepting applications", 400);
+        }
+
+        // Check if user has already applied for this specific job post category
+        if (jobPostCategory.applicants.length > 0) {
+            return Response(c, null, "You have already applied for this position", 400);
+        }
+
+        // Get validated form data
+        const { cv, national_identity_card: nationalIdCard } = c.req.valid("form" as never);
+
+        // Upload CV to S3
+        let cvUrl: string;
+        try {
+            cvUrl = await uploadFile("applications/cv", cv, null, {
+                allowedExtensions: ["pdf", "doc", "docx"],
+                maxSizeInMB: 10
+            });
+        } catch (error) {
+            return Response(c, null, error instanceof Error ? error.message : "Failed to upload CV", 400);
+        }
+
+        // Upload National Identity Card to S3
+        let nationalIdCardUrl: string;
+        try {
+            nationalIdCardUrl = await uploadFile("applications/identity", nationalIdCard, null, {
+                allowedExtensions: ["jpg", "jpeg", "png", "pdf"],
+                maxSizeInMB: 5
+            });
+        } catch (error) {
+            return Response(c, null, error instanceof Error ? error.message : "Failed to upload National Identity Card", 400);
+        }
+
+        // Create application
+        const application = await prisma.applicants.create({
+            data: {
+                id: crypto.randomUUID(),
+                user_id: user.id,
+                job_post_category_id: job_category_id,
+                status: 'pending',
+                cv: cvUrl,
+                national_identity_card: nationalIdCardUrl,
+                selections: {
+                    createMany: {
+                        data: [
+                            {
+                                id: crypto.randomUUID(),
+                                job_post_category_id: job_category_id,
+                                stage: "portfolio",
+                                status: "pending",
+                            },
+                            {
+                                id: crypto.randomUUID(),
+                                job_post_category_id: job_category_id,
+                                stage: "interview",
+                                status: "pending",
+                            },
+                            {
+                                id: crypto.randomUUID(),
+                                job_post_category_id: job_category_id,
+                                stage: "medical_checkup",
+                                status: "pending",
+                            }
+                        ]
+                    }
+                }
+            },
+            include: {
+                job_post_categories: {
+                    include: {
+                        job_categories: true,
+                        job_posts: {
+                            include: {
+                                companies: true
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        return Response(c, application, "Successfully applied for the position", 201);
+
+    } catch (error) {
+        console.error("Error applying for job:", error);
+        return Response(c, null, error instanceof Error ? error.message : "Failed to apply for the position", 500);
+    }
+})
+// JobRoutes.post("/:id/apply", AuthMiddleware, Validate("form", ApplyJobScheme), ApplyJobService)
 JobRoutes.get("/companies", listCompanies)
 JobRoutes.get("/history", AuthMiddleware, GetHistoryService)
 JobRoutes.get("/:id", ShowJobService)
-JobRoutes.post("/:id/apply", AuthMiddleware, Validate("form", ApplyJobScheme), ApplyJobService)
 JobRoutes.post("/:id/approval", AuthMiddleware, Validate("json", ApprovalJobScheme), ApprovalJobService)
 JobRoutes.get("/:id/applicants", AuthMiddleware, GetApplicantsService)
 

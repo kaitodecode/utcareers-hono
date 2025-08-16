@@ -1,6 +1,7 @@
 import { Context } from "hono";
 import prisma from "../../../libs/prisma";
 import { Response } from "../../../libs/response";
+import { ApprovalJobScheme } from "../schemas/history";
 
 export const GetHistoryService = async (c: Context) => {
     try {
@@ -70,9 +71,16 @@ export const GetHistoryService = async (c: Context) => {
 
 export const ApprovalJobService = async (c: Context) => {
     try {
+        // Validate input using zod
         const { id } = c.req.param();
-        const { status } = c.req.valid("json" as never);
-       
+        const { status } = await c.req.valid("json" as never);
+
+        // Check if status is valid
+        if (!["pending", "selection", "accepted", "rejected"].includes(status)) {
+            return Response(c, null, "Invalid status", 400);
+        }
+
+        // First check if applicant exists with all needed relations
         const applicant = await prisma.applicants.findUnique({
             where: { id },
             include: {
@@ -89,30 +97,46 @@ export const ApprovalJobService = async (c: Context) => {
             return Response(c, null, "Applicant not found", 404);
         }
 
+        // Add null check for nested objects
+        if (!applicant.job_post_categories?.job_posts) {
+            return Response(c, null, "Invalid job post data", 500);
+        }
+
         // Check if the job post is still active
         if (applicant.job_post_categories.job_posts.status === "closed") {
             return Response(c, null, "Job is closed", 400);
         }
 
         // Validate status transition
-        const validStatuses = ["pending", "selection", "accepted", "rejected"];
-        if (!validStatuses.includes(status)) {
+        const validStatuses = ["pending", "selection", "accepted", "rejected"] as const;
+        if (!validStatuses.includes(status as typeof validStatuses[number])) {
             return Response(c, null, "Invalid status", 400);
         }
 
-        await prisma.applicants.update({
+        // Update applicant status
+        const updatedApplicant = await prisma.applicants.update({
             where: { id },
-            data: {
-                status
+            data: { status },
+            include: {
+                job_post_categories: {
+                    include: {
+                        job_categories: true,
+                        job_posts: true
+                    }
+                }
             }
         });
 
-        return Response(c, null, "Applicant status updated successfully", 200);
+        return Response(c, updatedApplicant, "Applicant status updated successfully", 200);
+
     } catch (error) {
-        return Response(c, null, error instanceof Error ? error.message : "Failed to update applicant status", 400);
+        console.error("ApprovalJobService error:", error);
+        if (error instanceof Error) {
+            return Response(c, null, error.message, 400);
+        }
+        return Response(c, null, "Failed to process request", 400);
     }
 }
-
 
 
 export const GetApplicantsService = async (c: Context) => {
@@ -123,13 +147,30 @@ export const GetApplicantsService = async (c: Context) => {
             return Response(c, null, "Unauthorized access", 403);
         }
 
+        // Get status filter from query
+        const status = c.req.query('status');
+        const statusFilter = status ? { status } : {};
+        const company_id = c.req.query('company_id');
+        const companyFilter = company_id ? {
+            job_post_categories: {
+                job_posts: {
+                    company_id
+                }
+            }
+        } : {};
+
         // Get pagination parameters from query
         const page = Number(c.req.query('page')) || 1;
         const perPage = Number(c.req.query('per_page')) || 15;
         const skip = (page - 1) * perPage;
 
         // Get total count for pagination
-        const total = await prisma.applicants.count();
+        const total = await prisma.applicants.count({
+            where: {
+                ...statusFilter,
+                ...companyFilter
+            }
+        });
 
         // Get paginated data
         const applicants = await prisma.applicants.findMany({
@@ -147,11 +188,6 @@ export const GetApplicantsService = async (c: Context) => {
                     include: {
                         job_categories: true,
                         job_posts: {
-                            select: {
-                                id: true,
-                                title: true,
-                                company_id: true
-                            },
                             include: {
                                 companies: {
                                     select: {
@@ -167,6 +203,10 @@ export const GetApplicantsService = async (c: Context) => {
             },
             skip,
             take: perPage,
+            where: {
+                ...statusFilter,
+                ...companyFilter
+            },
         });
 
         // Calculate pagination metadata
